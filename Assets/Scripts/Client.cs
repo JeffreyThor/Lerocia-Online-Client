@@ -45,11 +45,6 @@ public class Client : MonoBehaviour {
   private WWWForm form;
   private string loginEndpoint = "login.php";
 
-  private void Start() {
-    playerName = "Test";
-    JoinGame();
-  }
-
   public void Connect() {
     Debug.Log("Logging in...");
     StartCoroutine("RequestLogin");
