@@ -45,6 +45,11 @@ public class Client : MonoBehaviour {
   private WWWForm form;
   private string loginEndpoint = "login.php";
 
+  private void Start() {
+    playerName = "Test";
+    JoinGame();
+  }
+
   public void Connect() {
     Debug.Log("Logging in...");
     StartCoroutine("RequestLogin");
@@ -180,6 +185,9 @@ public class Client : MonoBehaviour {
     if (cnnId == ourClientId) {
 
       go.AddComponent<PlayerMotor>();
+      go.AddComponent<PlayerLook>();
+      GameObject obj = Instantiate (Resources.Load("PlayerCamera")) as GameObject;
+      obj.transform.parent = go.transform;
       GameObject.Find("Canvas").SetActive(false);
       isStarted = true;
     }
