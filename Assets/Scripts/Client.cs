@@ -212,6 +212,7 @@ public class Client : MonoBehaviour {
 
     // Is this ours?
     if (cnnId == ourClientId) {
+      Destroy(go.transform.Find("Glasses").gameObject);
       go.AddComponent<PlayerMotor>();
       go.AddComponent<PlayerLook>();
       GameObject obj = Instantiate(Resources.Load("PlayerCamera")) as GameObject;
