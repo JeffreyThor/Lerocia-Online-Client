@@ -54,14 +54,8 @@ public class Client : MonoBehaviour {
   private WWWForm form;
   private string loginEndpoint = "login.php";
 
-  private float timeBetweenMovementStart;
-  private float timeBetweenMovementEnd;
-
-  private void Start() {
-    if (Application.isEditor) {
-      JoinGame();
-    }
-  }
+  public float timeBetweenMovementStart;
+  public float timeBetweenMovementEnd;
 
   public void Connect() {
     Debug.Log("Logging in...");
