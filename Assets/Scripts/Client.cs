@@ -52,8 +52,14 @@ public class Client : MonoBehaviour {
   private WWWForm form;
   private string loginEndpoint = "login.php";
 
-  public float timeBetweenMovementStart;
-  public float timeBetweenMovementEnd;
+  private float timeBetweenMovementStart;
+  private float timeBetweenMovementEnd;
+
+  private void Start() {
+    if (Application.isEditor) {
+      JoinGame();
+    }
+  }
 
   public void Connect() {
     Debug.Log("Logging in...");
@@ -201,7 +207,7 @@ public class Client : MonoBehaviour {
   }
 
   private void SpawnPlayer(string playerName, int cnnId) {
-    GameObject go = Instantiate(playerPrefab) as GameObject;
+    GameObject go = Instantiate(Resources.Load("Player")) as GameObject;
     Player p = new Player();
 
     // Is this ours?
