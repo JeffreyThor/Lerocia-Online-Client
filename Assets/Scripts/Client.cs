@@ -10,7 +10,6 @@ using System;
 public class User {
   public bool success;
   public string error;
-
   public string username;
   // Add username, etc....
 }
@@ -85,18 +84,15 @@ public class Client : MonoBehaviour {
       if (user.success) {
         if (user.error != "") {
           Debug.Log(user.error);
-        }
-        else {
+        } else {
           Debug.Log("Login successful");
           playerName = user.username;
           JoinGame();
         }
-      }
-      else {
+      } else {
         Debug.Log(user.error);
       }
-    }
-    else {
+    } else {
       Debug.Log(w.error);
     }
   }
@@ -205,6 +201,7 @@ public class Client : MonoBehaviour {
         if (players[int.Parse(d[0])].realPosition != players[int.Parse(d[0])].avatar.transform.position) {
           players[int.Parse(d[0])].isLerpingPosition = true;
         }
+
         if (players[int.Parse(d[0])].realRotation != players[int.Parse(d[0])].avatar.transform.rotation) {
           players[int.Parse(d[0])].isLerpingRotation = true;
         }
@@ -218,7 +215,7 @@ public class Client : MonoBehaviour {
     Quaternion myRotation = players[ourClientId].avatar.transform.rotation;
     timeBetweenMovementEnd = Time.time;
     string m = "MYPOSITION|" + myPosition.x.ToString() + '|' + myPosition.y.ToString() + '|' + myPosition.z.ToString() +
-               '|' + myRotation.w + '|' + + myRotation.x + '|' + + myRotation.y + '|' + + myRotation.z + '|' +
+               '|' + myRotation.w + '|' + +myRotation.x + '|' + +myRotation.y + '|' + +myRotation.z + '|' +
                (timeBetweenMovementEnd - timeBetweenMovementStart).ToString();
     Send(m, unreliableChannel);
     timeBetweenMovementStart = Time.time;
@@ -274,6 +271,7 @@ public class Client : MonoBehaviour {
           player.Value.avatar.transform.position =
             Vector3.Lerp(player.Value.lastRealPosition, player.Value.realPosition, lerpPercentage);
         }
+
         if (player.Value.isLerpingRotation) {
           float lerpPercentage = (Time.time - player.Value.timeStartedLerping) / player.Value.timeToLerp;
 
