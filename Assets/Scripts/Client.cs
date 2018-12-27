@@ -57,6 +57,12 @@ public class Client : MonoBehaviour {
   public float timeBetweenMovementStart;
   public float timeBetweenMovementEnd;
 
+  private void Start() {
+    if (Application.isEditor) {
+      JoinGame();
+    }
+  }
+
   public void Connect() {
     Debug.Log("Logging in...");
     StartCoroutine("RequestLogin");
@@ -223,6 +229,8 @@ public class Client : MonoBehaviour {
     if (cnnId == ourClientId) {
       Destroy(go.transform.Find("Glasses").gameObject);
       Destroy(go.transform.Find("NameTag").gameObject);
+      Destroy(go.transform.Find("LeftArm").gameObject);
+      Destroy(go.transform.Find("RightArm").gameObject);
       go.AddComponent<PlayerMotor>();
       go.AddComponent<PlayerLook>();
       GameObject obj = Instantiate(Resources.Load("PlayerCamera")) as GameObject;
