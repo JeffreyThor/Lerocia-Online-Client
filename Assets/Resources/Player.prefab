@@ -418,6 +418,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5ee000cb460f4647871504159f22e5b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+<<<<<<< HEAD
 --- !u!136 &136266689526013058
 CapsuleCollider:
   m_ObjectHideFlags: 1
@@ -444,6 +445,8 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
+=======
+>>>>>>> master
 --- !u!136 &136615492939757916
 CapsuleCollider:
   m_ObjectHideFlags: 1
