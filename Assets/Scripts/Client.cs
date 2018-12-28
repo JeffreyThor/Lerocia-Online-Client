@@ -57,6 +57,12 @@ public class Client : MonoBehaviour {
   public float timeBetweenMovementStart;
   public float timeBetweenMovementEnd;
 
+  private void Start() {
+    if (Application.isEditor) {
+      JoinGame();
+    }
+  }
+
   public void Connect() {
     Debug.Log("Logging in...");
     StartCoroutine("RequestLogin");
