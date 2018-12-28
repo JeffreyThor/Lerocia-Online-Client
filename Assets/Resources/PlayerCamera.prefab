@@ -41,7 +41,7 @@ GameObject:
   - component: {fileID: 23488461680643448}
   - component: {fileID: 136012351647789970}
   m_Layer: 0
-  m_Name: RightArm
+  m_Name: RightArmPlayer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -59,7 +59,7 @@ GameObject:
   - component: {fileID: 23144155388001768}
   - component: {fileID: 136481688273861864}
   m_Layer: 0
-  m_Name: LeftArm
+  m_Name: LeftArmPlayer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

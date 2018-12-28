@@ -10,6 +10,7 @@ using System;
 public class User {
   public bool success;
   public string error;
+
   public string username;
   // Add username, etc....
 }
@@ -56,6 +57,12 @@ public class Client : MonoBehaviour {
 
   public float timeBetweenMovementStart;
   public float timeBetweenMovementEnd;
+
+  private void Start() {
+    if (Application.isEditor) {
+      JoinGame();
+    }
+  }
 
   public void Connect() {
     Debug.Log("Logging in...");
@@ -229,6 +236,8 @@ public class Client : MonoBehaviour {
       go.AddComponent<PlayerLook>();
       GameObject obj = Instantiate(Resources.Load("PlayerCamera")) as GameObject;
       obj.transform.parent = go.transform;
+      //TODO: Uncomment this once the PlayerSwing script is done
+//      go.AddComponent<PlayerSwing>();
       GameObject.Find("Canvas").SetActive(false);
       isStarted = true;
     }
