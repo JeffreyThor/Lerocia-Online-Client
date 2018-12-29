@@ -12,23 +12,26 @@ public class PlayerSwing : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		attacking = false;
-		rightArm = transform.Find("RightArm").gameObject;
-		leftArm = transform.Find("LeftArm").gameObject;
-		startPosition = rightArm.transform.position;
+		rightArm = transform.Find("RightArmPlayer").gameObject;
+		leftArm = transform.Find("LeftArmPlayer").gameObject;
+		startPosition = rightArm.transform.localPosition;
+		Debug.Log("x: " + startPosition.x + " y: " + startPosition.y + " z: " + startPosition.z);
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		if (!attacking) {
 			if (Input.GetButton("Fire1")) {
+				Debug.Log("Attack!");
 				attacking = true;
 			}
 		}
 
 		if (attacking) {
-			rightArm.transform.position = new Vector3(rightArm.transform.position.x, rightArm.transform.position.y, rightArm.transform.position.z + 0.05f);
-			if (rightArm.transform.position.z >= 1.0f) {
-				rightArm.transform.position = startPosition;
+			rightArm.transform.localPosition = new Vector3(rightArm.transform.localPosition.x, rightArm.transform.localPosition.y, rightArm.transform.localPosition.z + 0.05f);
+			if (rightArm.transform.localPosition.z >= startPosition.z + 0.5f) {
+				rightArm.transform.localPosition = startPosition;
+				Debug.Log("Done.");
 				attacking = false;
 			}
 		}

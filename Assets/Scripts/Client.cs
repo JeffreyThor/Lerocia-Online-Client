@@ -236,7 +236,7 @@ public class Client : MonoBehaviour {
       GameObject obj = Instantiate(Resources.Load("PlayerCamera")) as GameObject;
       obj.transform.parent = go.transform;
       //TODO: Uncomment when PlayerSwing script is working
-//      obj.AddComponent<PlayerSwing>();
+      obj.AddComponent<PlayerSwing>();
       GameObject.Find("Canvas").SetActive(false);
       isStarted = true;
     }
