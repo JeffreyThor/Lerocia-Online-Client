@@ -58,12 +58,6 @@ public class Client : MonoBehaviour {
   public float timeBetweenMovementStart;
   public float timeBetweenMovementEnd;
 
-  private void Start() {
-    if (Application.isEditor) {
-      JoinGame();
-    }
-  }
-
   public void Connect() {
     Debug.Log("Logging in...");
     StartCoroutine("RequestLogin");
@@ -115,6 +109,12 @@ public class Client : MonoBehaviour {
     isConnected = true;
   }
 
+  public void JoinOfflineGame() {
+    playerName = GameObject.Find("UsernameOptionalInput").GetComponent<InputField>().text;
+    ourClientId = -1;
+    SpawnPlayer(playerName, ourClientId);
+  }
+
   private void Update() {
     if (!isConnected) {
       return;
@@ -151,7 +151,6 @@ public class Client : MonoBehaviour {
             Debug.Log("Invalid message : " + msg);
             break;
         }
-
         break;
     }
   }
