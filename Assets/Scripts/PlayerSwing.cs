@@ -11,11 +11,10 @@ public class PlayerSwing : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		startPosition = rightArm.transform.position;
 		attacking = false;
-		//TODO: These aren't finding the arms
-		rightArm = GameObject.Find("RightArmPlayer");
-		leftArm = GameObject.Find("LeftArmPlayer");
+		rightArm = transform.Find("RightArm").gameObject;
+		leftArm = transform.Find("LeftArm").gameObject;
+		startPosition = rightArm.transform.position;
 	}
 	
 	// Update is called once per frame
