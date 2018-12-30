@@ -223,7 +223,10 @@ public class Client : MonoBehaviour {
   }
 
   private void OnAttack(int cnnId) {
-    Debug.Log("Received message for client " + cnnId + " to attack");
+    if (cnnId != ourClientId) {
+      Debug.Log("Received message for client " + cnnId + " to attack");
+      players[cnnId].avatar.transform.Find("Arms").GetComponent<PlayerSwing>().Attack();
+    }    
   }
 
   private void SpawnPlayer(string playerName, int cnnId) {
@@ -236,7 +239,8 @@ public class Client : MonoBehaviour {
       Destroy(go.transform.Find("NameTag").gameObject);
       go.AddComponent<PlayerMotor>();
       go.AddComponent<PlayerLook>();
-      GameObject obj = go.transform.Find("PlayerCamera").gameObject;
+      go.tag = "Player";
+      GameObject obj = go.transform.Find("Arms").gameObject;
       obj.AddComponent<Camera>();
       obj.AddComponent<AudioListener>();
       obj.AddComponent<CameraLook>();
@@ -245,6 +249,7 @@ public class Client : MonoBehaviour {
       isStarted = true;
     }
 
+    go.name = playerName;
     p.avatar = go;
     p.playerName = playerName;
     p.connectionId = cnnId;

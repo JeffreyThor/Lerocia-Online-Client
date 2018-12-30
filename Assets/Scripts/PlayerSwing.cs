@@ -13,8 +13,8 @@ public class PlayerSwing : MonoBehaviour {
   void Start() {
     attacking = false;
     retreating = false;
-    rightArm = transform.Find("RightArmPlayer").gameObject;
-    leftArm = transform.Find("LeftArmPlayer").gameObject;
+    rightArm = transform.Find("RightArm").gameObject;
+    leftArm = transform.Find("LeftArm").gameObject;
     attackArm = leftArm;
     startPosition = attackArm.transform.localPosition;
   }
