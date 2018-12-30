@@ -5,9 +5,10 @@ using UnityEngine;
 public class PlayerSwing : MonoBehaviour {
   private GameObject rightArm;
   private GameObject leftArm;
-  private bool attacking;
-  private Vector3 startPosition;
   private GameObject attackArm;
+  private Vector3 startPosition;
+  private bool attacking;
+  private bool retreating;
 
   // Use this for initialization
   void Start() {
@@ -20,8 +21,9 @@ public class PlayerSwing : MonoBehaviour {
 
   // Update is called once per frame
   void Update() {
-    if (!attacking) {
+    if (!attacking && !retreating) {
       if (Input.GetButton("Fire1")) {
+        Debug.Log("Attacking");
         attacking = true;
         if (attackArm == rightArm) {
           attackArm = leftArm;
@@ -34,10 +36,18 @@ public class PlayerSwing : MonoBehaviour {
 
     if (attacking) {
       attackArm.transform.localPosition = new Vector3(attackArm.transform.localPosition.x,
-        attackArm.transform.localPosition.y, attackArm.transform.localPosition.z + (2 * Time.deltaTime));
+        attackArm.transform.localPosition.y, attackArm.transform.localPosition.z + (4 * Time.deltaTime));
       if (attackArm.transform.localPosition.z >= startPosition.z + 0.5f) {
-        attackArm.transform.localPosition = startPosition;
         attacking = false;
+        Debug.Log("Retreating");
+        retreating = true;
+      }
+    } else if (retreating) {
+      attackArm.transform.localPosition = new Vector3(attackArm.transform.localPosition.x,
+        attackArm.transform.localPosition.y, attackArm.transform.localPosition.z - (2 * Time.deltaTime));
+      if (attackArm.transform.localPosition.z <= startPosition.z) {
+        attackArm.transform.localPosition = startPosition;
+        retreating = false;
       }
     }
   }
