@@ -59,7 +59,6 @@ public class Client : MonoBehaviour {
   public float timeBetweenMovementEnd;
 
   public void Connect() {
-    Debug.Log("Logging in...");
     StartCoroutine("RequestLogin");
   }
 
@@ -80,7 +79,6 @@ public class Client : MonoBehaviour {
         if (user.error != "") {
           Debug.Log(user.error);
         } else {
-          Debug.Log("Login successful");
           playerName = user.username;
           JoinGame();
         }
@@ -132,7 +130,6 @@ public class Client : MonoBehaviour {
     switch (recData) {
       case NetworkEventType.DataEvent:
         string msg = Encoding.Unicode.GetString(recBuffer, 0, dataSize);
-        Debug.Log("Receiving : " + msg);
         string[] splitData = msg.Split('|');
         switch (splitData[0]) {
           case "ASKNAME":
@@ -146,6 +143,9 @@ public class Client : MonoBehaviour {
             break;
           case "ASKPOSITION":
             OnAskPosition(splitData);
+            break;
+          case "ATK":
+            OnAttack(int.Parse(splitData[1]));
             break;
           default:
             Debug.Log("Invalid message : " + msg);
@@ -222,6 +222,10 @@ public class Client : MonoBehaviour {
     timeBetweenMovementStart = Time.time;
   }
 
+  private void OnAttack(int cnnId) {
+    Debug.Log("Received message for client " + cnnId + " to attack");
+  }
+
   private void SpawnPlayer(string playerName, int cnnId) {
     GameObject go = Instantiate(Resources.Load("Player")) as GameObject;
     Player p = new Player();
@@ -230,13 +234,13 @@ public class Client : MonoBehaviour {
     if (cnnId == ourClientId) {
       Destroy(go.transform.Find("Glasses").gameObject);
       Destroy(go.transform.Find("NameTag").gameObject);
-      Destroy(go.transform.Find("LeftArm").gameObject);
-      Destroy(go.transform.Find("RightArm").gameObject);
       go.AddComponent<PlayerMotor>();
       go.AddComponent<PlayerLook>();
-      GameObject obj = Instantiate(Resources.Load("PlayerCamera")) as GameObject;
-      obj.transform.parent = go.transform;
-      obj.AddComponent<PlayerSwing>();
+      GameObject obj = go.transform.Find("PlayerCamera").gameObject;
+      obj.AddComponent<Camera>();
+      obj.AddComponent<AudioListener>();
+      obj.AddComponent<CameraLook>();
+      obj.AddComponent<PlayerAttackController>();
       GameObject.Find("Canvas").SetActive(false);
       isStarted = true;
     }
@@ -258,9 +262,20 @@ public class Client : MonoBehaviour {
   }
 
   private void Send(string message, int channelId) {
-    Debug.Log("Sending : " + message);
     byte[] msg = Encoding.Unicode.GetBytes(message);
     NetworkTransport.Send(hostId, connectionId, channelId, msg, message.Length * sizeof(char), out error);
+  }
+
+  public void SendReliable(string message) {
+    if (isConnected) {
+      Send(message, unreliableChannel);
+    }
+  }
+
+  public void SendUnreliable(string message) {
+    if (isConnected) {
+      Send(message, reliableChannel);
+    }
   }
 
   private void FixedUpdate() {

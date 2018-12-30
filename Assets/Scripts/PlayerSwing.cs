@@ -7,33 +7,19 @@ public class PlayerSwing : MonoBehaviour {
   private GameObject leftArm;
   private GameObject attackArm;
   private Vector3 startPosition;
-  private bool attacking;
-  private bool retreating;
+  public bool attacking;
+  public bool retreating;
 
-  // Use this for initialization
   void Start() {
     attacking = false;
+    retreating = false;
     rightArm = transform.Find("RightArmPlayer").gameObject;
     leftArm = transform.Find("LeftArmPlayer").gameObject;
     attackArm = leftArm;
     startPosition = attackArm.transform.localPosition;
   }
 
-  // Update is called once per frame
   void Update() {
-    if (!attacking && !retreating) {
-      if (Input.GetButton("Fire1")) {
-        attacking = true;
-        if (attackArm == rightArm) {
-          attackArm = leftArm;
-        } else {
-          attackArm = rightArm;
-        }
-
-        startPosition = attackArm.transform.localPosition;
-      }
-    }
-
     if (attacking) {
       attackArm.transform.localPosition = new Vector3(attackArm.transform.localPosition.x,
         attackArm.transform.localPosition.y, attackArm.transform.localPosition.z + (4 * Time.deltaTime));
@@ -49,5 +35,16 @@ public class PlayerSwing : MonoBehaviour {
         retreating = false;
       }
     }
+  }
+
+  public void Attack() {
+    attacking = true;
+    if (attackArm == rightArm) {
+      attackArm = leftArm;
+    } else {
+      attackArm = rightArm;
+    }
+
+    startPosition = attackArm.transform.localPosition;
   }
 }
