@@ -23,13 +23,13 @@ public class PlayerSwing : MonoBehaviour {
   void Update() {
     if (!attacking && !retreating) {
       if (Input.GetButton("Fire1")) {
-        Debug.Log("Attacking");
         attacking = true;
         if (attackArm == rightArm) {
           attackArm = leftArm;
         } else {
           attackArm = rightArm;
         }
+
         startPosition = attackArm.transform.localPosition;
       }
     }
@@ -39,7 +39,6 @@ public class PlayerSwing : MonoBehaviour {
         attackArm.transform.localPosition.y, attackArm.transform.localPosition.z + (4 * Time.deltaTime));
       if (attackArm.transform.localPosition.z >= startPosition.z + 0.5f) {
         attacking = false;
-        Debug.Log("Retreating");
         retreating = true;
       }
     } else if (retreating) {

@@ -151,6 +151,7 @@ public class Client : MonoBehaviour {
             Debug.Log("Invalid message : " + msg);
             break;
         }
+
         break;
     }
   }
@@ -235,7 +236,6 @@ public class Client : MonoBehaviour {
       go.AddComponent<PlayerLook>();
       GameObject obj = Instantiate(Resources.Load("PlayerCamera")) as GameObject;
       obj.transform.parent = go.transform;
-      //TODO: Uncomment when PlayerSwing script is working
       obj.AddComponent<PlayerSwing>();
       GameObject.Find("Canvas").SetActive(false);
       isStarted = true;
