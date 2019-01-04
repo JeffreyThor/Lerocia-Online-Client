@@ -145,7 +145,7 @@ public class Client : MonoBehaviour {
             OnAskPosition(splitData);
             break;
           case "ATK":
-            OnAttack(int.Parse(splitData[1]));
+            OnAttack(int.Parse(splitData[1]), splitData[2]);
             break;
           default:
             Debug.Log("Invalid message : " + msg);
@@ -222,9 +222,10 @@ public class Client : MonoBehaviour {
     timeBetweenMovementStart = Time.time;
   }
 
-  private void OnAttack(int cnnId) {
+  private void OnAttack(int cnnId, string time) {
+    float timeToReceive = Time.time - float.Parse(time);
     if (cnnId != ourClientId) {
-      Debug.Log("Received message for client " + cnnId + " to attack");
+      Debug.Log("Received message for client " + cnnId + " to attack after time " + timeToReceive);
       players[cnnId].avatar.transform.Find("Arms").GetComponent<PlayerSwing>().Attack();
     }    
   }
