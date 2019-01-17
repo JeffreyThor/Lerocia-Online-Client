@@ -12,7 +12,7 @@ public class PlayerAttackController : MonoBehaviour {
 	}
 
 	void Update() {
-		if (!playerSwing.attacking && !playerSwing.retreating) {
+		if (!playerSwing.attacking) {
 			if (Input.GetButton("Fire1")) {
 				client.SendReliable("ATK|" + Time.time.ToString());
 				playerSwing.Attack();
