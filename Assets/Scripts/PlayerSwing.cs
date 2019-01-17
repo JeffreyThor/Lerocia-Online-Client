@@ -15,8 +15,11 @@ public class PlayerSwing : MonoBehaviour {
   }
 
   void Update() {
-    if (!anim.GetCurrentAnimatorStateInfo(0).IsName("Attack")) {
+    Debug.Log("Queue size: " + attackQueue.Count);
+    if (!anim.GetCurrentAnimatorStateInfo(0).IsName("New Animation")) {
       attacking = false;
+    } else {
+      Debug.Log("Animation is playing");
     }
     if (!attacking && attackQueue.Count > 0) {
       attackQueue.Dequeue()();
@@ -29,7 +32,8 @@ public class PlayerSwing : MonoBehaviour {
   }
 
   public void RealAttack() {
-    anim.Play("Attack");
+    Debug.Log("Attacking");
+    anim.Play("New Animation");
     attacking = true;
   }
 }
