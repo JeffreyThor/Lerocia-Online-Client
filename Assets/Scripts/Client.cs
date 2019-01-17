@@ -117,7 +117,7 @@ public class Client : MonoBehaviour {
   }
 
   private void Update() {
-    if (Application.isEditor) {
+    if (Application.isEditor && isStarted) {
       if (Input.GetKeyDown(KeyCode.I)) {
         ToggleCamera();
       }
@@ -262,7 +262,9 @@ public class Client : MonoBehaviour {
       obj.AddComponent<CameraLook>();
       obj.AddComponent<PlayerAttackController>();
       GameObject.Find("Canvas").SetActive(false);
-      Instantiate(Resources.Load("PlayerCanvas"));
+      if (Application.isEditor) {
+        Instantiate(Resources.Load("DevCanvas"));
+      }
       GameObject.Find("LockCamera").GetComponent<Button>().onClick.AddListener(ToggleCamera);
       GameObject.Find("LockMovement").GetComponent<Button>().onClick.AddListener(ToggleMovement);
       GameObject.Find("LockAttacks").GetComponent<Button>().onClick.AddListener(ToggleAttacks);
@@ -328,7 +330,6 @@ public class Client : MonoBehaviour {
   }
 
   public void ToggleCamera() {
-    Debug.Log("Toggling Camera");
     if (players[ourClientId].avatar.GetComponent<PlayerLook>().isActiveAndEnabled) {
       players[ourClientId].avatar.GetComponent<PlayerLook>().enabled = false;
       GameObject.Find("LockCamera").GetComponentInChildren<Text>().text = "(i) Unlock Camera";
@@ -347,7 +348,6 @@ public class Client : MonoBehaviour {
   }
 
   public void ToggleMovement() {
-    Debug.Log("Toggling Movement");
     if (players[ourClientId].avatar.GetComponent<PlayerMotor>().isActiveAndEnabled) {
       players[ourClientId].avatar.GetComponent<PlayerMotor>().enabled = false;
       GameObject.Find("LockMovement").GetComponentInChildren<Text>().text = "(o) Unlock Movement";
@@ -358,7 +358,6 @@ public class Client : MonoBehaviour {
   }
 
   public void ToggleAttacks() {
-    Debug.Log("Toggling Attacks");
     if (players[ourClientId].avatar.GetComponentInChildren<PlayerAttackController>().isActiveAndEnabled) {
       players[ourClientId].avatar.GetComponentInChildren<PlayerAttackController>().enabled = false;
       GameObject.Find("LockAttacks").GetComponentInChildren<Text>().text = "(p) Unlock Attacks";
