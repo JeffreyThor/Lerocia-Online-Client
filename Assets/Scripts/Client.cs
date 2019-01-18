@@ -262,7 +262,9 @@ public class Client : MonoBehaviour {
       obj.AddComponent<CameraLook>();
       obj.AddComponent<PlayerAttackController>();
       GameObject.Find("Canvas").SetActive(false);
-      Instantiate(Resources.Load("PlayerCanvas"));
+      if (Application.isEditor) {
+        Instantiate(Resources.Load("DevCanvas"));
+      }
       GameObject.Find("LockCamera").GetComponent<Button>().onClick.AddListener(ToggleCamera);
       GameObject.Find("LockMovement").GetComponent<Button>().onClick.AddListener(ToggleMovement);
       GameObject.Find("LockAttacks").GetComponent<Button>().onClick.AddListener(ToggleAttacks);

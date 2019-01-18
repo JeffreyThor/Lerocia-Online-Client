@@ -24,7 +24,7 @@ GameObject:
   - component: {fileID: 114447570250024494}
   m_Layer: 0
   m_Name: LockMovement
-  m_TagString: EditorOnly
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -41,7 +41,7 @@ GameObject:
   - component: {fileID: 114144233292750014}
   - component: {fileID: 114105863880237878}
   m_Layer: 0
-  m_Name: PlayerCanvas
+  m_Name: DevCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -60,7 +60,7 @@ GameObject:
   - component: {fileID: 114878355234042582}
   m_Layer: 0
   m_Name: LockAttacks
-  m_TagString: EditorOnly
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -112,7 +112,7 @@ GameObject:
   - component: {fileID: 114842549784963126}
   m_Layer: 0
   m_Name: LockCamera
-  m_TagString: EditorOnly
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
