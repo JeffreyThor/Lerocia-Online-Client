@@ -15,7 +15,6 @@ public class PlayerSwing : MonoBehaviour {
   }
 
   void Update() {
-    Debug.Log("Queue size: " + attackQueue.Count);
     if (!anim.GetCurrentAnimatorStateInfo(0).IsName("New Animation")) {
       attacking = false;
     } else {
