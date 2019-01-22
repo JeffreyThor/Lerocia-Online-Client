@@ -282,6 +282,7 @@ public class Client : MonoBehaviour {
       obj.AddComponent<AudioListener>();
       obj.AddComponent<CameraLook>();
       obj.AddComponent<PlayerAttackController>();
+      obj.AddComponent<PlayerAttack>();
       obj.transform.parent = go.transform;
       GameObject.Find("Canvas").SetActive(false);
       if (isDeveloper) {
