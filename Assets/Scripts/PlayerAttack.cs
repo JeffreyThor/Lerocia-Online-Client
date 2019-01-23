@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class PlayerAttack : MonoBehaviour {
   private float damage = 10f;
-  private float range = 100f;
+  private float range = 5f;
   private GameObject arms;
 
-  private void Start() {
-    
+  private void Update() {
+    Debug.DrawRay(gameObject.transform.position, transform.forward, Color.red);
   }
 
   public void Attack() {
