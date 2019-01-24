@@ -63,6 +63,8 @@ public class Client : MonoBehaviour {
   private Text errorText;
   private bool isDeveloper = false;
 
+  public bool paused = false;
+
   public void Connect() {
     errorText = GameObject.Find("ErrorText").GetComponent<Text>();
     errorText.text = "Logging in...";
@@ -133,15 +135,20 @@ public class Client : MonoBehaviour {
   }
 
   private void Update() {
-    if (isDeveloper && isStarted) {
-      if (Input.GetKeyDown(KeyCode.I)) {
-        ToggleCamera();
+    if (isStarted) {
+      if (Input.GetButtonDown("Cancel")) {
+        TogglePause();
       }
-      if (Input.GetKeyDown(KeyCode.O)) {
-        ToggleMovement();
-      }
-      if (Input.GetKeyDown(KeyCode.P)) {
-        ToggleAttacks();
+      if (isDeveloper) {
+        if (Input.GetKeyDown(KeyCode.I)) {
+          ToggleCamera();
+        }
+        if (Input.GetKeyDown(KeyCode.O)) {
+          ToggleMovement();
+        }
+        if (Input.GetKeyDown(KeyCode.P)) {
+          ToggleAttacks();
+        }
       }
     }
 
@@ -302,6 +309,8 @@ public class Client : MonoBehaviour {
       Instantiate(Resources.Load("MyCanvas"));
       GameObject.Find("MyCanvas(Clone)").transform.Find("HealthBar").GetComponent<Slider>().value = p.currentHealth;
       isStarted = true;
+      Cursor.visible = false;
+      Cursor.lockState = CursorLockMode.Locked;
     }
 
     p.isLerpingPosition = false;
@@ -398,5 +407,20 @@ public class Client : MonoBehaviour {
       players[ourClientId].avatar.GetComponentInChildren<PlayerSwing>().enabled = true;
       GameObject.Find("LockAttacks").GetComponentInChildren<Text>().text = "(p) Lock Attacks";
     }
+  }
+
+  public void TogglePause() {
+    if (paused) {
+      paused = false;
+      Cursor.visible = false;
+      Cursor.lockState = CursorLockMode.Locked;
+    } else {
+      paused = true;
+      Cursor.visible = true;
+      Cursor.lockState = CursorLockMode.None;
+    }
+    ToggleCamera();
+    ToggleMovement();
+    ToggleAttacks();
   }
 }
