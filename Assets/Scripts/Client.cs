@@ -364,49 +364,61 @@ public class Client : MonoBehaviour {
   }
   
   public void ToggleCamera() {
-    if (players[ourClientId].avatar.GetComponent<PlayerLook>().isActiveAndEnabled) {
-      players[ourClientId].avatar.GetComponent<PlayerLook>().enabled = false;
-      GameObject.Find("LockCamera").GetComponentInChildren<Text>().text = "(i) Unlock Camera";
+    if (players[ourClientId].avatar.GetComponent<PlayerLook>().isActiveAndEnabled && players[ourClientId].avatar.GetComponentInChildren<CameraLook>().isActiveAndEnabled) {
+      LockCamera();
     } else {
-      players[ourClientId].avatar.GetComponent<PlayerLook>().enabled = true;
-      GameObject.Find("LockCamera").GetComponentInChildren<Text>().text = "(i) Lock Camera";
-    }
-
-    if (players[ourClientId].avatar.GetComponentInChildren<CameraLook>().isActiveAndEnabled) {
-      players[ourClientId].avatar.GetComponentInChildren<CameraLook>().enabled = false;
-      GameObject.Find("LockCamera").GetComponentInChildren<Text>().text = "(i) Unlock Camera";
-    } else {
-      players[ourClientId].avatar.GetComponentInChildren<CameraLook>().enabled = true;
-      GameObject.Find("LockCamera").GetComponentInChildren<Text>().text = "(i) Lock Camera";
+      UnlockCamera();
     }
   }
 
   public void ToggleMovement() {
     if (players[ourClientId].avatar.GetComponent<PlayerMotor>().isActiveAndEnabled) {
-      players[ourClientId].avatar.GetComponent<PlayerMotor>().enabled = false;
-      GameObject.Find("LockMovement").GetComponentInChildren<Text>().text = "(o) Unlock Movement";
+      LockMovement();
     } else {
-      players[ourClientId].avatar.GetComponent<PlayerMotor>().enabled = true;
-      GameObject.Find("LockMovement").GetComponentInChildren<Text>().text = "(o) Lock Movement";
+      UnlockMovement();
     }
   }
 
   public void ToggleAttacks() {
-    if (players[ourClientId].avatar.GetComponentInChildren<PlayerAttackController>().isActiveAndEnabled) {
-      players[ourClientId].avatar.GetComponentInChildren<PlayerAttackController>().enabled = false;
-      GameObject.Find("LockAttacks").GetComponentInChildren<Text>().text = "(p) Unlock Attacks";
+    if (players[ourClientId].avatar.GetComponentInChildren<PlayerAttackController>().isActiveAndEnabled && players[ourClientId].avatar.GetComponentInChildren<PlayerSwing>().isActiveAndEnabled) {
+      LockAttacks();
     } else {
-      players[ourClientId].avatar.GetComponentInChildren<PlayerAttackController>().enabled = true;
-      GameObject.Find("LockAttacks").GetComponentInChildren<Text>().text = "(p) Lock Attacks";
+      UnlockAttacks();
     }
+  }
 
-    if (players[ourClientId].avatar.GetComponentInChildren<PlayerSwing>().isActiveAndEnabled) {
-      players[ourClientId].avatar.GetComponentInChildren<PlayerSwing>().enabled = false;
-      GameObject.Find("LockAttacks").GetComponentInChildren<Text>().text = "(p) Unlock Attacks";
-    } else {
-      players[ourClientId].avatar.GetComponentInChildren<PlayerSwing>().enabled = true;
-      GameObject.Find("LockAttacks").GetComponentInChildren<Text>().text = "(p) Lock Attacks";
-    }
+  private void LockCamera() {
+    players[ourClientId].avatar.GetComponent<PlayerLook>().enabled = false;
+    players[ourClientId].avatar.GetComponentInChildren<CameraLook>().enabled = false;
+    GameObject.Find("LockCamera").GetComponentInChildren<Text>().text = "(i) Unlock Camera";
+  }
+
+  private void LockMovement() {
+    players[ourClientId].avatar.GetComponent<PlayerMotor>().enabled = false;
+    GameObject.Find("LockMovement").GetComponentInChildren<Text>().text = "(o) Unlock Movement";
+  }
+
+  private void LockAttacks() {
+    players[ourClientId].avatar.GetComponentInChildren<PlayerAttackController>().enabled = false;
+    players[ourClientId].avatar.GetComponentInChildren<PlayerSwing>().enabled = false;
+    GameObject.Find("LockAttacks").GetComponentInChildren<Text>().text = "(p) Unlock Attacks";
+  }
+
+  private void UnlockCamera() {
+    players[ourClientId].avatar.GetComponent<PlayerLook>().enabled = true;
+    players[ourClientId].avatar.GetComponentInChildren<CameraLook>().enabled = true;
+    GameObject.Find("LockCamera").GetComponentInChildren<Text>().text = "(i) Lock Camera";
+  }
+
+  private void UnlockMovement() {
+    players[ourClientId].avatar.GetComponent<PlayerMotor>().enabled = true;
+    GameObject.Find("LockMovement").GetComponentInChildren<Text>().text = "(o) Lock Movement";
+  }
+
+  private void UnlockAttacks() {
+    players[ourClientId].avatar.GetComponentInChildren<PlayerAttackController>().enabled = true;
+    players[ourClientId].avatar.GetComponentInChildren<PlayerSwing>().enabled = true;
+    GameObject.Find("LockAttacks").GetComponentInChildren<Text>().text = "(p) Lock Attacks";
   }
 
   public void TogglePause() {
@@ -414,13 +426,16 @@ public class Client : MonoBehaviour {
       paused = false;
       Cursor.visible = false;
       Cursor.lockState = CursorLockMode.Locked;
+      UnlockCamera();
+      UnlockMovement();
+      UnlockAttacks();
     } else {
       paused = true;
       Cursor.visible = true;
       Cursor.lockState = CursorLockMode.None;
+      LockCamera();
+      LockMovement();
+      LockAttacks();
     }
-    ToggleCamera();
-    ToggleMovement();
-    ToggleAttacks();
   }
 }
