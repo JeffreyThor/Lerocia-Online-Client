@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 using System;
+using UnityEditor;
 
 [Serializable]
 public class User {
@@ -68,7 +69,6 @@ public class Client : MonoBehaviour {
   public void Connect() {
     errorText = GameObject.Find("ErrorText").GetComponent<Text>();
     errorText.text = "Logging in...";
-    Debug.Log("Logging in...");
     StartCoroutine("RequestLogin");
   }
 
@@ -91,7 +91,6 @@ public class Client : MonoBehaviour {
           Debug.Log(user.error);
         } else {
           errorText.text = "Login successful";
-          Debug.Log("Login successful");
           playerName = user.username;
           JoinGame();
         }
@@ -307,6 +306,9 @@ public class Client : MonoBehaviour {
         GameObject.Find("LockAttacks").GetComponent<Button>().onClick.AddListener(ToggleAttacks);
       }
       Instantiate(Resources.Load("MyCanvas"));
+      Instantiate(Resources.Load("PauseCanvas"));
+      GameObject.Find("QuitButton").GetComponent<Button>().onClick.AddListener(Quit);
+      GameObject.Find("PauseCanvas(Clone)").GetComponent<Canvas>().enabled = false;
       GameObject.Find("MyCanvas(Clone)").transform.Find("HealthBar").GetComponent<Slider>().value = p.currentHealth;
       isStarted = true;
       Cursor.visible = false;
@@ -424,6 +426,7 @@ public class Client : MonoBehaviour {
   public void TogglePause() {
     if (paused) {
       paused = false;
+      GameObject.Find("PauseCanvas(Clone)").GetComponent<Canvas>().enabled = false;
       Cursor.visible = false;
       Cursor.lockState = CursorLockMode.Locked;
       UnlockCamera();
@@ -431,11 +434,16 @@ public class Client : MonoBehaviour {
       UnlockAttacks();
     } else {
       paused = true;
+      GameObject.Find("PauseCanvas(Clone)").GetComponent<Canvas>().enabled = true;
       Cursor.visible = true;
       Cursor.lockState = CursorLockMode.None;
       LockCamera();
       LockMovement();
       LockAttacks();
     }
+  }
+
+  public void Quit() {
+    Application.Quit();
   }
 }
