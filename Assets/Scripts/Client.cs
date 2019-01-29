@@ -392,35 +392,47 @@ public class Client : MonoBehaviour {
   private void LockCamera() {
     players[ourClientId].avatar.GetComponent<PlayerLook>().enabled = false;
     players[ourClientId].avatar.GetComponentInChildren<CameraLook>().enabled = false;
-    GameObject.Find("LockCamera").GetComponentInChildren<Text>().text = "(i) Unlock Camera";
+    if (isDeveloper) {
+      GameObject.Find("LockCamera").GetComponentInChildren<Text>().text = "(i) Unlock Camera";
+    }
   }
 
   private void LockMovement() {
     players[ourClientId].avatar.GetComponent<PlayerMotor>().enabled = false;
-    GameObject.Find("LockMovement").GetComponentInChildren<Text>().text = "(o) Unlock Movement";
+    if (isDeveloper) {
+      GameObject.Find("LockMovement").GetComponentInChildren<Text>().text = "(o) Unlock Movement";
+    }
   }
 
   private void LockAttacks() {
     players[ourClientId].avatar.GetComponentInChildren<PlayerAttackController>().enabled = false;
     players[ourClientId].avatar.GetComponentInChildren<PlayerSwing>().enabled = false;
-    GameObject.Find("LockAttacks").GetComponentInChildren<Text>().text = "(p) Unlock Attacks";
+    if (isDeveloper) {
+      GameObject.Find("LockAttacks").GetComponentInChildren<Text>().text = "(p) Unlock Attacks";
+    }
   }
 
   private void UnlockCamera() {
     players[ourClientId].avatar.GetComponent<PlayerLook>().enabled = true;
     players[ourClientId].avatar.GetComponentInChildren<CameraLook>().enabled = true;
-    GameObject.Find("LockCamera").GetComponentInChildren<Text>().text = "(i) Lock Camera";
+    if (isDeveloper) {
+      GameObject.Find("LockCamera").GetComponentInChildren<Text>().text = "(i) Lock Camera";
+    }
   }
 
   private void UnlockMovement() {
     players[ourClientId].avatar.GetComponent<PlayerMotor>().enabled = true;
-    GameObject.Find("LockMovement").GetComponentInChildren<Text>().text = "(o) Lock Movement";
+    if (isDeveloper) {
+      GameObject.Find("LockMovement").GetComponentInChildren<Text>().text = "(o) Lock Movement";
+    }
   }
 
   private void UnlockAttacks() {
     players[ourClientId].avatar.GetComponentInChildren<PlayerAttackController>().enabled = true;
     players[ourClientId].avatar.GetComponentInChildren<PlayerSwing>().enabled = true;
-    GameObject.Find("LockAttacks").GetComponentInChildren<Text>().text = "(p) Lock Attacks";
+    if (isDeveloper) {
+      GameObject.Find("LockAttacks").GetComponentInChildren<Text>().text = "(p) Lock Attacks";
+    }
   }
 
   public void TogglePause() {
