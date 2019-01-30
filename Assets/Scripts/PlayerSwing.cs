@@ -18,8 +18,6 @@ public class PlayerSwing : MonoBehaviour {
 		if (!anim.GetCurrentAnimatorStateInfo(0).IsName("Attack") && !anim.IsInTransition(0)) {
 			attacking = false;
 		}
-		Debug.Log("Attacking is " + attacking);
-		Debug.Log("Charging is " + charging);
 	}
 
 	public void Attack() {
