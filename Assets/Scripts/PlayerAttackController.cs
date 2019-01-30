@@ -6,6 +6,8 @@ public class PlayerAttackController : MonoBehaviour {
 	private Client client;
 	private PlayerSwing playerSwing;
 	private PlayerAttack playerAttack;
+	private float chargeStartTime;
+	private float chargeEndTime;
 
 	void Start() {
 		client = GameObject.Find("Client").GetComponent<Client>();
@@ -17,6 +19,7 @@ public class PlayerAttackController : MonoBehaviour {
 		if (!playerSwing.attacking) {
 			if (Input.GetButtonDown("Fire1")) {
 				client.SendReliable("CHARGE|");
+				chargeStartTime = Time.time;
 				playerSwing.Charge();
 			}
 		}
@@ -24,8 +27,9 @@ public class PlayerAttackController : MonoBehaviour {
 		if (playerSwing.charging) {
 			if (Input.GetButtonUp("Fire1")) {
 				client.SendReliable("ATK|");
+				chargeEndTime = Time.time;
 				playerSwing.Attack();
-				playerAttack.Attack();
+				playerAttack.Attack(chargeEndTime - chargeStartTime);
 			}
 		}
 	}

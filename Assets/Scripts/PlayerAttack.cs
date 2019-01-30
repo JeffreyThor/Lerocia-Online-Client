@@ -12,10 +12,11 @@ public class PlayerAttack : MonoBehaviour {
     client = GameObject.Find("Client").GetComponent<Client>();
   }
 
-  public void Attack() {
+  public void Attack(float chargeTime) {
     RaycastHit hit;
     if (Physics.Raycast(gameObject.transform.position, transform.forward, out hit, range)) {
       if (hit.transform.tag == "Player") {
+        damage += Mathf.FloorToInt(chargeTime);
         client.SendReliable("HIT|" + hit.transform.gameObject.GetComponent<PlayerController>().id + "|" + damage);
       }
     }
