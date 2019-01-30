@@ -25,6 +25,7 @@ public class PlayerAttackController : MonoBehaviour {
 			if (Input.GetButtonUp("Fire1")) {
 				client.SendReliable("ATK|");
 				playerSwing.Attack();
+				playerAttack.Attack();
 			}
 		}
 	}
