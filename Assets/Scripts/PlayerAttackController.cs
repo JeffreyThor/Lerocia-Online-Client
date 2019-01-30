@@ -16,9 +16,15 @@ public class PlayerAttackController : MonoBehaviour {
 	void Update() {
 		if (!playerSwing.attacking) {
 			if (Input.GetButtonDown("Fire1")) {
+				client.SendReliable("CHARGE|");
+				playerSwing.Charge();
+			}
+		}
+
+		if (playerSwing.charging) {
+			if (Input.GetButtonUp("Fire1")) {
 				client.SendReliable("ATK|");
 				playerSwing.Attack();
-				playerAttack.Attack();
 			}
 		}
 	}
