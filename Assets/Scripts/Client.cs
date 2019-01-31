@@ -31,6 +31,26 @@ public class Player {
 
   public int maxHealth;
   public int currentHealth;
+
+  public List<Item> inventory;
+}
+
+public class Item {
+  private string name;
+  private string category;
+  private int weight;
+  private int value;
+
+  public Item(string name, string category, int weight, int value) {
+    this.name = name;
+    this.category = category;
+    this.weight = weight;
+    this.value = value;
+  }
+
+  public string getName() {
+    return name;
+  }
 }
 
 public class Client : MonoBehaviour {
@@ -66,6 +86,18 @@ public class Client : MonoBehaviour {
 
   public bool paused = false;
   public bool inMenu = false;
+  
+  public Dictionary<int, Item> items = new Dictionary<int, Item> {
+    {
+      0,
+      new Item(
+        "some potion",
+        "potions",
+        1,
+        10
+      )
+    }
+  };
 
   public void Connect() {
     errorText = GameObject.Find("ErrorText").GetComponent<Text>();
@@ -296,6 +328,8 @@ public class Client : MonoBehaviour {
     p.connectionId = cnnId;
     p.maxHealth = 100;
     p.currentHealth = p.maxHealth;
+    p.inventory = new List<Item>();
+    p.inventory.Add(items[0]);
 
     // Is this ours?
     if (cnnId == ourClientId) {
@@ -487,6 +521,10 @@ public class Client : MonoBehaviour {
       LockCamera();
       LockMovement();
       LockAttacks();
+      Debug.Log("My inventory:");
+      foreach (Item item in players[ourClientId].inventory) {
+        Debug.Log(item.getName());
+      }
     }
   }
 
