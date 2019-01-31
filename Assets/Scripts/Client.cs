@@ -65,6 +65,7 @@ public class Client : MonoBehaviour {
   private bool isDeveloper = false;
 
   public bool paused = false;
+  public bool inMenu = false;
 
   public void Connect() {
     errorText = GameObject.Find("ErrorText").GetComponent<Text>();
@@ -135,8 +136,11 @@ public class Client : MonoBehaviour {
 
   private void Update() {
     if (isStarted) {
-      if (Input.GetButtonDown("Cancel")) {
+      if (Input.GetButtonDown("Cancel") && !inMenu) {
         TogglePause();
+      }
+      if (Input.GetKeyDown(KeyCode.F) && !paused) {
+        ToggleMenu();
       }
       if (isDeveloper) {
         if (Input.GetKeyDown(KeyCode.I)) {
@@ -313,11 +317,10 @@ public class Client : MonoBehaviour {
         GameObject.Find("LockMovement").GetComponent<Button>().onClick.AddListener(ToggleMovement);
         GameObject.Find("LockAttacks").GetComponent<Button>().onClick.AddListener(ToggleAttacks);
       }
-      Instantiate(Resources.Load("MyCanvas"));
-      Instantiate(Resources.Load("PauseCanvas"));
       GameObject.Find("QuitButton").GetComponent<Button>().onClick.AddListener(Quit);
-      GameObject.Find("PauseCanvas(Clone)").GetComponent<Canvas>().enabled = false;
-      GameObject.Find("MyCanvas(Clone)").transform.Find("HealthBar").GetComponent<Slider>().value = p.currentHealth;
+      GameObject.Find("PauseCanvas").GetComponent<Canvas>().enabled = false;
+      GameObject.Find("MenuCanvas").GetComponent<Canvas>().enabled = false;
+      GameObject.Find("MyCanvas").transform.Find("HealthBar").GetComponent<Slider>().value = p.currentHealth;
       isStarted = true;
       Cursor.visible = false;
       Cursor.lockState = CursorLockMode.Locked;
@@ -446,7 +449,8 @@ public class Client : MonoBehaviour {
   public void TogglePause() {
     if (paused) {
       paused = false;
-      GameObject.Find("PauseCanvas(Clone)").GetComponent<Canvas>().enabled = false;
+      GameObject.Find("PauseCanvas").GetComponent<Canvas>().enabled = false;
+      GameObject.Find("MyCanvas").GetComponent<Canvas>().enabled = true;
       Cursor.visible = false;
       Cursor.lockState = CursorLockMode.Locked;
       UnlockCamera();
@@ -454,7 +458,30 @@ public class Client : MonoBehaviour {
       UnlockAttacks();
     } else {
       paused = true;
-      GameObject.Find("PauseCanvas(Clone)").GetComponent<Canvas>().enabled = true;
+      GameObject.Find("PauseCanvas").GetComponent<Canvas>().enabled = true;
+      GameObject.Find("MyCanvas").GetComponent<Canvas>().enabled = false;
+      Cursor.visible = true;
+      Cursor.lockState = CursorLockMode.None;
+      LockCamera();
+      LockMovement();
+      LockAttacks();
+    }
+  }
+
+  public void ToggleMenu() {
+    if (inMenu) {
+      inMenu = false;
+      GameObject.Find("MenuCanvas").GetComponent<Canvas>().enabled = false;
+      GameObject.Find("MyCanvas").GetComponent<Canvas>().enabled = true;
+      Cursor.visible = false;
+      Cursor.lockState = CursorLockMode.Locked;
+      UnlockCamera();
+      UnlockMovement();
+      UnlockAttacks();
+    } else {
+      inMenu = true;
+      GameObject.Find("MenuCanvas").GetComponent<Canvas>().enabled = true;
+      GameObject.Find("MyCanvas").GetComponent<Canvas>().enabled = false;
       Cursor.visible = true;
       Cursor.lockState = CursorLockMode.None;
       LockCamera();
