@@ -7,11 +7,41 @@ using UnityEngine.UI;
 using System;
 using UnityEditor;
 
+public static class JsonHelper
+{
+  public static T[] FromJson<T>(string json)
+  {
+    Wrapper<T> wrapper = JsonUtility.FromJson<Wrapper<T>>(json);
+    return wrapper.Items;
+  }
+
+  public static string ToJson<T>(T[] array)
+  {
+    Wrapper<T> wrapper = new Wrapper<T>();
+    wrapper.Items = array;
+    return JsonUtility.ToJson(wrapper);
+  }
+
+  public static string ToJson<T>(T[] array, bool prettyPrint)
+  {
+    Wrapper<T> wrapper = new Wrapper<T>();
+    wrapper.Items = array;
+    return JsonUtility.ToJson(wrapper, prettyPrint);
+  }
+
+  [Serializable]
+  private class Wrapper<T>
+  {
+    public T[] Items;
+  }
+}
+
 [Serializable]
 public class User {
   public bool success;
   public string error;
   public string username;
+  public int user_id;
   // Add username, etc....
 }
 
@@ -36,20 +66,55 @@ public class Player {
 }
 
 public class Item {
-  private string name;
-  private string category;
-  private int weight;
-  private int value;
+  protected string name;
+  protected string category;
+  protected int weight;
+  protected int value;
 
-  public Item(string name, string category, int weight, int value) {
+  public string getName() {
+    return name;
+  }
+}
+
+[Serializable]
+public class DatabaseItem {
+  public int item_id;
+  public int amount;
+}
+
+public class Potion : Item {
+  private string effect;
+
+  public Potion(string name, string category, int weight, int value, string effect) {
     this.name = name;
     this.category = category;
     this.weight = weight;
     this.value = value;
+    this.effect = effect;
   }
+}
 
-  public string getName() {
-    return name;
+public class Weapon : Item {
+  private int damage;
+
+  public Weapon(string name, string category, int weight, int value, int damage) {
+    this.name = name;
+    this.category = category;
+    this.weight = weight;
+    this.value = value;
+    this.damage = damage;
+  }
+}
+
+public class Apparel : Item {
+  private int armor;
+
+  public Apparel(string name, string category, int weight, int value, int armor) {
+    this.name = name;
+    this.category = category;
+    this.weight = weight;
+    this.value = value;
+    this.armor = armor;
   }
 }
 
@@ -71,12 +136,14 @@ public class Client : MonoBehaviour {
   private byte error;
 
   private string playerName;
+  private int playerId;
 
   public GameObject playerPrefab;
   public Dictionary<int, Player> players = new Dictionary<int, Player>();
 
   private WWWForm form;
   private string loginEndpoint = "login.php";
+  private string get_items_for_user_endpoint = "get_items_for_user.php";
 
   public float timeBetweenMovementStart;
   public float timeBetweenMovementEnd;
@@ -87,13 +154,31 @@ public class Client : MonoBehaviour {
   public bool paused = false;
   public bool inMenu = false;
   
-  public Dictionary<int, Item> items = new Dictionary<int, Item> {
+  public List<Item> items = new List<Item> {
     {
-      0,
-      new Item(
-        "some potion",
-        "potions",
+      new Potion(
+        "some health potion",
+        "Potion",
         1,
+        10,
+        "health"
+      )
+    },
+    {
+      new Weapon(
+        "some sword weapon",
+        "Weapon",
+        1,
+        50,
+        5
+      )
+    },
+    {
+      new Apparel(
+        "some helmet apparel",
+        "Apparel",
+        1,
+        10,
         10
       )
     }
@@ -125,6 +210,7 @@ public class Client : MonoBehaviour {
         } else {
           errorText.text = "Login successful";
           playerName = user.username;
+          playerId = user.user_id;
           JoinGame();
         }
       } else {
@@ -135,6 +221,33 @@ public class Client : MonoBehaviour {
       errorText.text = w.error;
       Debug.Log(w.error);
     }
+  }
+  
+  public IEnumerator GetItemsForUser(int[] ids) {
+    form = new WWWForm();
+    form.AddField("user_id", ids[0]);
+
+    WWW w = new WWW(NetworkSettings.API + get_items_for_user_endpoint, form);
+    yield return w;
+
+    if (string.IsNullOrEmpty(w.error)) {
+      Debug.Log(w.text);
+      string jsonString = fixJson(w.text);
+      DatabaseItem[] dbi = JsonHelper.FromJson<DatabaseItem>(jsonString);
+      foreach (DatabaseItem it in dbi) {
+        for (int i = 0; i < it.amount; i++) {
+          players[ids[1]].inventory.Add(items[it.item_id]);
+        }
+      }
+    } else {
+      Debug.Log(w.error);
+    }
+  }
+  
+  string fixJson(string value)
+  {
+    value = "{\"Items\":" + value + "}";
+    return value;
   }
 
   public void JoinGame() {
@@ -164,6 +277,8 @@ public class Client : MonoBehaviour {
     if (Application.isEditor) {
       isDeveloper = true;
     }
+    GameObject.Find("PauseCanvas").GetComponent<Canvas>().enabled = false;
+    GameObject.Find("MenuCanvas").GetComponent<Canvas>().enabled = false;
   }
 
   private void Update() {
@@ -174,7 +289,7 @@ public class Client : MonoBehaviour {
       if (Input.GetKeyDown(KeyCode.F) && !paused) {
         ToggleMenu();
       }
-      if (isDeveloper) {
+      if (isDeveloper && !paused && !inMenu) {
         if (Input.GetKeyDown(KeyCode.I)) {
           ToggleCamera();
         }
@@ -325,11 +440,10 @@ public class Client : MonoBehaviour {
     go.GetComponent<PlayerController>().id = cnnId;
     p.avatar = go;
     p.playerName = playerName;
-    p.connectionId = cnnId;
+    p.connectionId = playerId;
     p.maxHealth = 100;
     p.currentHealth = p.maxHealth;
     p.inventory = new List<Item>();
-    p.inventory.Add(items[0]);
 
     // Is this ours?
     if (cnnId == ourClientId) {
@@ -352,8 +466,6 @@ public class Client : MonoBehaviour {
         GameObject.Find("LockAttacks").GetComponent<Button>().onClick.AddListener(ToggleAttacks);
       }
       GameObject.Find("QuitButton").GetComponent<Button>().onClick.AddListener(Quit);
-      GameObject.Find("PauseCanvas").GetComponent<Canvas>().enabled = false;
-      GameObject.Find("MenuCanvas").GetComponent<Canvas>().enabled = false;
       GameObject.Find("MyCanvas").transform.Find("HealthBar").GetComponent<Slider>().value = p.currentHealth;
       isStarted = true;
       Cursor.visible = false;
@@ -367,6 +479,8 @@ public class Client : MonoBehaviour {
     p.avatar.transform.Find("PlayerCanvas").GetComponentInChildren<Text>().text = playerName;
     p.avatar.transform.Find("PlayerCanvas").GetComponentInChildren<Slider>().value = p.currentHealth;
     players.Add(cnnId, p);
+    int[] myArgs = {p.connectionId, cnnId};
+    StartCoroutine("GetItemsForUser", myArgs);
   }
 
   private void PlayerDisconnected(int cnnId) {
@@ -483,6 +597,9 @@ public class Client : MonoBehaviour {
   public void TogglePause() {
     if (paused) {
       paused = false;
+      if (isDeveloper) {
+        GameObject.Find("DevCanvas(Clone)").GetComponent<Canvas>().enabled = true;
+      }
       GameObject.Find("PauseCanvas").GetComponent<Canvas>().enabled = false;
       GameObject.Find("MyCanvas").GetComponent<Canvas>().enabled = true;
       Cursor.visible = false;
@@ -491,6 +608,9 @@ public class Client : MonoBehaviour {
       UnlockMovement();
       UnlockAttacks();
     } else {
+      if (isDeveloper) {
+        GameObject.Find("DevCanvas(Clone)").GetComponent<Canvas>().enabled = false;
+      }
       paused = true;
       GameObject.Find("PauseCanvas").GetComponent<Canvas>().enabled = true;
       GameObject.Find("MyCanvas").GetComponent<Canvas>().enabled = false;
@@ -505,6 +625,9 @@ public class Client : MonoBehaviour {
   public void ToggleMenu() {
     if (inMenu) {
       inMenu = false;
+      if (isDeveloper) {
+        GameObject.Find("DevCanvas(Clone)").GetComponent<Canvas>().enabled = true;
+      }
       GameObject.Find("MenuCanvas").GetComponent<Canvas>().enabled = false;
       GameObject.Find("MyCanvas").GetComponent<Canvas>().enabled = true;
       Cursor.visible = false;
@@ -514,6 +637,9 @@ public class Client : MonoBehaviour {
       UnlockAttacks();
     } else {
       inMenu = true;
+      if (isDeveloper) {
+        GameObject.Find("DevCanvas(Clone)").GetComponent<Canvas>().enabled = false;
+      }
       GameObject.Find("MenuCanvas").GetComponent<Canvas>().enabled = true;
       GameObject.Find("MyCanvas").GetComponent<Canvas>().enabled = false;
       Cursor.visible = true;

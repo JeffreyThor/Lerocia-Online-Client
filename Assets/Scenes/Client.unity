@@ -231,6 +231,7 @@ MonoBehaviour:
   timeBetweenMovementStart: 0
   timeBetweenMovementEnd: 0
   paused: 0
+  inMenu: 0
 --- !u!4 &41972644
 Transform:
   m_ObjectHideFlags: 0
