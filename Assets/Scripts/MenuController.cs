@@ -6,17 +6,20 @@ using UnityEngine.UI;
 
 public class MenuController : MonoBehaviour {
   private Client client;
-  private Dictionary<string, List<GameObject>> itemDictionary;
-  private string currentCategory;
+  private Dictionary<GameObject, List<GameObject>> itemDictionary;
+  private GameObject currentCategory;
   private float scrollDelay;
   private float lastScrollTime;
+  private int currentCategoryIndex;
+  private int currentItemIndex;
 
   // Use this for initialization
   void Start() {
     client = GameObject.Find("Client").GetComponent<Client>();
-    itemDictionary = new Dictionary<string, List<GameObject>>();
     scrollDelay = 0.25f;
     lastScrollTime = 0;
+    currentCategoryIndex = 0;
+    currentItemIndex = 0;
   }
 
   // Update is called once per frame
@@ -33,6 +36,9 @@ public class MenuController : MonoBehaviour {
   }
 
   public void OpenMenu() {
+    // Initialize dictionary of all items with key->value being category->items
+    itemDictionary = new Dictionary<GameObject, List<GameObject>>();
+
     // Initialize categories for each item in inventory
     List<string> distinctCategories = new List<string>();
     foreach (Item item in client.players[client.ourClientId].inventory) {
@@ -58,10 +64,7 @@ public class MenuController : MonoBehaviour {
     // Initialize list of item GameObject's, create Text objects for each item, and separate them into lists by category
     foreach (GameObject category in categoryList) {
       nextPosition = Vector3.zero;
-      Debug.Log("Adding first item to list (category): " + category.GetComponent<Text>().text);
-      itemDictionary[category.GetComponent<Text>().text] = new List<GameObject>();
-      List<GameObject> itemList = itemDictionary[category.GetComponent<Text>().text];
-      itemList.Add(category);
+      itemDictionary[category] = new List<GameObject>();
       foreach (Item item in client.players[client.ourClientId].inventory) {
         if (item.GetType().Name == category.GetComponent<Text>().text) {
           GameObject itemText = Instantiate(Resources.Load("Item Text")) as GameObject;
@@ -70,23 +73,19 @@ public class MenuController : MonoBehaviour {
           itemText.transform.SetParent(transform.Find("Items Selector Panel"));
           itemText.transform.localPosition = nextPosition;
           nextPosition = new Vector3(0, nextPosition.y - itemText.GetComponent<RectTransform>().rect.height, 0);
-          Debug.Log("Adding item to list: " + itemText.GetComponent<Text>().text);
-          itemList.Add(itemText);
+          itemDictionary[category].Add(itemText);
         }
       }
     }
 
-    foreach (var contents in itemDictionary.Keys) {
-      foreach (var listMember in itemDictionary[contents]) {
-        Debug.Log("Key: " + contents + " member: " + listMember.GetComponent<Text>().text);
-      }
-    }
-
     SetCurrentCategory();
+    DisableAllItems();
+    UpdateItemList();
   }
 
   public void CloseMenu() {
-    foreach (KeyValuePair<string, List<GameObject>> kvp in itemDictionary) {
+    foreach (KeyValuePair<GameObject, List<GameObject>> kvp in itemDictionary) {
+      Destroy(kvp.Key);
       foreach (GameObject go in kvp.Value) {
         Destroy(go);
       }
@@ -96,20 +95,26 @@ public class MenuController : MonoBehaviour {
   }
 
   private void MoveUp() {
-    Move(-1);
+    if (currentCategoryIndex > 0) {
+      currentCategoryIndex--;
+      Move(-1);
+    }
   }
 
   private void MoveDown() {
-    Move(1);
+    if (currentCategoryIndex < itemDictionary.Count - 1) {
+      currentCategoryIndex++;
+      Move(1);
+    }
   }
 
   private void Move(int directionMultiplier) {
     lastScrollTime = Time.time;
 
     // Move all text upwards
-    foreach (List<GameObject> list in itemDictionary.Values) {
-      list[0].transform.localPosition = new Vector3(0,
-        list[0].transform.localPosition.y + list[0].GetComponent<RectTransform>().rect.height * directionMultiplier,
+    foreach (GameObject category in itemDictionary.Keys) {
+      category.transform.localPosition = new Vector3(0,
+        category.transform.localPosition.y + category.GetComponent<RectTransform>().rect.height * directionMultiplier,
         0);
     }
 
@@ -120,29 +125,32 @@ public class MenuController : MonoBehaviour {
   private void UpdateItemList() {
     // hide items for old category
     foreach (GameObject item in itemDictionary[currentCategory]) {
-      Debug.Log("Disabling " + item.GetComponent<Text>().text);
       item.GetComponent<Text>().enabled = false;
     }
-
+    
     // switch category to current selected category
     SetCurrentCategory();
-
+    
     // show items for new category
     foreach (GameObject item in itemDictionary[currentCategory]) {
-      Debug.Log("Enabling " + item.GetComponent<Text>().text);
       item.GetComponent<Text>().enabled = true;
     }
   }
 
   private void SetCurrentCategory() {
     // Set category based on height in list (in line with selector)
-    foreach (List<GameObject> list in itemDictionary.Values) {
-      if (list[0].transform.localPosition.y == 0) {
-        Debug.Log("Setting category to " + list[0].GetComponent<Text>().text);
-        currentCategory = list[0].GetComponent<Text>().text;
+    foreach (GameObject category in itemDictionary.Keys) {
+      if (category.transform.localPosition.y == 0) {
+        currentCategory = category;
       }
     }
+  }
 
-    Debug.Log("New current category is " + currentCategory);
+  private void DisableAllItems() {
+    foreach (List<GameObject> items in itemDictionary.Values) {
+      foreach (GameObject item in items) {
+        item.GetComponent<Text>().enabled = false;
+      }
+    }
   }
 }
