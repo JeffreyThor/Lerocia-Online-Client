@@ -7,9 +7,9 @@ using UnityEngine.UI;
 public class MenuController : MonoBehaviour {
   private Client client;
   private Dictionary<GameObject, List<GameObject>> itemDictionary;
+  private GameObject currentCategory;
   private float scrollDelay;
   private float lastScrollTime;
-  private List<GameObject> currentList;
 
   // Use this for initialization
   void Start() {
@@ -68,7 +68,6 @@ public class MenuController : MonoBehaviour {
           itemText.transform.SetParent(transform.Find("Items Selector Panel"));
           itemText.transform.localPosition = nextPosition;
           nextPosition = new Vector3(0, nextPosition.y - itemText.GetComponent<RectTransform>().rect.height, 0);
-          Debug.Log("Adding " + item.getName() + " to " + item.GetType().Name + " list.");
           itemList.Add(itemText);
         }
       }
@@ -76,6 +75,9 @@ public class MenuController : MonoBehaviour {
       // Add list for category to dictionary
       itemDictionary.Add(category, itemList);
     }
+
+    SetCurrentCategory();
+    UpdateItemList();
   }
 
   public void CloseMenu() {
@@ -90,10 +92,50 @@ public class MenuController : MonoBehaviour {
   }
 
   private void MoveUp() {
-    lastScrollTime = Time.time;
+    Move(-1);
   }
 
   private void MoveDown() {
+    Move(1);
+  }
+
+  private void Move(int directionMultiplier) {
     lastScrollTime = Time.time;
+    
+    // Move all text upwards
+    foreach (GameObject category in itemDictionary.Keys) {
+      category.transform.localPosition = new Vector3(0, category.transform.localPosition.y + category.GetComponent<RectTransform>().rect.height * directionMultiplier, 0);
+    }
+    
+    // Update which item list based on new category
+    UpdateItemList();
+  }
+
+  private void UpdateItemList() {
+    // hide items for old category
+    foreach (GameObject item in itemDictionary[currentCategory]) {
+      Debug.Log("Disabling " + item.GetComponent<Text>().text);
+      item.GetComponent<Text>().enabled = false;
+    }
+    
+    // switch category to current selected category
+    SetCurrentCategory();
+    
+    // show items for new category
+    foreach (GameObject item in itemDictionary[currentCategory]) {
+      Debug.Log("Enabling " + item.GetComponent<Text>().text);
+      item.GetComponent<Text>().enabled = true;
+    }
+  }
+
+  private void SetCurrentCategory() {
+    // Set category based on height in list (in line with selector)
+    foreach (GameObject category in itemDictionary.Keys) {
+      if (category.transform.localPosition.y == 0) {
+        Debug.Log("Setting category to " + category.GetComponent<Text>().text);
+        currentCategory = category;
+      }
+    }
+    Debug.Log("New current category is " + currentCategory.GetComponent<Text>().text);
   }
 }
