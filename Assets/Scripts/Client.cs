@@ -86,13 +86,13 @@ public class DatabaseItem {
 }
 
 public class Potion : Item {
-  private string effect;
+  private string description;
 
-  public Potion(string name, int weight, int value, string effect) {
+  public Potion(string name, int weight, int value, string description) {
     this.name = name;
     this.weight = weight;
     this.value = value;
-    this.effect = effect;
+    this.description = description;
   }
 }
 
@@ -105,6 +105,10 @@ public class Weapon : Item {
     this.value = value;
     this.damage = damage;
   }
+
+  public int getDamage() {
+    return damage;
+  }
 }
 
 public class Apparel : Item {
@@ -115,6 +119,10 @@ public class Apparel : Item {
     this.weight = weight;
     this.value = value;
     this.armor = armor;
+  }
+
+  public int getArmor() {
+    return armor;
   }
 }
 
@@ -160,7 +168,7 @@ public class Client : MonoBehaviour {
       "some health potion",
       1,
       10,
-      "health"
+      "heals some amount"
     ),
     new Weapon(
       "some sword weapon",

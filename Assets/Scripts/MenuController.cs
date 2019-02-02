@@ -204,11 +204,33 @@ public class MenuController : MonoBehaviour {
     name.transform.SetParent(panel.transform, false);
     name.GetComponent<Text>().text = item.getName();
     
-    GameObject stat = Instantiate(itemStatPrefab);
-    stat.transform.SetParent(panel.transform, false);
+    GameObject weightStat = Instantiate(itemStatPrefab);
+    weightStat.transform.SetParent(panel.transform, false);
+    weightStat.transform.Find("Title").GetComponent<Text>().text = "Weight";
+    weightStat.transform.Find("Value").GetComponent<Text>().text = item.getWeight().ToString();
     
-    GameObject description = Instantiate(itemDescriptionPrefab);
-    description.transform.SetParent(panel.transform, false);
+    GameObject valueStat = Instantiate(itemStatPrefab);
+    valueStat.transform.SetParent(panel.transform, false);
+    weightStat.transform.Find("Title").GetComponent<Text>().text = "Value";
+    valueStat.transform.Find("Value").GetComponent<Text>().text = item.getValue().ToString();
+
+    switch (item.GetType().Name) {
+      case "Weapon":
+        GameObject damageStat = Instantiate(itemStatPrefab);
+        damageStat.transform.SetParent(panel.transform, false);
+        //TODO Set damage stat text to items damage
+        break;
+      case "Apparel":
+        GameObject armorStat = Instantiate(itemStatPrefab);
+        armorStat.transform.SetParent(panel.transform, false);
+        //TODO Set armor stat text to items armor
+        break;
+      case "Potion":
+        GameObject descriptionStat = Instantiate(itemDescriptionPrefab);
+        descriptionStat.transform.SetParent(panel.transform, false);
+        //TODO Set description stat text to items description
+        break;
+    }
   }
 
   private void DestroyItemView() {
