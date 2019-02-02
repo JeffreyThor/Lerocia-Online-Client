@@ -191,9 +191,6 @@ public class MenuController : MonoBehaviour {
   private void UpdateItemView() {
     DestroyItemView();
     CreateItemView();
-//    Item item = GetCurrentSelectedItem();
-//    transform.Find("Item Panel").transform.Find("Item Name").GetComponent<Text>().text = item.getName();
-//    transform.Find("Item Panel").transform.Find("Item Description").GetComponent<Text>().text = "Weight: " + item.getWeight();
   }
 
   private void CreateItemView() {
@@ -201,17 +198,17 @@ public class MenuController : MonoBehaviour {
     GameObject panel = transform.Find("Item Panel").gameObject;
 
     GameObject image = Instantiate(itemImagePrefab);
-    image.transform.SetParent(panel.transform);
+    image.transform.SetParent(panel.transform, false);
 
     GameObject name = Instantiate(itemNamePrefab);
-    name.transform.SetParent(panel.transform);
+    name.transform.SetParent(panel.transform, false);
     name.GetComponent<Text>().text = item.getName();
-
+    
     GameObject stat = Instantiate(itemStatPrefab);
-    stat.transform.SetParent(panel.transform);
-
+    stat.transform.SetParent(panel.transform, false);
+    
     GameObject description = Instantiate(itemDescriptionPrefab);
-    description.transform.SetParent(panel.transform);
+    description.transform.SetParent(panel.transform, false);
   }
 
   private void DestroyItemView() {
