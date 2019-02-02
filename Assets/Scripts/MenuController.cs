@@ -150,6 +150,7 @@ public class MenuController : MonoBehaviour {
   private void MoveRight() {
     if (!isItemView) {
       ToggleItemView(true);
+      UpdateItemView();
     }
   }
 
@@ -182,6 +183,18 @@ public class MenuController : MonoBehaviour {
 
   private void UpdateItemView() {
     //TODO Update item view based on current selected item
+    GameObject item = GetCurrentSelectedItem();
+    transform.Find("Item Panel").transform.Find("Item Name").GetComponent<Text>().text = item.GetComponent<Text>().text;
+  }
+
+  private GameObject GetCurrentSelectedItem() {
+    foreach (GameObject item in itemDictionary[currentCategory]) {
+      if (item.transform.localPosition.y == 0) {
+        return item;
+      }
+    }
+
+    return null;
   }
 
   private void SetCurrentCategory() {
