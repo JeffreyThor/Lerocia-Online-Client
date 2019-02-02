@@ -63,7 +63,6 @@ public class Player {
 
 public class Item {
   protected string name;
-  protected string category;
   protected int weight;
   protected int value;
 
@@ -81,9 +80,8 @@ public class DatabaseItem {
 public class Potion : Item {
   private string effect;
 
-  public Potion(string name, string category, int weight, int value, string effect) {
+  public Potion(string name, int weight, int value, string effect) {
     this.name = name;
-    this.category = category;
     this.weight = weight;
     this.value = value;
     this.effect = effect;
@@ -93,9 +91,8 @@ public class Potion : Item {
 public class Weapon : Item {
   private int damage;
 
-  public Weapon(string name, string category, int weight, int value, int damage) {
+  public Weapon(string name, int weight, int value, int damage) {
     this.name = name;
-    this.category = category;
     this.weight = weight;
     this.value = value;
     this.damage = damage;
@@ -105,9 +102,8 @@ public class Weapon : Item {
 public class Apparel : Item {
   private int armor;
 
-  public Apparel(string name, string category, int weight, int value, int armor) {
+  public Apparel(string name, int weight, int value, int armor) {
     this.name = name;
-    this.category = category;
     this.weight = weight;
     this.value = value;
     this.armor = armor;
@@ -153,21 +149,18 @@ public class Client : MonoBehaviour {
   public List<Item> items = new List<Item> {
     new Potion(
       "some health potion",
-      "Potion",
       1,
       10,
       "health"
     ),
     new Weapon(
       "some sword weapon",
-      "Weapon",
       1,
       50,
       5
     ),
     new Apparel(
       "some helmet apparel",
-      "Apparel",
       1,
       10,
       10

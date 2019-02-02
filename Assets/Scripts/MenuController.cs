@@ -11,7 +11,8 @@ public class MenuController : MonoBehaviour {
   private float scrollDelay;
   private float lastScrollTime;
   private int currentCategoryIndex;
-  private int currentItemIndex;
+  private List<int> currentItemIndexes;
+  private bool isItemView;
 
   // Use this for initialization
   void Start() {
@@ -19,7 +20,7 @@ public class MenuController : MonoBehaviour {
     scrollDelay = 0.25f;
     lastScrollTime = 0;
     currentCategoryIndex = 0;
-    currentItemIndex = 0;
+    isItemView = false;
   }
 
   // Update is called once per frame
@@ -31,13 +32,19 @@ public class MenuController : MonoBehaviour {
         MoveDown();
       }
 
-      if (Input.GetAxis("Horizontal") > 0) { } else if (Input.GetAxis("Horizontal") < 0) { }
+      if (Input.GetAxis("Horizontal") > 0) {
+        MoveRight();
+      } else if (Input.GetAxis("Horizontal") < 0) {
+        MoveLeft();
+      }
     }
   }
 
   public void OpenMenu() {
     // Initialize dictionary of all items with key->value being category->items
     itemDictionary = new Dictionary<GameObject, List<GameObject>>();
+    
+    currentItemIndexes = new List<int>();
 
     // Initialize categories for each item in inventory
     List<string> distinctCategories = new List<string>();
@@ -59,6 +66,7 @@ public class MenuController : MonoBehaviour {
       categoryText.transform.localPosition = nextPosition;
       nextPosition = new Vector3(0, nextPosition.y - categoryText.GetComponent<RectTransform>().rect.height, 0);
       categoryList.Add(categoryText);
+      currentItemIndexes.Add(0);
     }
 
     // Initialize list of item GameObject's, create Text objects for each item, and separate them into lists by category
@@ -81,45 +89,79 @@ public class MenuController : MonoBehaviour {
     SetCurrentCategory();
     DisableAllItems();
     UpdateItemList();
+    ToggleItemView(false);
   }
 
   public void CloseMenu() {
-    foreach (KeyValuePair<GameObject, List<GameObject>> kvp in itemDictionary) {
-      Destroy(kvp.Key);
-      foreach (GameObject go in kvp.Value) {
+    foreach (KeyValuePair<GameObject, List<GameObject>> entry in itemDictionary) {
+      Destroy(entry.Key);
+      foreach (GameObject go in entry.Value) {
         Destroy(go);
       }
     }
 
     itemDictionary.Clear();
+    currentItemIndexes.Clear();
   }
 
   private void MoveUp() {
-    if (currentCategoryIndex > 0) {
-      currentCategoryIndex--;
-      Move(-1);
+    if (!isItemView && currentCategoryIndex > 0) {
+      MoveVertical(-1);
+    } else if (isItemView && currentItemIndexes[currentCategoryIndex] > 0) {
+      MoveVertical(-1);
     }
   }
 
   private void MoveDown() {
-    if (currentCategoryIndex < itemDictionary.Count - 1) {
-      currentCategoryIndex++;
-      Move(1);
+    if (!isItemView && currentCategoryIndex < itemDictionary.Count - 1) {
+      MoveVertical(1);
+    } else if (isItemView && currentItemIndexes[currentCategoryIndex] < itemDictionary[currentCategory].Count - 1) {
+      MoveVertical(1);
     }
   }
 
-  private void Move(int directionMultiplier) {
+  private void MoveVertical(int directionMultiplier) {
     lastScrollTime = Time.time;
 
-    // Move all text upwards
-    foreach (GameObject category in itemDictionary.Keys) {
-      category.transform.localPosition = new Vector3(0,
-        category.transform.localPosition.y + category.GetComponent<RectTransform>().rect.height * directionMultiplier,
-        0);
-    }
+    if (isItemView) {
+      currentItemIndexes[currentCategoryIndex] += directionMultiplier;
+      foreach (GameObject item in itemDictionary[currentCategory]) {
+        item.transform.localPosition = new Vector3(0,
+          item.transform.localPosition.y + item.GetComponent<RectTransform>().rect.height * directionMultiplier,
+          0);
+      }
 
-    // Update which item list based on new category
-    UpdateItemList();
+      UpdateItemView();
+    } else {
+      currentCategoryIndex += directionMultiplier;
+      // Move all text upwards
+      foreach (GameObject category in itemDictionary.Keys) {
+        category.transform.localPosition = new Vector3(0,
+          category.transform.localPosition.y + category.GetComponent<RectTransform>().rect.height * directionMultiplier,
+          0);
+      }
+
+      // Update which item list based on new category
+      UpdateItemList();
+    }
+  }
+
+  private void MoveRight() {
+    if (!isItemView) {
+      ToggleItemView(true);
+    }
+  }
+
+  private void MoveLeft() {
+    if (isItemView) {
+      ToggleItemView(false);
+    }
+  }
+
+  private void ToggleItemView(bool visible) {
+    isItemView = visible;
+    transform.Find("Items Selector Panel").gameObject.SetActive(visible);
+    transform.Find("Item Panel").gameObject.SetActive(visible);
   }
 
   private void UpdateItemList() {
@@ -135,6 +177,10 @@ public class MenuController : MonoBehaviour {
     foreach (GameObject item in itemDictionary[currentCategory]) {
       item.GetComponent<Text>().enabled = true;
     }
+  }
+
+  private void UpdateItemView() {
+    //TODO Update item view based on current selected item
   }
 
   private void SetCurrentCategory() {
