@@ -5,6 +5,12 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class MenuController : MonoBehaviour {
+  public GameObject categoryTextPrefab;
+  public GameObject itemTextPrefab;
+  public GameObject itemImagePrefab;
+  public GameObject itemNamePrefab;
+  public GameObject itemStatPrefab;
+  public GameObject itemDescriptionPrefab;
   private Client client;
   private Dictionary<GameObject, List<GameObject>> itemDictionary;
   private GameObject currentCategory;
@@ -48,8 +54,8 @@ public class MenuController : MonoBehaviour {
 
     // Initialize categories for each item in inventory
     List<string> distinctCategories = new List<string>();
-    foreach (Item item in client.players[client.ourClientId].inventory) {
-      distinctCategories.Add(item.GetType().Name);
+    foreach (int item_id in client.players[client.ourClientId].inventory) {
+      distinctCategories.Add(client.items[item_id].GetType().Name);
     }
 
     // Remove all duplicate categories from list
@@ -59,7 +65,7 @@ public class MenuController : MonoBehaviour {
     List<GameObject> categoryList = new List<GameObject>();
     Vector3 nextPosition = Vector3.zero;
     foreach (string category in distinctCategories) {
-      GameObject categoryText = Instantiate(Resources.Load("Category Text")) as GameObject;
+      GameObject categoryText = Instantiate(categoryTextPrefab);
       categoryText.name = category;
       categoryText.GetComponent<Text>().text = category;
       categoryText.transform.SetParent(transform.Find("Categories Selector Panel"));
@@ -73,14 +79,15 @@ public class MenuController : MonoBehaviour {
     foreach (GameObject category in categoryList) {
       nextPosition = Vector3.zero;
       itemDictionary[category] = new List<GameObject>();
-      foreach (Item item in client.players[client.ourClientId].inventory) {
-        if (item.GetType().Name == category.GetComponent<Text>().text) {
-          GameObject itemText = Instantiate(Resources.Load("Item Text")) as GameObject;
-          itemText.name = item.getName();
-          itemText.GetComponent<Text>().text = item.getName();
+      foreach (int item_id in client.players[client.ourClientId].inventory) {
+        if (client.items[item_id].GetType().Name == category.GetComponent<Text>().text) {
+          GameObject itemText = Instantiate(itemTextPrefab);
+          itemText.name = client.items[item_id].getName();
+          itemText.GetComponent<Text>().text = client.items[item_id].getName();
           itemText.transform.SetParent(transform.Find("Items Selector Panel"));
           itemText.transform.localPosition = nextPosition;
           nextPosition = new Vector3(0, nextPosition.y - itemText.GetComponent<RectTransform>().rect.height, 0);
+          itemText.GetComponent<ItemTextController>().id = item_id;
           itemDictionary[category].Add(itemText);
         }
       }
@@ -182,15 +189,42 @@ public class MenuController : MonoBehaviour {
   }
 
   private void UpdateItemView() {
-    //TODO Update item view based on current selected item
-    GameObject item = GetCurrentSelectedItem();
-    transform.Find("Item Panel").transform.Find("Item Name").GetComponent<Text>().text = item.GetComponent<Text>().text;
+    DestroyItemView();
+    CreateItemView();
+//    Item item = GetCurrentSelectedItem();
+//    transform.Find("Item Panel").transform.Find("Item Name").GetComponent<Text>().text = item.getName();
+//    transform.Find("Item Panel").transform.Find("Item Description").GetComponent<Text>().text = "Weight: " + item.getWeight();
   }
 
-  private GameObject GetCurrentSelectedItem() {
+  private void CreateItemView() {
+    Item item = GetCurrentSelectedItem();
+    GameObject panel = transform.Find("Item Panel").gameObject;
+
+    GameObject image = Instantiate(itemImagePrefab);
+    image.transform.SetParent(panel.transform);
+
+    GameObject name = Instantiate(itemNamePrefab);
+    name.transform.SetParent(panel.transform);
+    name.GetComponent<Text>().text = item.getName();
+
+    GameObject stat = Instantiate(itemStatPrefab);
+    stat.transform.SetParent(panel.transform);
+
+    GameObject description = Instantiate(itemDescriptionPrefab);
+    description.transform.SetParent(panel.transform);
+  }
+
+  private void DestroyItemView() {
+    Transform panel = transform.Find("Item Panel");
+    foreach (Transform child in panel) {
+      Destroy(child.gameObject);
+    }
+  }
+
+  private Item GetCurrentSelectedItem() {
     foreach (GameObject item in itemDictionary[currentCategory]) {
       if (item.transform.localPosition.y == 0) {
-        return item;
+        return client.items[item.GetComponent<ItemTextController>().id];
       }
     }
 

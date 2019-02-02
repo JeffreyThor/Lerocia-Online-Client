@@ -9,18 +9,19 @@ Prefab:
     m_Modifications: []
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 0}
-  m_RootGameObject: {fileID: 1562930139256456}
+  m_RootGameObject: {fileID: 1298342424190882}
   m_IsPrefabAsset: 1
---- !u!1 &1562930139256456
+--- !u!1 &1298342424190882
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 224047552348222468}
-  - component: {fileID: 222368948353959496}
-  - component: {fileID: 114008767899730948}
+  - component: {fileID: 224407710666116512}
+  - component: {fileID: 222665782119368700}
+  - component: {fileID: 114869908034948076}
+  - component: {fileID: 114580647820039380}
   m_Layer: 5
   m_Name: Item Text
   m_TagString: Untagged
@@ -28,12 +29,24 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &114008767899730948
+--- !u!114 &114580647820039380
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1562930139256456}
+  m_GameObject: {fileID: 1298342424190882}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2318cfa1c4b2140ea885fc7204460ea2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: 0
+--- !u!114 &114869908034948076
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1298342424190882}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 708705254, guid: f70555f144d8491a825f0804e09c671c, type: 3}
@@ -61,19 +74,19 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: My Item
---- !u!222 &222368948353959496
+--- !u!222 &222665782119368700
 CanvasRenderer:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1562930139256456}
+  m_GameObject: {fileID: 1298342424190882}
   m_CullTransparentMesh: 0
---- !u!224 &224047552348222468
+--- !u!224 &224407710666116512
 RectTransform:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1562930139256456}
+  m_GameObject: {fileID: 1298342424190882}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}

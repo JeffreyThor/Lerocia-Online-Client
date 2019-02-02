@@ -58,7 +58,7 @@ public class Player {
   public int maxHealth;
   public int currentHealth;
 
-  public List<Item> inventory;
+  public List<int> inventory;
 }
 
 public class Item {
@@ -68,6 +68,14 @@ public class Item {
 
   public string getName() {
     return name;
+  }
+
+  public int getWeight() {
+    return weight;
+  }
+
+  public int getValue() {
+    return value;
   }
 }
 
@@ -142,6 +150,7 @@ public class Client : MonoBehaviour {
 
   private Text errorText;
   private bool isDeveloper = false;
+  public GameObject devCanvasPrefab;
 
   public bool paused = false;
   public bool inMenu = false;
@@ -155,13 +164,13 @@ public class Client : MonoBehaviour {
     ),
     new Weapon(
       "some sword weapon",
-      1,
+      10,
       50,
       5
     ),
     new Apparel(
       "some helmet apparel",
-      1,
+      5,
       10,
       10
     )
@@ -218,7 +227,7 @@ public class Client : MonoBehaviour {
       DatabaseItem[] dbi = JsonHelper.FromJson<DatabaseItem>(jsonString);
       foreach (DatabaseItem it in dbi) {
         for (int i = 0; i < it.amount; i++) {
-          players[ids[1]].inventory.Add(items[it.item_id]);
+          players[ids[1]].inventory.Add(it.item_id);
         }
       }
     } else {
@@ -420,7 +429,7 @@ public class Client : MonoBehaviour {
   }
 
   private void SpawnPlayer(string playerName, int cnnId) {
-    GameObject go = Instantiate(Resources.Load("Player")) as GameObject;
+    GameObject go = Instantiate(playerPrefab);
     Player p = new Player();
     go.name = playerName;
     go.GetComponent<PlayerController>().id = cnnId;
@@ -429,7 +438,7 @@ public class Client : MonoBehaviour {
     p.connectionId = playerId;
     p.maxHealth = 100;
     p.currentHealth = p.maxHealth;
-    p.inventory = new List<Item>();
+    p.inventory = new List<int>();
 
     // Is this ours?
     if (cnnId == ourClientId) {
@@ -446,7 +455,7 @@ public class Client : MonoBehaviour {
       obj.transform.parent = go.transform;
       GameObject.Find("Canvas").SetActive(false);
       if (isDeveloper) {
-        Instantiate(Resources.Load("DevCanvas"));
+        Instantiate(devCanvasPrefab);
         GameObject.Find("LockCamera").GetComponent<Button>().onClick.AddListener(ToggleCamera);
         GameObject.Find("LockMovement").GetComponent<Button>().onClick.AddListener(ToggleMovement);
         GameObject.Find("LockAttacks").GetComponent<Button>().onClick.AddListener(ToggleAttacks);
