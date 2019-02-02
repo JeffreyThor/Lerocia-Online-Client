@@ -102,6 +102,7 @@ public class MenuController : MonoBehaviour {
 
     itemDictionary.Clear();
     currentItemIndexes.Clear();
+    currentCategoryIndex = 0;
   }
 
   private void MoveUp() {
