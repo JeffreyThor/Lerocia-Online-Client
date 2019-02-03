@@ -68,7 +68,7 @@ public class MenuController : MonoBehaviour {
       GameObject categoryText = Instantiate(categoryTextPrefab);
       categoryText.name = category;
       categoryText.GetComponent<Text>().text = category;
-      categoryText.transform.SetParent(transform.Find("Categories Selector Panel"));
+      categoryText.transform.SetParent(transform.Find("Categories Selector Panel"), false);
       categoryText.transform.localPosition = nextPosition;
       nextPosition = new Vector3(0, nextPosition.y - categoryText.GetComponent<RectTransform>().rect.height, 0);
       categoryList.Add(categoryText);
@@ -84,7 +84,7 @@ public class MenuController : MonoBehaviour {
           GameObject itemText = Instantiate(itemTextPrefab);
           itemText.name = client.items[item_id].getName();
           itemText.GetComponent<Text>().text = client.items[item_id].getName();
-          itemText.transform.SetParent(transform.Find("Items Selector Panel"));
+          itemText.transform.SetParent(transform.Find("Items Selector Panel"), false);
           itemText.transform.localPosition = nextPosition;
           nextPosition = new Vector3(0, nextPosition.y - itemText.GetComponent<RectTransform>().rect.height, 0);
           itemText.GetComponent<ItemTextController>().id = item_id;
