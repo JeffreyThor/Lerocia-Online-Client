@@ -31,7 +31,7 @@ public class MenuController : MonoBehaviour {
 
   // Update is called once per frame
   void Update() {
-    if (client.inMenu && Time.time - lastScrollTime > scrollDelay) {
+    if (client.inMenu && Time.time - lastScrollTime > scrollDelay && client.players[client.ourClientId].inventory.Count > 0) {
       if (Input.GetAxis("Vertical") > 0) {
         MoveUp();
       } else if (Input.GetAxis("Vertical") < 0) {
@@ -174,6 +174,11 @@ public class MenuController : MonoBehaviour {
   }
 
   private void UpdateItemList() {
+    // Check if the users inventory is empty
+    if (itemDictionary.Count == 0) {
+      return;
+    }
+
     // hide items for old category
     foreach (GameObject item in itemDictionary[currentCategory]) {
       item.GetComponent<Text>().enabled = false;
