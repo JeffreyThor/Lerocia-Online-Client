@@ -194,6 +194,7 @@ public class MenuController : MonoBehaviour {
   }
 
   private void CreateItemView() {
+    List<GameObject> statList = new List<GameObject>();
     Item item = GetCurrentSelectedItem();
     GameObject panel = transform.Find("Item Panel").gameObject;
 
@@ -208,28 +209,47 @@ public class MenuController : MonoBehaviour {
     weightStat.transform.SetParent(panel.transform, false);
     weightStat.transform.Find("Title").GetComponent<Text>().text = "Weight";
     weightStat.transform.Find("Value").GetComponent<Text>().text = item.getWeight().ToString();
+    statList.Add(weightStat);
     
     GameObject valueStat = Instantiate(itemStatPrefab);
     valueStat.transform.SetParent(panel.transform, false);
     weightStat.transform.Find("Title").GetComponent<Text>().text = "Value";
     valueStat.transform.Find("Value").GetComponent<Text>().text = item.getValue().ToString();
+    statList.Add(valueStat);
 
+    // Get specific item type and update item view accordingly
     switch (item.GetType().Name) {
       case "Weapon":
+        Weapon weapon = item as Weapon;
         GameObject damageStat = Instantiate(itemStatPrefab);
         damageStat.transform.SetParent(panel.transform, false);
-        //TODO Set damage stat text to items damage
+        damageStat.transform.Find("Title").GetComponent<Text>().text = "Damage";
+        damageStat.transform.Find("Value").GetComponent<Text>().text = weapon.getDamage().ToString();
+        statList.Add(damageStat);
         break;
       case "Apparel":
+        Apparel apparel = item as Apparel;
         GameObject armorStat = Instantiate(itemStatPrefab);
         armorStat.transform.SetParent(panel.transform, false);
-        //TODO Set armor stat text to items armor
+        armorStat.transform.Find("Title").GetComponent<Text>().text = "Armor";
+        armorStat.transform.Find("Value").GetComponent<Text>().text = apparel.getArmor().ToString();
+        statList.Add(armorStat);
         break;
       case "Potion":
-        GameObject descriptionStat = Instantiate(itemDescriptionPrefab);
-        descriptionStat.transform.SetParent(panel.transform, false);
-        //TODO Set description stat text to items description
+        Potion potion = item as Potion;
+        GameObject description = Instantiate(itemDescriptionPrefab);
+        description.transform.SetParent(panel.transform, false);
+        description.GetComponent<Text>().text = potion.getDescription();
         break;
+    }
+
+    // Set x position of each stat in the item view based on the number of stats to display
+    int counter = 1;
+    foreach (GameObject stat in statList) {
+      float width = stat.GetComponent<RectTransform>().rect.width;
+      float offset = counter - (float)(statList.Count + 1) / 2;
+      stat.transform.localPosition = new Vector3(width * offset, 0, 0);
+      counter++;
     }
   }
 

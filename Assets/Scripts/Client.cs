@@ -94,6 +94,10 @@ public class Potion : Item {
     this.value = value;
     this.description = description;
   }
+
+  public string getDescription() {
+    return description;
+  }
 }
 
 public class Weapon : Item {
