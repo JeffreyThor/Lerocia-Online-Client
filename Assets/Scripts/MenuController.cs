@@ -55,7 +55,7 @@ public class MenuController : MonoBehaviour {
     // Initialize categories for each item in inventory
     List<string> distinctCategories = new List<string>();
     foreach (int item_id in client.players[client.ourClientId].inventory) {
-      distinctCategories.Add(client.items[item_id].GetType().Name);
+      distinctCategories.Add(client.items[item_id].getCategory());
     }
 
     // Remove all duplicate categories from list
@@ -80,7 +80,7 @@ public class MenuController : MonoBehaviour {
       nextPosition = Vector3.zero;
       itemDictionary[category] = new List<GameObject>();
       foreach (int item_id in client.players[client.ourClientId].inventory) {
-        if (client.items[item_id].GetType().Name == category.GetComponent<Text>().text) {
+        if (client.items[item_id].getCategory() == category.GetComponent<Text>().text) {
           GameObject itemText = Instantiate(itemTextPrefab);
           itemText.name = client.items[item_id].getName();
           itemText.GetComponent<Text>().text = client.items[item_id].getName();
@@ -203,49 +203,21 @@ public class MenuController : MonoBehaviour {
     Item item = GetCurrentSelectedItem();
     GameObject panel = transform.Find("Item Panel").gameObject;
 
-    GameObject image = Instantiate(itemImagePrefab);
-    image.transform.SetParent(panel.transform, false);
+    GameObject itemImage = Instantiate(itemImagePrefab);
+    itemImage.transform.SetParent(panel.transform, false);
+    //TODO set item image
 
-    GameObject name = Instantiate(itemNamePrefab);
-    name.transform.SetParent(panel.transform, false);
-    name.GetComponent<Text>().text = item.getName();
-    
-    GameObject weightStat = Instantiate(itemStatPrefab);
-    weightStat.transform.SetParent(panel.transform, false);
-    weightStat.transform.Find("Title").GetComponent<Text>().text = "Weight";
-    weightStat.transform.Find("Value").GetComponent<Text>().text = item.getWeight().ToString();
-    statList.Add(weightStat);
-    
-    GameObject valueStat = Instantiate(itemStatPrefab);
-    valueStat.transform.SetParent(panel.transform, false);
-    weightStat.transform.Find("Title").GetComponent<Text>().text = "Value";
-    valueStat.transform.Find("Value").GetComponent<Text>().text = item.getValue().ToString();
-    statList.Add(valueStat);
+    GameObject itemName = Instantiate(itemNamePrefab);
+    itemName.transform.SetParent(panel.transform, false);
+    itemName.GetComponent<Text>().text = item.getName();
 
-    // Get specific item type and update item view accordingly
-    switch (item.GetType().Name) {
-      case "Weapon":
-        Weapon weapon = item as Weapon;
-        GameObject damageStat = Instantiate(itemStatPrefab);
-        damageStat.transform.SetParent(panel.transform, false);
-        damageStat.transform.Find("Title").GetComponent<Text>().text = "Damage";
-        damageStat.transform.Find("Value").GetComponent<Text>().text = weapon.getDamage().ToString();
-        statList.Add(damageStat);
-        break;
-      case "Apparel":
-        Apparel apparel = item as Apparel;
-        GameObject armorStat = Instantiate(itemStatPrefab);
-        armorStat.transform.SetParent(panel.transform, false);
-        armorStat.transform.Find("Title").GetComponent<Text>().text = "Armor";
-        armorStat.transform.Find("Value").GetComponent<Text>().text = apparel.getArmor().ToString();
-        statList.Add(armorStat);
-        break;
-      case "Potion":
-        Potion potion = item as Potion;
-        GameObject description = Instantiate(itemDescriptionPrefab);
-        description.transform.SetParent(panel.transform, false);
-        description.GetComponent<Text>().text = potion.getDescription();
-        break;
+    // Create stat object in item view for each stat on this item
+    foreach (KeyValuePair<string, string> stat in item.getStats()) {
+      GameObject itemStat = Instantiate(itemStatPrefab);
+      itemStat.transform.SetParent(panel.transform, false);
+      itemStat.transform.Find("Title").GetComponent<Text>().text = stat.Key;
+      itemStat.transform.Find("Value").GetComponent<Text>().text = stat.Value;
+      statList.Add(itemStat);
     }
 
     // Set x position of each stat in the item view based on the number of stats to display
@@ -255,6 +227,13 @@ public class MenuController : MonoBehaviour {
       float offset = counter - (float)(statList.Count + 1) / 2;
       stat.transform.localPosition = new Vector3(width * offset, 0, 0);
       counter++;
+    }
+
+    // Only create a description text box if the item has a description
+    if (item.getDescription() != null) {
+      GameObject itemDescription = Instantiate(itemDescriptionPrefab);
+      itemDescription.transform.SetParent(panel.transform, false);
+      itemDescription.GetComponent<Text>().text = item.getDescription();
     }
   }
 

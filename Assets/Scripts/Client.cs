@@ -61,10 +61,30 @@ public class Player {
   public List<int> inventory;
 }
 
+[Serializable]
+public class DatabaseItem {
+  public int item_id;
+  public int amount;
+}
+
 public class Item {
-  protected string name;
-  protected int weight;
-  protected int value;
+  private string name;
+  private int weight;
+  private int value;
+  private string category;
+  private string description;
+  private List<KeyValuePair<string, string>> stats;
+
+  protected Item(string name, int weight, int value, string category) {
+    this.name = name;
+    this.weight = weight;
+    this.value = value;
+    this.category = category;
+    description = null;
+    stats = new List<KeyValuePair<string, string>>();
+    stats.Add(new KeyValuePair<string, string>("Weight", weight.ToString()));
+    stats.Add(new KeyValuePair<string, string>("Value", value.ToString()));
+  }
 
   public string getName() {
     return name;
@@ -77,37 +97,52 @@ public class Item {
   public int getValue() {
     return value;
   }
-}
 
-[Serializable]
-public class DatabaseItem {
-  public int item_id;
-  public int amount;
-}
-
-public class Potion : Item {
-  private string description;
-
-  public Potion(string name, int weight, int value, string description) {
-    this.name = name;
-    this.weight = weight;
-    this.value = value;
-    this.description = description;
+  public string getCategory() {
+    return category;
   }
 
   public string getDescription() {
     return description;
+  }
+
+  protected void setDescription(string description) {
+    this.description = description;
+  }
+
+  protected void addStat(string title, string value) {
+    stats.Add(new KeyValuePair<string, string>(title, value));
+  }
+
+  public List<KeyValuePair<string, string>> getStats() {
+    return stats;
+  }
+}
+
+public class Potion : Item {
+  protected Potion(string name, int weight, int value) : base(name, weight, value, "Potion"){ }
+}
+
+public class HealthPotion : Potion {
+  private int health;
+
+  public HealthPotion(string name, int weight, int value, int health) : base(name, weight, value) {
+    this.health = health;
+    setDescription("Heals by " + health + " points.");
+  }
+
+  public void consume(Player player) {
+    player.currentHealth += health;
+    //TODO Remove from players inventory
   }
 }
 
 public class Weapon : Item {
   private int damage;
 
-  public Weapon(string name, int weight, int value, int damage) {
-    this.name = name;
-    this.weight = weight;
-    this.value = value;
+  public Weapon(string name, int weight, int value, int damage) : base(name, weight, value, "Weapon"){
     this.damage = damage;
+    addStat("Damage", damage.ToString());
   }
 
   public int getDamage() {
@@ -118,11 +153,9 @@ public class Weapon : Item {
 public class Apparel : Item {
   private int armor;
 
-  public Apparel(string name, int weight, int value, int armor) {
-    this.name = name;
-    this.weight = weight;
-    this.value = value;
+  public Apparel(string name, int weight, int value, int armor) : base(name, weight, value, "Apparel") {
     this.armor = armor;
+    addStat("Armor", armor.ToString());
   }
 
   public int getArmor() {
@@ -168,11 +201,11 @@ public class Client : MonoBehaviour {
   public bool inMenu = false;
 
   public List<Item> items = new List<Item> {
-    new Potion(
-      "some health potion",
+    new HealthPotion(
+      "health potion",
       1,
       10,
-      "heals some amount"
+      50
     ),
     new Weapon(
       "some sword weapon",
