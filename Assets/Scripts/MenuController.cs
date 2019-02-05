@@ -11,6 +11,8 @@ public class MenuController : MonoBehaviour {
   public GameObject itemNamePrefab;
   public GameObject itemStatPrefab;
   public GameObject itemDescriptionPrefab;
+  public GameObject playerHealthBarPrefab;
+  public GameObject playerStatPrefab;
   private Client client;
   private Dictionary<GameObject, List<GameObject>> itemDictionary;
   private GameObject currentCategory;
@@ -190,6 +192,7 @@ public class MenuController : MonoBehaviour {
     isItemView = visible;
     transform.Find("Items Selector Panel").gameObject.SetActive(visible);
     transform.Find("Item Panel").gameObject.SetActive(visible);
+    transform.Find("Player Panel").gameObject.SetActive(visible);
   }
 
   private void UpdateItemList() {
@@ -254,11 +257,23 @@ public class MenuController : MonoBehaviour {
       itemDescription.transform.SetParent(panel.transform, false);
       itemDescription.GetComponent<Text>().text = item.getDescription();
     }
+    
+    List<GameObject> playerStatList = new List<GameObject>();
+    GameObject playerPanel = transform.Find("Player Panel").gameObject;
+
+    GameObject healthBar = Instantiate(playerHealthBarPrefab);
+    healthBar.transform.SetParent(playerPanel.transform, false);
+    healthBar.GetComponent<Slider>().value = client.players[client.ourClientId].currentHealth;
   }
 
   private void DestroyItemView() {
     Transform panel = transform.Find("Item Panel");
     foreach (Transform child in panel) {
+      Destroy(child.gameObject);
+    }
+
+    Transform playerPanel = transform.Find("Player Panel");
+    foreach (Transform child in playerPanel) {
       Destroy(child.gameObject);
     }
   }
