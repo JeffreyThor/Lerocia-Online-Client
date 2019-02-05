@@ -4,164 +4,6 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
-using System;
-using UnityEditor;
-
-public static class JsonHelper {
-  public static T[] FromJson<T>(string json) {
-    Wrapper<T> wrapper = JsonUtility.FromJson<Wrapper<T>>(json);
-    return wrapper.Items;
-  }
-
-  public static string ToJson<T>(T[] array) {
-    Wrapper<T> wrapper = new Wrapper<T>();
-    wrapper.Items = array;
-    return JsonUtility.ToJson(wrapper);
-  }
-
-  public static string ToJson<T>(T[] array, bool prettyPrint) {
-    Wrapper<T> wrapper = new Wrapper<T>();
-    wrapper.Items = array;
-    return JsonUtility.ToJson(wrapper, prettyPrint);
-  }
-
-  [Serializable]
-  private class Wrapper<T> {
-    public T[] Items;
-  }
-}
-
-[Serializable]
-public class User {
-  public bool success;
-  public string error;
-  public string username;
-
-  public int user_id;
-  // Add username, etc....
-}
-
-public class Player {
-  public string playerName;
-  public GameObject avatar;
-  public int connectionId;
-
-  public bool isLerpingPosition;
-  public bool isLerpingRotation;
-  public Vector3 realPosition;
-  public Quaternion realRotation;
-  public Vector3 lastRealPosition;
-  public Quaternion lastRealRotation;
-  public float timeStartedLerping;
-  public float timeToLerp;
-
-  public int maxHealth;
-  public int currentHealth;
-
-  public List<int> inventory;
-}
-
-[Serializable]
-public class DatabaseItem {
-  public int item_id;
-  public int amount;
-}
-
-public class Item {
-  private string name;
-  private int weight;
-  private int value;
-  private string category;
-  private string description;
-  private List<KeyValuePair<string, string>> stats;
-
-  protected Item(string name, int weight, int value, string category) {
-    this.name = name;
-    this.weight = weight;
-    this.value = value;
-    this.category = category;
-    description = null;
-    stats = new List<KeyValuePair<string, string>>();
-    stats.Add(new KeyValuePair<string, string>("Weight", weight.ToString()));
-    stats.Add(new KeyValuePair<string, string>("Value", value.ToString()));
-  }
-
-  public string getName() {
-    return name;
-  }
-
-  public int getWeight() {
-    return weight;
-  }
-
-  public int getValue() {
-    return value;
-  }
-
-  public string getCategory() {
-    return category;
-  }
-
-  public string getDescription() {
-    return description;
-  }
-
-  protected void setDescription(string description) {
-    this.description = description;
-  }
-
-  protected void addStat(string title, string value) {
-    stats.Add(new KeyValuePair<string, string>(title, value));
-  }
-
-  public List<KeyValuePair<string, string>> getStats() {
-    return stats;
-  }
-}
-
-public class Potion : Item {
-  protected Potion(string name, int weight, int value) : base(name, weight, value, "Potion"){ }
-}
-
-public class HealthPotion : Potion {
-  private int health;
-
-  public HealthPotion(string name, int weight, int value, int health) : base(name, weight, value) {
-    this.health = health;
-    setDescription("Heals by " + health + " points.");
-  }
-
-  public void consume(Player player) {
-    player.currentHealth += health;
-    //TODO Remove from players inventory
-  }
-}
-
-public class Weapon : Item {
-  private int damage;
-
-  public Weapon(string name, int weight, int value, int damage) : base(name, weight, value, "Weapon"){
-    this.damage = damage;
-    addStat("Damage", damage.ToString());
-  }
-
-  public int getDamage() {
-    return damage;
-  }
-}
-
-public class Apparel : Item {
-  private int armor;
-
-  public Apparel(string name, int weight, int value, int armor) : base(name, weight, value, "Apparel") {
-    this.armor = armor;
-    addStat("Armor", armor.ToString());
-  }
-
-  public int getArmor() {
-    return armor;
-  }
-}
 
 public class Client : MonoBehaviour {
   private const int MAX_CONNECTION = 100;
@@ -205,16 +47,16 @@ public class Client : MonoBehaviour {
       "health potion",
       1,
       10,
-      50
+      20
     ),
     new Weapon(
-      "some sword weapon",
+      "sword",
       10,
       50,
       5
     ),
     new Apparel(
-      "some helmet apparel",
+      "helmet",
       5,
       10,
       10
@@ -243,7 +85,6 @@ public class Client : MonoBehaviour {
       if (user.success) {
         if (user.error != "") {
           errorText.text = user.error;
-          Debug.Log(user.error);
         } else {
           errorText.text = "Login successful";
           playerName = user.username;
@@ -252,11 +93,9 @@ public class Client : MonoBehaviour {
         }
       } else {
         errorText.text = user.error;
-        Debug.Log(user.error);
       }
     } else {
       errorText.text = w.error;
-      Debug.Log(w.error);
     }
   }
 
@@ -308,7 +147,7 @@ public class Client : MonoBehaviour {
     SpawnPlayer(playerName, ourClientId);
   }
 
-  private void Start() {
+  private void Start() {  
     if (Application.isEditor) {
       isDeveloper = true;
     }
