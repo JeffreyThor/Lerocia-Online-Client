@@ -291,7 +291,18 @@ public class MenuController : MonoBehaviour {
   }
 
   private void RefreshMenu() {
+    int categoryIndex = currentCategoryIndex;
+    List<int> itemIndexes = new List<int>(currentItemIndexes);
     CloseMenu();
     OpenMenu();
+    if (itemDictionary.Count > 0) {
+      for (int i = 0; i < categoryIndex; i++) {
+        MoveDown();
+      }
+      MoveRight();
+      for (int i = 0; i < itemIndexes[categoryIndex]; i++) {
+        MoveDown();
+      }
+    }
   }
 }
