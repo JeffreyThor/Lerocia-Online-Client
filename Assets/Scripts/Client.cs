@@ -107,7 +107,7 @@ public class Client : MonoBehaviour {
     yield return w;
 
     if (string.IsNullOrEmpty(w.error)) {
-      string jsonString = fixJson(w.text);
+      string jsonString = JsonHelper.fixJson(w.text);
       DatabaseItem[] dbi = JsonHelper.FromJson<DatabaseItem>(jsonString);
       foreach (DatabaseItem it in dbi) {
         for (int i = 0; i < it.amount; i++) {
@@ -117,11 +117,6 @@ public class Client : MonoBehaviour {
     } else {
       Debug.Log(w.error);
     }
-  }
-
-  string fixJson(string value) {
-    value = "{\"Items\":" + value + "}";
-    return value;
   }
 
   public void JoinGame() {
