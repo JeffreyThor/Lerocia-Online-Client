@@ -42,26 +42,7 @@ public class Client : MonoBehaviour {
   public bool paused = false;
   public bool inMenu = false;
 
-  public List<Item> items = new List<Item> {
-    new HealthPotion(
-      "health potion",
-      1,
-      10,
-      20
-    ),
-    new Weapon(
-      "sword",
-      10,
-      50,
-      5
-    ),
-    new Apparel(
-      "helmet",
-      5,
-      10,
-      10
-    )
-  };
+  public List<Item> items = new List<Item>();
 
   public void Connect() {
     errorText = GameObject.Find("ErrorText").GetComponent<Text>();
@@ -142,7 +123,30 @@ public class Client : MonoBehaviour {
     SpawnPlayer(playerName, ourClientId);
   }
 
-  private void Start() {  
+  private void Start() {
+    
+    items.Add(new HealthPotion(
+      items.Count,
+      "health potion",
+      1,
+      10,
+      20
+    ));
+    items.Add(new Weapon(
+      items.Count,
+      "sword",
+      10,
+      50,
+      5
+    ));
+    items.Add(new Apparel(
+      items.Count,
+      "helmet",
+      5,
+      10,
+      10
+    ));
+    
     if (Application.isEditor) {
       isDeveloper = true;
     }

@@ -9,7 +9,8 @@ public abstract class Item {
 	private string description;
 	private List<KeyValuePair<string, string>> stats;
 
-	protected Item(string name, int weight, int value, string category) {
+	protected Item(int id, string name, int weight, int value, string category) {
+		this.id = id;
 		this.name = name;
 		this.weight = weight;
 		this.value = value;
@@ -18,6 +19,10 @@ public abstract class Item {
 		stats = new List<KeyValuePair<string, string>>();
 		stats.Add(new KeyValuePair<string, string>("Weight", weight.ToString()));
 		stats.Add(new KeyValuePair<string, string>("Value", value.ToString()));
+	}
+
+	protected int getId() {
+		return id;
 	}
 
 	public string getName() {
@@ -54,5 +59,7 @@ public abstract class Item {
 
 	public abstract void Use(Player player);
 
-	public abstract void Drop(Player player);
+	public void Drop(Player player) {
+		player.inventory.Remove(id);
+	}
 }

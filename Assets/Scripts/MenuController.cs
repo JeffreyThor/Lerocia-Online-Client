@@ -43,6 +43,14 @@ public class MenuController : MonoBehaviour {
       } else if (Input.GetAxis("Horizontal") < 0) {
         MoveLeft();
       }
+
+      if (isItemView) {
+        if (Input.GetKeyDown(KeyCode.E)) {
+          UseItem();
+        } else if (Input.GetKeyDown(KeyCode.R)) {
+          DropItem();
+        }
+      }
     }
   }
 
@@ -50,6 +58,7 @@ public class MenuController : MonoBehaviour {
     // Initialize dictionary of all items with key->value being category->items
     itemDictionary = new Dictionary<GameObject, List<GameObject>>();
     
+    // This list keeps track of the current index of each item list from category to category so location is persistent
     currentItemIndexes = new List<int>();
 
     // Initialize categories for each item in inventory
@@ -167,6 +176,16 @@ public class MenuController : MonoBehaviour {
     }
   }
 
+  private void UseItem() {
+    GetCurrentSelectedItem().Use(client.players[client.ourClientId]);
+    RefreshMenu();
+  }
+
+  private void DropItem() {
+    GetCurrentSelectedItem().Drop(client.players[client.ourClientId]);
+    RefreshMenu();
+  }
+
   private void ToggleItemView(bool visible) {
     isItemView = visible;
     transform.Find("Items Selector Panel").gameObject.SetActive(visible);
@@ -269,5 +288,10 @@ public class MenuController : MonoBehaviour {
         item.GetComponent<Text>().enabled = false;
       }
     }
+  }
+
+  private void RefreshMenu() {
+    CloseMenu();
+    OpenMenu();
   }
 }
