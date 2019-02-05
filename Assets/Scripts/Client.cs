@@ -321,7 +321,13 @@ public class Client : MonoBehaviour {
     p.connectionId = playerId;
     p.maxHealth = 100;
     p.currentHealth = p.maxHealth;
+    p.maxStamina = 100;
+    p.currentStamina = p.maxStamina;
     p.inventory = new List<int>();
+    p.gold = 0;
+    p.weight = 0;
+    p.armor = 0;
+    p.damage = 0;
 
     // Is this ours?
     if (cnnId == ourClientId) {

@@ -17,6 +17,12 @@ public class Player {
 
 	public int maxHealth;
 	public int currentHealth;
+	public int maxStamina;
+	public int currentStamina;
+	public int gold;
+	public int weight;
+	public int armor;
+	public int damage;
 
 	public List<int> inventory;
 }

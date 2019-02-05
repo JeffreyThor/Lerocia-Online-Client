@@ -11,8 +11,8 @@ public class MenuController : MonoBehaviour {
   public GameObject itemNamePrefab;
   public GameObject itemStatPrefab;
   public GameObject itemDescriptionPrefab;
-  public GameObject playerHealthBarPrefab;
-  public GameObject playerStatPrefab;
+  private GameObject playerHealthBar;
+  private GameObject playerStaminaBar;
   private Client client;
   private Dictionary<GameObject, List<GameObject>> itemDictionary;
   private GameObject currentCategory;
@@ -258,22 +258,24 @@ public class MenuController : MonoBehaviour {
       itemDescription.GetComponent<Text>().text = item.getDescription();
     }
     
-    List<GameObject> playerStatList = new List<GameObject>();
     GameObject playerPanel = transform.Find("Player Panel").gameObject;
-
-    GameObject healthBar = Instantiate(playerHealthBarPrefab);
-    healthBar.transform.SetParent(playerPanel.transform, false);
-    healthBar.GetComponent<Slider>().value = client.players[client.ourClientId].currentHealth;
+    playerPanel.transform.Find("Health Bar").GetComponent<Slider>().value =
+      client.players[client.ourClientId].currentHealth;
+    playerPanel.transform.Find("Stamina Bar").GetComponent<Slider>().value =
+      client.players[client.ourClientId].currentStamina;
+    playerPanel.transform.Find("Gold").transform.Find("Value").GetComponent<Text>().text =
+      client.players[client.ourClientId].gold.ToString();
+    playerPanel.transform.Find("Weight").transform.Find("Value").GetComponent<Text>().text =
+      client.players[client.ourClientId].gold.ToString();
+    playerPanel.transform.Find("Armor").transform.Find("Value").GetComponent<Text>().text =
+      client.players[client.ourClientId].gold.ToString();
+    playerPanel.transform.Find("Damage").transform.Find("Value").GetComponent<Text>().text =
+      client.players[client.ourClientId].gold.ToString();
   }
 
   private void DestroyItemView() {
     Transform panel = transform.Find("Item Panel");
     foreach (Transform child in panel) {
-      Destroy(child.gameObject);
-    }
-
-    Transform playerPanel = transform.Find("Player Panel");
-    foreach (Transform child in playerPanel) {
       Destroy(child.gameObject);
     }
   }
