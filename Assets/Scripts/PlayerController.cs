@@ -22,13 +22,11 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	public void TakeDamage(int damage) {
-		damage = damage - client.players[client.ourClientId].armor;
+		damage = damage - client.players[id].armor;
 		if (damage <= 0) {
 			damage = 0;
 		}
-		Debug.Log("I've been hit!");
 		client.players[id].currentHealth -= damage;
-		Debug.Log("My health is now " + client.players[id].currentHealth);
 		if (client.players[id].currentHealth <= 0) {
 			KillPlayer();
 		}

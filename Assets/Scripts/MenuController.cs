@@ -52,6 +52,19 @@ public class MenuController : MonoBehaviour {
         } else if (Input.GetKeyDown(KeyCode.R)) {
           DropItem();
         }
+        GameObject playerPanel = transform.Find("Player Panel").gameObject;
+        playerPanel.transform.Find("Health Bar").GetComponent<Slider>().value =
+          client.players[client.ourClientId].currentHealth;
+        playerPanel.transform.Find("Stamina Bar").GetComponent<Slider>().value =
+          client.players[client.ourClientId].currentStamina;
+        playerPanel.transform.Find("Gold").transform.Find("Value").GetComponent<Text>().text =
+          client.players[client.ourClientId].gold.ToString();
+        playerPanel.transform.Find("Weight").transform.Find("Value").GetComponent<Text>().text =
+          client.players[client.ourClientId].weight.ToString();
+        playerPanel.transform.Find("Armor").transform.Find("Value").GetComponent<Text>().text =
+          client.players[client.ourClientId].armor.ToString();
+        playerPanel.transform.Find("Damage").transform.Find("Value").GetComponent<Text>().text =
+          client.players[client.ourClientId].damage.ToString();    
       }
     }
   }
@@ -184,6 +197,7 @@ public class MenuController : MonoBehaviour {
   }
 
   private void UseItem() {
+    client.SendReliable("USE|" + GetCurrentSelectedItem().getId());
     GetCurrentSelectedItem().Use(client.players[client.ourClientId]);
     RefreshMenu();
   }
@@ -262,20 +276,6 @@ public class MenuController : MonoBehaviour {
       itemDescription.transform.SetParent(panel.transform, false);
       itemDescription.GetComponent<Text>().text = item.getDescription();
     }
-    
-    GameObject playerPanel = transform.Find("Player Panel").gameObject;
-    playerPanel.transform.Find("Health Bar").GetComponent<Slider>().value =
-      client.players[client.ourClientId].currentHealth;
-    playerPanel.transform.Find("Stamina Bar").GetComponent<Slider>().value =
-      client.players[client.ourClientId].currentStamina;
-    playerPanel.transform.Find("Gold").transform.Find("Value").GetComponent<Text>().text =
-      client.players[client.ourClientId].gold.ToString();
-    playerPanel.transform.Find("Weight").transform.Find("Value").GetComponent<Text>().text =
-      client.players[client.ourClientId].weight.ToString();
-    playerPanel.transform.Find("Armor").transform.Find("Value").GetComponent<Text>().text =
-      client.players[client.ourClientId].armor.ToString();
-    playerPanel.transform.Find("Damage").transform.Find("Value").GetComponent<Text>().text =
-      client.players[client.ourClientId].damage.ToString();    
   }
 
   private void DestroyItemView() {

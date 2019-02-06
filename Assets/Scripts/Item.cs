@@ -21,7 +21,7 @@ public abstract class Item {
 		stats.Add(new KeyValuePair<string, string>("Value", value.ToString()));
 	}
 
-	protected int getId() {
+	public int getId() {
 		return id;
 	}
 

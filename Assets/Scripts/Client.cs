@@ -220,6 +220,9 @@ public class Client : MonoBehaviour {
           case "HIT":
             OnHit(int.Parse(splitData[1]), int.Parse(splitData[2]), int.Parse(splitData[3]));
             break;
+          case "USE":
+            OnUse(int.Parse(splitData[1]), int.Parse(splitData[2]));
+            break;
           default:
             Debug.Log("Invalid message : " + msg);
             break;
@@ -309,6 +312,12 @@ public class Client : MonoBehaviour {
 
   private void OnHit(int cnnId, int hitId, int damage) {
     players[hitId].avatar.GetComponent<PlayerController>().TakeDamage(damage);
+  }
+  
+  private void OnUse(int cnnId, int itemId) {
+    if (cnnId != ourClientId) {
+      items[itemId].Use(players[cnnId]);
+    }
   }
 
   private void SpawnPlayer(string playerName, int cnnId) {
