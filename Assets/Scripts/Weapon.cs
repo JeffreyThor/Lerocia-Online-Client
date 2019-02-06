@@ -1,4 +1,6 @@
-﻿public class Weapon : Item {
+﻿using UnityEngine;
+
+public class Weapon : Item {
 	private int damage;
 
 	public Weapon(int id, string name, int weight, int value, int damage) : base(id, name, weight, value, "Weapon") {
@@ -11,6 +13,11 @@
 	}
 
 	public override void Use(Player player) {
-		//TODO
+		if (player.weapon != getId()) {
+			player.weapon = getId();
+		} else {
+			player.weapon = -1;
+		}
+		player.UpdateStats();
 	}
 }

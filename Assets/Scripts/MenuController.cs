@@ -266,11 +266,11 @@ public class MenuController : MonoBehaviour {
     playerPanel.transform.Find("Gold").transform.Find("Value").GetComponent<Text>().text =
       client.players[client.ourClientId].gold.ToString();
     playerPanel.transform.Find("Weight").transform.Find("Value").GetComponent<Text>().text =
-      client.players[client.ourClientId].gold.ToString();
+      client.players[client.ourClientId].weight.ToString();
     playerPanel.transform.Find("Armor").transform.Find("Value").GetComponent<Text>().text =
-      client.players[client.ourClientId].gold.ToString();
+      client.players[client.ourClientId].armor.ToString();
     playerPanel.transform.Find("Damage").transform.Find("Value").GetComponent<Text>().text =
-      client.players[client.ourClientId].gold.ToString();
+      client.players[client.ourClientId].damage.ToString();    
   }
 
   private void DestroyItemView() {

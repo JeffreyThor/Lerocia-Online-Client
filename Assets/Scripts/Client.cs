@@ -313,21 +313,9 @@ public class Client : MonoBehaviour {
 
   private void SpawnPlayer(string playerName, int cnnId) {
     GameObject go = Instantiate(playerPrefab);
-    Player p = new Player();
     go.name = playerName;
     go.GetComponent<PlayerController>().id = cnnId;
-    p.avatar = go;
-    p.playerName = playerName;
-    p.connectionId = playerId;
-    p.maxHealth = 100;
-    p.currentHealth = p.maxHealth;
-    p.maxStamina = 100;
-    p.currentStamina = p.maxStamina;
-    p.inventory = new List<int>();
-    p.gold = 0;
-    p.weight = 0;
-    p.armor = 0;
-    p.damage = 0;
+    Player p = new Player(playerName, go, playerId, items);
 
     // Is this ours?
     if (cnnId == ourClientId) {
