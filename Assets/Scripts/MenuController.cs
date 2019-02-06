@@ -99,6 +99,11 @@ public class MenuController : MonoBehaviour {
           itemText.transform.localPosition = nextPosition;
           nextPosition = new Vector3(0, nextPosition.y - itemText.GetComponent<RectTransform>().rect.height, 0);
           itemText.GetComponent<ItemTextController>().id = item_id;
+          if (client.players[client.ourClientId].weapon == item_id || client.players[client.ourClientId].apparel == item_id) {
+            itemText.transform.Find("Equipped").gameObject.SetActive(true);
+          } else {
+            itemText.transform.Find("Equipped").gameObject.SetActive(false);
+          }
           itemDictionary[category].Add(itemText);
         }
       }
@@ -203,7 +208,7 @@ public class MenuController : MonoBehaviour {
 
     // hide items for old category
     foreach (GameObject item in itemDictionary[currentCategory]) {
-      item.GetComponent<Text>().enabled = false;
+      item.SetActive(false);
     }
     
     // switch category to current selected category
@@ -211,7 +216,7 @@ public class MenuController : MonoBehaviour {
     
     // show items for new category
     foreach (GameObject item in itemDictionary[currentCategory]) {
-      item.GetComponent<Text>().enabled = true;
+      item.SetActive(true);
     }
   }
 
@@ -302,7 +307,7 @@ public class MenuController : MonoBehaviour {
   private void DisableAllItems() {
     foreach (List<GameObject> items in itemDictionary.Values) {
       foreach (GameObject item in items) {
-        item.GetComponent<Text>().enabled = false;
+        item.SetActive(false);
       }
     }
   }
