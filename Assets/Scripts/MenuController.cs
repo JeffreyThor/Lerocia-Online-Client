@@ -103,19 +103,32 @@ public class MenuController : MonoBehaviour {
     foreach (GameObject category in categoryList) {
       nextPosition = Vector3.zero;
       itemDictionary[category] = new List<GameObject>();
+      Dictionary<int, int> uniqueItemDictionary = new Dictionary<int, int>();
       foreach (int item_id in client.players[client.ourClientId].inventory) {
-        if (client.items[item_id].getCategory() == category.GetComponent<Text>().text) {
+        if (uniqueItemDictionary.ContainsKey(item_id)) {
+          uniqueItemDictionary[item_id]++;
+        } else {
+          uniqueItemDictionary.Add(item_id, 1);
+        }
+      }
+      foreach (KeyValuePair<int, int> item_id in uniqueItemDictionary) {
+        if (client.items[item_id.Key].getCategory() == category.GetComponent<Text>().text) {
           GameObject itemText = Instantiate(itemTextPrefab);
-          itemText.name = client.items[item_id].getName();
-          itemText.GetComponent<Text>().text = client.items[item_id].getName();
+          itemText.name = client.items[item_id.Key].getName();
+          itemText.GetComponent<Text>().text = client.items[item_id.Key].getName();
           itemText.transform.SetParent(transform.Find("Items Selector Panel"), false);
           itemText.transform.localPosition = nextPosition;
           nextPosition = new Vector3(0, nextPosition.y - itemText.GetComponent<RectTransform>().rect.height, 0);
-          itemText.GetComponent<ItemTextController>().id = item_id;
-          if (client.players[client.ourClientId].weapon == item_id || client.players[client.ourClientId].apparel == item_id) {
+          itemText.GetComponent<ItemTextController>().id = item_id.Key;
+          itemText.transform.Find("Amount").GetComponent<Text>().text =
+            "x" + item_id.Value;
+          if (client.players[client.ourClientId].weapon == item_id.Key || client.players[client.ourClientId].apparel == item_id.Key) {
             itemText.transform.Find("Equipped").gameObject.SetActive(true);
           } else {
             itemText.transform.Find("Equipped").gameObject.SetActive(false);
+          }
+          if (itemDictionary[category].Contains(itemText)) {
+            Debug.Log("Found a duplicate");
           }
           itemDictionary[category].Add(itemText);
         }
