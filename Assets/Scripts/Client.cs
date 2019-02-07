@@ -64,14 +64,6 @@ public class Client : MonoBehaviour {
       5,
       10,
       10
-    ),
-    new ColorChangingWeapon(
-      3,
-      "Myers Knife",
-      0,
-      0,
-      100,
-      Color.red
     )
   };
 

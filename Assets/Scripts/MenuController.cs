@@ -120,8 +120,12 @@ public class MenuController : MonoBehaviour {
           itemText.transform.localPosition = nextPosition;
           nextPosition = new Vector3(0, nextPosition.y - itemText.GetComponent<RectTransform>().rect.height, 0);
           itemText.GetComponent<ItemTextController>().id = item_id.Key;
-          itemText.transform.Find("Amount").GetComponent<Text>().text =
-            "x" + item_id.Value;
+          if (item_id.Value > 1) {
+            itemText.transform.Find("Amount").GetComponent<Text>().text =
+              "x" + item_id.Value;
+          } else {
+            itemText.transform.Find("Amount").gameObject.SetActive(false);
+          }
           if (client.players[client.ourClientId].weapon == item_id.Key || client.players[client.ourClientId].apparel == item_id.Key) {
             itemText.transform.Find("Equipped").gameObject.SetActive(true);
           } else {
