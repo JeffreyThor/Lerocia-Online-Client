@@ -330,6 +330,8 @@ public class Client : MonoBehaviour {
     item.GetComponent<ItemController>().item_id = itemId;
     item.name = items[itemId].getName();
     item.transform.position = players[cnnId].avatar.transform.position;
+    item.transform.rotation = players[cnnId].avatar.transform.rotation;
+    item.transform.position += item.transform.TransformDirection(Vector3.forward) * 2;
   }
 
   private void SpawnPlayer(string playerName, int cnnId) {
