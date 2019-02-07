@@ -6,6 +6,11 @@ using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 
+public class WorldItem {
+  public int itemId;
+  public Vector3 position;
+}
+
 public class Client : MonoBehaviour {
   private const int MAX_CONNECTION = 100;
 
@@ -68,6 +73,8 @@ public class Client : MonoBehaviour {
       10
     )
   };
+  
+  public Dictionary<int, WorldItem> worldItems = new Dictionary<int, WorldItem>();
 
   public void Connect() {
     errorText = GameObject.Find("ErrorText").GetComponent<Text>();
@@ -204,6 +211,9 @@ public class Client : MonoBehaviour {
           case "ASKNAME":
             OnAskName(splitData);
             break;
+          case "ITEMS":
+            OnItems(splitData);
+            break;
           case "CNN":
             SpawnPlayer(splitData[1], int.Parse(splitData[2]));
             break;
@@ -226,7 +236,7 @@ public class Client : MonoBehaviour {
             OnUse(int.Parse(splitData[1]), int.Parse(splitData[2]));
             break;
           case "DROP":
-            OnDrop(int.Parse(splitData[1]), int.Parse(splitData[2]));
+            OnDrop(int.Parse(splitData[1]), int.Parse(splitData[2]), int.Parse(splitData[3]), float.Parse(splitData[4]), float.Parse(splitData[5]), float.Parse(splitData[6]));
             break;
           default:
             Debug.Log("Invalid message : " + msg);
@@ -248,6 +258,14 @@ public class Client : MonoBehaviour {
     for (int i = 2; i < data.Length - 1; i++) {
       string[] d = data[i].Split('%');
       SpawnPlayer(d[0], int.Parse(d[1]));
+    }
+  }
+
+  private void OnItems(string[] data) {
+    // Create all items
+    for (int i = 1; i < data.Length; i++) {
+      string[] d = data[i].Split('%');
+      SpawnItem(int.Parse(d[0]), int.Parse(d[1]), float.Parse(d[2]), float.Parse(d[3]), float.Parse(d[4]));
     }
   }
 
@@ -325,13 +343,21 @@ public class Client : MonoBehaviour {
     }
   }
 
-  private void OnDrop(int cnnId, int itemId) {
+  private void OnDrop(int cnnId, int worldId, int itemId, float x, float y, float z) {
+    if (cnnId != ourClientId) {
+      SpawnItem(worldId, itemId, x, y, z);
+    }
+  }
+
+  private void SpawnItem(int worldId, int itemId, float x, float y, float z) {
     GameObject item = Instantiate(itemPrefab);
+    item.transform.position = new Vector3(x, y, z);
     item.GetComponent<ItemController>().item_id = itemId;
     item.name = items[itemId].getName();
-    item.transform.position = players[cnnId].avatar.transform.position;
-    item.transform.rotation = players[cnnId].avatar.transform.rotation;
-    item.transform.position += item.transform.TransformDirection(Vector3.forward) * 2;
+    WorldItem worldItem = new WorldItem();
+    worldItem.itemId = itemId;
+    worldItem.position = new Vector3(x, y, z);
+    worldItems.Add(worldId, worldItem);
   }
 
   private void SpawnPlayer(string playerName, int cnnId) {

@@ -218,7 +218,13 @@ public class MenuController : MonoBehaviour {
   }
 
   private void DropItem() {
-    client.SendReliable("DROP|" + GetCurrentSelectedItem().getId());
+    GameObject item = Instantiate(client.itemPrefab);
+    item.GetComponent<ItemController>().item_id = GetCurrentSelectedItem().getId();
+    item.name = client.items[GetCurrentSelectedItem().getId()].getName();
+    item.transform.position = client.players[client.ourClientId].avatar.transform.position;
+    item.transform.rotation = client.players[client.ourClientId].avatar.transform.rotation;
+    item.transform.position += item.transform.TransformDirection(Vector3.forward) * 2;
+    client.SendReliable("DROP|" + GetCurrentSelectedItem().getId() + "|" + item.transform.position.x + "|" + item.transform.position.y + "|" + item.transform.position.z);
     GetCurrentSelectedItem().Drop(client.players[client.ourClientId]);
     RefreshMenu();
   }
