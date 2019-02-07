@@ -218,6 +218,7 @@ public class MenuController : MonoBehaviour {
   }
 
   private void DropItem() {
+    client.SendReliable("DROP|" + GetCurrentSelectedItem().getId());
     GetCurrentSelectedItem().Drop(client.players[client.ourClientId]);
     RefreshMenu();
   }

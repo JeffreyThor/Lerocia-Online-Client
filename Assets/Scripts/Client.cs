@@ -29,6 +29,8 @@ public class Client : MonoBehaviour {
   public GameObject playerPrefab;
   public Dictionary<int, Player> players = new Dictionary<int, Player>();
 
+  public GameObject itemPrefab;
+
   private WWWForm form;
   private string loginEndpoint = "login.php";
   private string get_items_for_user_endpoint = "get_items_for_user.php";
@@ -223,6 +225,9 @@ public class Client : MonoBehaviour {
           case "USE":
             OnUse(int.Parse(splitData[1]), int.Parse(splitData[2]));
             break;
+          case "DROP":
+            OnDrop(int.Parse(splitData[1]), int.Parse(splitData[2]));
+            break;
           default:
             Debug.Log("Invalid message : " + msg);
             break;
@@ -318,6 +323,13 @@ public class Client : MonoBehaviour {
     if (cnnId != ourClientId) {
       items[itemId].Use(players[cnnId]);
     }
+  }
+
+  private void OnDrop(int cnnId, int itemId) {
+    GameObject item = Instantiate(itemPrefab);
+    item.GetComponent<ItemController>().item_id = itemId;
+    item.name = items[itemId].getName();
+    item.transform.position = players[cnnId].avatar.transform.position;
   }
 
   private void SpawnPlayer(string playerName, int cnnId) {
