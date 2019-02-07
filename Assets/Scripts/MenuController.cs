@@ -121,10 +121,8 @@ public class MenuController : MonoBehaviour {
           nextPosition = new Vector3(0, nextPosition.y - itemText.GetComponent<RectTransform>().rect.height, 0);
           itemText.GetComponent<ItemTextController>().id = item_id.Key;
           if (item_id.Value > 1) {
-            itemText.transform.Find("Amount").GetComponent<Text>().text =
-              "x" + item_id.Value;
-          } else {
-            itemText.transform.Find("Amount").gameObject.SetActive(false);
+            itemText.GetComponent<Text>().text +=
+              " (" + item_id.Value + ")";
           }
           if (client.players[client.ourClientId].weapon == item_id.Key || client.players[client.ourClientId].apparel == item_id.Key) {
             itemText.transform.Find("Equipped").gameObject.SetActive(true);
