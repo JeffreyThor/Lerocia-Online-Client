@@ -37,7 +37,6 @@ public class Client : MonoBehaviour {
 
   private WWWForm form;
   private string loginEndpoint = "login.php";
-  private string get_items_for_user_endpoint = "get_items_for_user.php";
 
   public float timeBetweenMovementStart;
   public float timeBetweenMovementEnd;
@@ -110,26 +109,6 @@ public class Client : MonoBehaviour {
       errorText.text = w.error;
     }
   }
-
-//  public IEnumerator GetItemsForUser(int[] ids) {
-//    form = new WWWForm();
-//    form.AddField("user_id", ids[0]);
-//
-//    WWW w = new WWW(NetworkSettings.API + get_items_for_user_endpoint, form);
-//    yield return w;
-//
-//    if (string.IsNullOrEmpty(w.error)) {
-//      string jsonString = JsonHelper.fixJson(w.text);
-//      DatabaseItem[] dbi = JsonHelper.FromJson<DatabaseItem>(jsonString);
-//      foreach (DatabaseItem it in dbi) {
-//        for (int i = 0; i < it.amount; i++) {
-//          players[ids[1]].inventory.Add(it.item_id);
-//        }
-//      }
-//    } else {
-//      Debug.Log(w.error);
-//    }
-//  }
 
   public void JoinGame() {
     NetworkTransport.Init();
