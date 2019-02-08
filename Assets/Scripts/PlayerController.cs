@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour {
@@ -26,6 +24,10 @@ public class PlayerController : MonoBehaviour {
 						lastItemHit = hit.transform.gameObject.GetComponent<ItemController>().item_id;
 						GameObject.Find("MyCanvas").transform.Find("Item View").gameObject.SetActive(true);
 						GameObject.Find("MyCanvas").GetComponent<MyCanvasController>().UpdateItemView(client.items[hit.transform.gameObject.GetComponent<ItemController>().item_id]);
+					}
+
+					if (Input.GetKeyDown(KeyCode.E)) {
+						client.SendReliable("PICKUP|" + hit.transform.gameObject.GetComponent<ItemController>().world_id);
 					}
 				}
 			} else {

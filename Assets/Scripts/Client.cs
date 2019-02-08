@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -74,7 +73,7 @@ public class Client : MonoBehaviour {
     )
   };
   
-  public Dictionary<int, WorldItem> worldItems = new Dictionary<int, WorldItem>();
+  public Dictionary<int, GameObject> worldItems = new Dictionary<int, GameObject>();
 
   public void Connect() {
     errorText = GameObject.Find("ErrorText").GetComponent<Text>();
@@ -112,25 +111,25 @@ public class Client : MonoBehaviour {
     }
   }
 
-  public IEnumerator GetItemsForUser(int[] ids) {
-    form = new WWWForm();
-    form.AddField("user_id", ids[0]);
-
-    WWW w = new WWW(NetworkSettings.API + get_items_for_user_endpoint, form);
-    yield return w;
-
-    if (string.IsNullOrEmpty(w.error)) {
-      string jsonString = JsonHelper.fixJson(w.text);
-      DatabaseItem[] dbi = JsonHelper.FromJson<DatabaseItem>(jsonString);
-      foreach (DatabaseItem it in dbi) {
-        for (int i = 0; i < it.amount; i++) {
-          players[ids[1]].inventory.Add(it.item_id);
-        }
-      }
-    } else {
-      Debug.Log(w.error);
-    }
-  }
+//  public IEnumerator GetItemsForUser(int[] ids) {
+//    form = new WWWForm();
+//    form.AddField("user_id", ids[0]);
+//
+//    WWW w = new WWW(NetworkSettings.API + get_items_for_user_endpoint, form);
+//    yield return w;
+//
+//    if (string.IsNullOrEmpty(w.error)) {
+//      string jsonString = JsonHelper.fixJson(w.text);
+//      DatabaseItem[] dbi = JsonHelper.FromJson<DatabaseItem>(jsonString);
+//      foreach (DatabaseItem it in dbi) {
+//        for (int i = 0; i < it.amount; i++) {
+//          players[ids[1]].inventory.Add(it.item_id);
+//        }
+//      }
+//    } else {
+//      Debug.Log(w.error);
+//    }
+//  }
 
   public void JoinGame() {
     NetworkTransport.Init();
@@ -214,6 +213,9 @@ public class Client : MonoBehaviour {
           case "ITEMS":
             OnItems(splitData);
             break;
+          case "INVENTORY":
+            OnInventory(splitData);
+            break;
           case "CNN":
             SpawnPlayer(splitData[1], int.Parse(splitData[2]));
             break;
@@ -238,6 +240,9 @@ public class Client : MonoBehaviour {
           case "DROP":
             OnDrop(int.Parse(splitData[1]), int.Parse(splitData[2]), int.Parse(splitData[3]), float.Parse(splitData[4]), float.Parse(splitData[5]), float.Parse(splitData[6]));
             break;
+          case "PICKUP":
+            OnPickup(int.Parse(splitData[1]), int.Parse(splitData[2]));
+            break;
           default:
             Debug.Log("Invalid message : " + msg);
             break;
@@ -252,7 +257,7 @@ public class Client : MonoBehaviour {
     ourClientId = int.Parse(data[1]);
 
     // Send our name to the server
-    Send("NAMEIS|" + playerName, reliableChannel);
+    Send("NAMEIS|" + playerName + "|" + playerId, reliableChannel);
 
     // Create all the other players
     for (int i = 2; i < data.Length - 1; i++) {
@@ -266,6 +271,12 @@ public class Client : MonoBehaviour {
     for (int i = 1; i < data.Length; i++) {
       string[] d = data[i].Split('%');
       SpawnItem(int.Parse(d[0]), int.Parse(d[1]), float.Parse(d[2]), float.Parse(d[3]), float.Parse(d[4]));
+    }
+  }
+  
+  private void OnInventory(string[] data) {
+    for (int i = 1; i < data.Length; i++) {
+      players[ourClientId].inventory.Add(int.Parse(data[i]));
     }
   }
 
@@ -344,20 +355,25 @@ public class Client : MonoBehaviour {
   }
 
   private void OnDrop(int cnnId, int worldId, int itemId, float x, float y, float z) {
-    if (cnnId != ourClientId) {
-      SpawnItem(worldId, itemId, x, y, z);
+    SpawnItem(worldId, itemId, x, y, z);
+    if (inMenu) {
+      GameObject.Find("MenuCanvas").GetComponent<MenuController>().RefreshMenu();
     }
+  }
+  
+  private void OnPickup(int cnnId, int worldId) {
+    players[cnnId].inventory.Add(worldItems[worldId].GetComponent<ItemController>().item_id);
+    Destroy(worldItems[worldId]);
+    worldItems.Remove(worldId);
   }
 
   private void SpawnItem(int worldId, int itemId, float x, float y, float z) {
     GameObject item = Instantiate(itemPrefab);
     item.transform.position = new Vector3(x, y, z);
     item.GetComponent<ItemController>().item_id = itemId;
+    item.GetComponent<ItemController>().world_id = worldId;
     item.name = items[itemId].getName();
-    WorldItem worldItem = new WorldItem();
-    worldItem.itemId = itemId;
-    worldItem.position = new Vector3(x, y, z);
-    worldItems.Add(worldId, worldItem);
+    worldItems.Add(worldId, item);
   }
 
   private void SpawnPlayer(string playerName, int cnnId) {
@@ -402,7 +418,7 @@ public class Client : MonoBehaviour {
     p.avatar.transform.Find("PlayerCanvas").GetComponentInChildren<Slider>().value = p.currentHealth;
     players.Add(cnnId, p);
     int[] myArgs = {p.connectionId, cnnId};
-    StartCoroutine("GetItemsForUser", myArgs);
+//    StartCoroutine("GetItemsForUser", myArgs);
   }
 
   private void PlayerDisconnected(int cnnId) {
