@@ -27,6 +27,7 @@
 			// Active player HUD
 			CanvasSettings.PlayerHUD.GetComponent<PlayerHUDController>().Player = ConnectedClients.MyPlayer;
 			CanvasSettings.PlayerHUD.SetActive(true);
+			NetworkSettings.IsStarted = true;
 		}
 
 		private void SpawnPlayer(string playerName, int connectionId) {
@@ -34,6 +35,8 @@
 			playerObject.name = playerName;
 			Player player = new Player(playerName, playerObject);
 			ConnectedClients.Players.Add(connectionId, player);
+			ConnectedClients.Players[connectionId].Avatar.GetComponent<PlayerLerpController>().Player = player;
+
 		}
 	}
 }

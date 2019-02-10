@@ -49,7 +49,7 @@
               OnDisconnect(int.Parse(splitData[1]));
               break;
             case "ASKPOSITION":
-              //TODO
+              OnAskPosition(splitData);
               break;
             case "CHARGE":
               //TODO
@@ -92,7 +92,7 @@
         _playerFactory.Spawn(d[0], int.Parse(d[1]));
       }
     }
-    
+
     private void OnInventory(string[] data) {
       for (int i = 1; i < data.Length; i++) {
         ConnectedClients.MyPlayer.Inventory.Add(int.Parse(data[i]));
@@ -103,20 +103,78 @@
       Destroy(ConnectedClients.Players[connectionId].Avatar);
       ConnectedClients.Players.Remove(connectionId);
     }
-    
+
+    private void OnAskPosition(string[] data) {
+      if (!NetworkSettings.IsStarted) {
+        return;
+      }
+
+      // Update everyone else
+      for (int i = 1; i < data.Length; i++) {
+        string[] d = data[i].Split('%');
+
+        // Prevent the server from updating us
+        if (ConnectedClients.MyUser.connection_id != int.Parse(d[0])) {
+          Vector3 position = Vector3.zero;
+          position.x = float.Parse(d[1]);
+          position.y = float.Parse(d[2]);
+          position.z = float.Parse(d[3]);
+
+          Quaternion rotation = Quaternion.identity;
+          rotation.w = float.Parse(d[4]);
+          rotation.x = float.Parse(d[5]);
+          rotation.y = float.Parse(d[6]);
+          rotation.z = float.Parse(d[7]);
+
+          ConnectedClients.Players[int.Parse(d[0])].LastRealPosition =
+            ConnectedClients.Players[int.Parse(d[0])].RealPosition;
+          ConnectedClients.Players[int.Parse(d[0])].LastRealRotation =
+            ConnectedClients.Players[int.Parse(d[0])].RealRotation;
+
+          ConnectedClients.Players[int.Parse(d[0])].RealPosition = position;
+          ConnectedClients.Players[int.Parse(d[0])].RealRotation = rotation;
+
+          ConnectedClients.Players[int.Parse(d[0])].TimeToLerp = float.Parse(d[8]);
+          if (ConnectedClients.Players[int.Parse(d[0])].RealPosition !=
+              ConnectedClients.Players[int.Parse(d[0])].Avatar.transform.position) {
+            ConnectedClients.Players[int.Parse(d[0])].IsLerpingPosition = true;
+          }
+
+          if (ConnectedClients.Players[int.Parse(d[0])].RealRotation !=
+              ConnectedClients.Players[int.Parse(d[0])].Avatar.transform.rotation) {
+            ConnectedClients.Players[int.Parse(d[0])].IsLerpingRotation = true;
+          }
+
+          ConnectedClients.Players[int.Parse(d[0])].TimeStartedLerping = Time.time;
+        }
+      }
+
+      // Send our own position
+      Vector3 myPosition = ConnectedClients.MyPlayer.Avatar.transform.position;
+      Quaternion myRotation = ConnectedClients.MyPlayer.Avatar.transform.rotation;
+      ConnectedClients.MyPlayer.TimeBetweenMovementEnd = Time.time;
+      string message = "MYPOSITION|" + myPosition.x + '|' + myPosition.y + '|' + myPosition.z + '|' + myRotation.w +
+                       '|' + +myRotation.x + '|' + +myRotation.y + '|' + +myRotation.z + '|' +
+                       (ConnectedClients.MyPlayer.TimeBetweenMovementEnd -
+                        ConnectedClients.MyPlayer.TimeBetweenMovementStart);
+      NetworkSend.Unreliable(message);
+      ConnectedClients.MyPlayer.TimeBetweenMovementStart = Time.time;
+    }
+
     private void OnUse(int connectionId, int itemId) {
       if (connectionId != ConnectedClients.MyUser.connection_id) {
         ItemList.Items[itemId].Use(ConnectedClients.Players[connectionId]);
       }
     }
-    
+
     private void OnDrop(int worldId, int itemId, float x, float y, float z) {
       _itemFactory.Spawn(worldId, itemId, x, y, z);
       //TODO Refresh menu if open
     }
-    
+
     private void OnPickup(int connectionId, int worldId) {
-      ConnectedClients.Players[connectionId].Inventory.Add(ItemList.WorldItems[worldId].GetComponent<ItemController>().ItemId);
+      ConnectedClients.Players[connectionId].Inventory
+        .Add(ItemList.WorldItems[worldId].GetComponent<ItemController>().ItemId);
       Destroy(ItemList.WorldItems[worldId]);
       ItemList.WorldItems.Remove(worldId);
     }

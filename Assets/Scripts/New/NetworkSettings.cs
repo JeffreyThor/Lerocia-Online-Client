@@ -9,6 +9,7 @@ namespace New {
     public static byte Error;
     public static bool IsLoggingIn;
     public static bool IsConnected;
+    public static bool IsStarted;
     
     public static void InitializeNetworkTransport() {
       NetworkTransport.Init();
