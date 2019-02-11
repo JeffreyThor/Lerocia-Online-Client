@@ -1,4 +1,4 @@
-namespace Players.Animators {
+namespace Players.Animation {
   using UnityEngine;
 
   public class PlayerAnimator : MonoBehaviour {

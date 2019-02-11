@@ -1,6 +1,6 @@
 ﻿namespace Players.Controllers {
   using UnityEngine;
-  using Animators;
+  using Animation;
   using Menus;
   using Networking;
 

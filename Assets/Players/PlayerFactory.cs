@@ -2,7 +2,7 @@
 	using UnityEngine;
 	using Menus;
 	using Controllers;
-	using Animators;
+	using Animation;
 	using Menus.Controllers;
 	using Networking;
 

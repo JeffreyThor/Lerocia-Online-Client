@@ -3,7 +3,7 @@
   using UnityEngine;
   using UnityEngine.Networking;
   using Players;
-  using Players.Animators;
+  using Players.Animation;
   using Items;
   using Menus;
 

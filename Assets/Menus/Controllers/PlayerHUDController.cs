@@ -19,9 +19,9 @@
 		private GameObject _itemStatsContainer;
 		private Player _enemyPlayer;
 		private float _enemyViewUpdateTime;
-		private const float EnemyViewTimer = 5.0f;
+		private const float EnemyViewTimer = 30.0f;
 		private float _healthViewUpdateTime;
-		private const float HealthViewTimer = 5.0f;
+		private const float HealthViewTimer = 30.0f;
 		public Player Player;
 
 		// Use this for initialization
