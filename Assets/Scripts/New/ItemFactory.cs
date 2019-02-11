@@ -15,8 +15,8 @@ namespace New {
     public void Spawn(int worldId, int itemId, float x, float y, float z) {
       GameObject item = Instantiate(ItemPrefab);
       item.transform.position = new Vector3(x, y, z);
-      item.GetComponent<ItemController>().ItemId = itemId;
-      item.GetComponent<ItemController>().WorldId = worldId;
+      item.GetComponent<ItemReference>().ItemId = itemId;
+      item.GetComponent<ItemReference>().WorldId = worldId;
       item.name = ItemList.Items[itemId].GetName();
       ItemList.WorldItems.Add(worldId, item);
     }

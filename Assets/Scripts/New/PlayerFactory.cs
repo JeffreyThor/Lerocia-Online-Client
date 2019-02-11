@@ -19,14 +19,16 @@
 			playerObject.name = playerName;
 			playerObject.AddComponent<PlayerController>();
 			playerObject.transform.Find("FirstPersonCharacter").gameObject.AddComponent<PlayerCameraController>();
+			playerObject.AddComponent<PlayerReference>();
+			playerObject.GetComponent<PlayerReference>().ConnectionId = connectionId;
 			ConnectedClients.MyPlayer = new Player(playerName, playerObject);
 			// Add my player to players dictionary
 			ConnectedClients.Players.Add(connectionId, ConnectedClients.MyPlayer);
 			//Disable login menu
 			CanvasSettings.LoginMenu.SetActive(false);
-			// Active player HUD
-			CanvasSettings.PlayerHUD.GetComponent<PlayerHUDController>().Player = ConnectedClients.MyPlayer;
-			CanvasSettings.PlayerHUD.SetActive(true);
+			// Activate player HUD
+			CanvasSettings.PlayerHud.GetComponent<PlayerHUDController>().Player = ConnectedClients.MyPlayer;
+			CanvasSettings.PlayerHud.SetActive(true);
 			NetworkSettings.IsStarted = true;
 		}
 
@@ -36,7 +38,6 @@
 			Player player = new Player(playerName, playerObject);
 			ConnectedClients.Players.Add(connectionId, player);
 			ConnectedClients.Players[connectionId].Avatar.GetComponent<PlayerLerpController>().Player = player;
-
 		}
 	}
 }

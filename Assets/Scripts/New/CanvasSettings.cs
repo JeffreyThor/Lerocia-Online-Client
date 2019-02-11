@@ -5,7 +5,7 @@ namespace New {
 
   public static class CanvasSettings {
     public static GameObject LoginMenu;
-    public static GameObject PlayerHUD;
+    public static GameObject PlayerHud;
     public static GameObject PauseMenu;
     public static GameObject InventoryMenu;
     private static InventoryMenuController _inventoryMenuController;
@@ -13,8 +13,8 @@ namespace New {
     public static void InitializeCanvases() {
       LoginMenu = GameObject.Find("LoginMenu");
       LoginMenu.SetActive(true);
-      PlayerHUD = GameObject.Find("PlayerHUD");
-      PlayerHUD.SetActive(false);
+      PlayerHud = GameObject.Find("PlayerHUD");
+      PlayerHud.SetActive(false);
       PauseMenu = GameObject.Find("PauseMenu");
       PauseMenu.SetActive(false);
       InventoryMenu = GameObject.Find("InventoryMenu");
@@ -28,7 +28,7 @@ namespace New {
           DeactivateMenu();
         } else {
           ConnectedClients.MyPlayer.Avatar.GetComponent<FirstPersonController>().enabled = false;
-          PlayerHUD.SetActive(false);
+          PlayerHud.SetActive(false);
           PauseMenu.SetActive(false);
           InventoryMenu.SetActive(true);
           _inventoryMenuController.OpenMenu();
@@ -43,7 +43,7 @@ namespace New {
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         ConnectedClients.MyPlayer.Avatar.GetComponent<FirstPersonController>().enabled = false;
-        PlayerHUD.SetActive(false);
+        PlayerHud.SetActive(false);
         if (InventoryMenu.activeSelf) {
           _inventoryMenuController.CloseMenu();
           InventoryMenu.SetActive(false);
@@ -59,7 +59,7 @@ namespace New {
         _inventoryMenuController.CloseMenu();
         InventoryMenu.SetActive(false);
       }
-      PlayerHUD.SetActive(true);
+      PlayerHud.SetActive(true);
     }
   }
 }

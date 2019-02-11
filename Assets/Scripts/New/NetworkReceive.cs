@@ -174,7 +174,7 @@
 
     private void OnPickup(int connectionId, int worldId) {
       ConnectedClients.Players[connectionId].Inventory
-        .Add(ItemList.WorldItems[worldId].GetComponent<ItemController>().ItemId);
+        .Add(ItemList.WorldItems[worldId].GetComponent<ItemReference>().ItemId);
       Destroy(ItemList.WorldItems[worldId]);
       ItemList.WorldItems.Remove(worldId);
     }

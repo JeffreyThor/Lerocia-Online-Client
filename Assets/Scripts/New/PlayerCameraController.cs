@@ -8,21 +8,19 @@ namespace New {
     private PlayerHUDController _playerHudController;
 
     private void Start() {
-      _playerHudController = CanvasSettings.PlayerHUD.GetComponent<PlayerHUDController>();
+      _playerHudController = CanvasSettings.PlayerHud.GetComponent<PlayerHUDController>();
     }
 
     private void Update() {
-      Vector3 forward = transform.TransformDirection(Vector3.forward) * 10;
-      Debug.DrawRay(transform.position, forward, Color.red);
       if (Physics.Raycast(gameObject.transform.position, transform.forward, out _hit, Range)) {
         if (_hit.transform.CompareTag("Item")) {
-          if (_hit.transform.gameObject.GetComponent<ItemController>().ItemId != _lastItemHit) {
-            _lastItemHit = _hit.transform.gameObject.GetComponent<ItemController>().ItemId;
+          if (_hit.transform.gameObject.GetComponent<ItemReference>().ItemId != _lastItemHit) {
+            _lastItemHit = _hit.transform.gameObject.GetComponent<ItemReference>().ItemId;
             _playerHudController.ActivateItemView(ItemList.Items[_lastItemHit]);
           }
 
           if (Input.GetKeyDown(KeyCode.E)) {
-            NetworkSend.Reliable("PICKUP|" + _hit.transform.gameObject.GetComponent<ItemController>().WorldId);
+            NetworkSend.Reliable("PICKUP|" + _hit.transform.gameObject.GetComponent<ItemReference>().WorldId);
           }
         }
       } else {
