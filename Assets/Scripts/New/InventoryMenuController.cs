@@ -118,7 +118,7 @@ namespace New {
             itemText.transform.SetParent(transform.Find("Items Selector Panel"), false);
             itemText.transform.localPosition = nextPosition;
             nextPosition = new Vector3(0, nextPosition.y - itemText.GetComponent<RectTransform>().rect.height, 0);
-            itemText.GetComponent<ItemTextController>().Id = itemId.Key;
+            itemText.GetComponent<ItemReference>().ItemId = itemId.Key;
             if (itemId.Value > 1) {
               itemText.GetComponent<Text>().text += " (" + itemId.Value + ")";
             }
@@ -307,7 +307,7 @@ namespace New {
     private Item GetCurrentSelectedItem() {
       foreach (GameObject item in _itemDictionary[_currentCategory]) {
         if (item.transform.localPosition.y == 0) {
-          return ItemList.Items[item.GetComponent<ItemTextController>().Id];
+          return ItemList.Items[item.GetComponent<ItemReference>().ItemId];
         }
       }
 

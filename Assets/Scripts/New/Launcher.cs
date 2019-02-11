@@ -2,8 +2,7 @@
 	using UnityEngine;
 
 	public class Launcher : MonoBehaviour {
-
-		void Start () {
+		private void Start () {
 			CanvasSettings.InitializeCanvases();
 		}
 	}

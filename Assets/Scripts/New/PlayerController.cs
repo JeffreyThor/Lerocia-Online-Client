@@ -43,9 +43,9 @@
       RaycastHit hit;
       if (Physics.Raycast(gameObject.transform.position, transform.forward, out hit, Range)) {
         if (hit.transform.CompareTag("Player")) {
-          //TODO Send HIT with hit players id (Need some way to reference that ID from the gameobject
-          NetworkSend.Reliable("HIT|" + hit.transform.gameObject.GetComponent<PlayerReference>().ConnectionId + "|" +
-                               (ConnectedClients.MyPlayer.Damage + damageBoost));
+          int connectionId = hit.transform.gameObject.GetComponent<PlayerReference>().ConnectionId;
+          CanvasSettings.PlayerHudController.ActivateEnemyView(ConnectedClients.Players[connectionId]);
+          NetworkSend.Reliable("HIT|" + connectionId + "|" + (ConnectedClients.MyPlayer.Damage + damageBoost));
         }
       }
     }

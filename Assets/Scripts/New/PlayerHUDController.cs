@@ -6,23 +6,49 @@
 	public class PlayerHUDController : MonoBehaviour {
 		[SerializeField]
 		private GameObject _itemStatPrefab;
+
+		private GameObject _enemyView;
+		private Slider _enemyHealthBar;
+		private Text _enemyName;
+		private GameObject _healthBar;
 		private Slider _healthBarSlider;
 		private GameObject _itemView;
 		private Text _itemName;
 		private GameObject _itemStatsContainer;
+		private Player _enemyPlayer;
+		private float _enemyViewUpdateTime;
+		private const float EnemyViewTimer = 5.0f;
+		private float _healthViewUpdateTime;
+		private const float HealthViewTimer = 5.0f;
 		public Player Player;
 
 		// Use this for initialization
-		void Start () {
-			_healthBarSlider = transform.Find("HealthBar").GetComponent<Slider>();
+		private void Start () {
+			_enemyView = transform.Find("Enemy View").gameObject;
+			_enemyHealthBar = _enemyView.transform.Find("HealthBar").GetComponent<Slider>();
+			_enemyName = _enemyView.transform.Find("Name").GetComponent<Text>();
+			DeactivateEnemyView();
+			_healthBar = transform.Find("HealthBar").gameObject;
+			_healthBarSlider = _healthBar.GetComponent<Slider>();
+			DeactivateHealthView();
 			_itemView = transform.Find("Item View").gameObject;
 			_itemName = _itemView.transform.Find("Item Name").GetComponent<Text>();
 			_itemStatsContainer = _itemView.transform.Find("Item Stats").gameObject;
 			DeactivateItemView();
 		}
 
-		void Update() {
+		private void Update() {
 			_healthBarSlider.value = Player.CurrentHealth;
+			if (_enemyPlayer != null) {
+				_enemyHealthBar.value = _enemyPlayer.CurrentHealth;
+				if (Time.time - _enemyViewUpdateTime > EnemyViewTimer) {
+					DeactivateEnemyView();
+				}
+			}
+
+			if (Time.time - _healthViewUpdateTime > HealthViewTimer) {
+				DeactivateHealthView();
+			}
 		}
 
 		public void ActivateItemView(Item item) {
@@ -66,6 +92,30 @@
 			foreach (Transform child in panel) {
 				Destroy(child.gameObject);
 			}
+		}
+		
+		public void ActivateEnemyView(Player player) {
+			_enemyView.SetActive(true);
+			UpdateEnemyView(player);
+		}
+
+		public void DeactivateEnemyView() {
+			_enemyView.SetActive(false);
+		}
+
+		public void UpdateEnemyView(Player player) {
+			_enemyViewUpdateTime = Time.time;
+			_enemyPlayer = player;
+			_enemyName.text = player.Name;
+		}
+
+		public void ActivateHealthView() {
+			_healthViewUpdateTime = Time.time;
+			_healthBar.SetActive(true);
+		}
+
+		public void DeactivateHealthView() {
+			_healthBar.SetActive(false);
 		}
 	}
 

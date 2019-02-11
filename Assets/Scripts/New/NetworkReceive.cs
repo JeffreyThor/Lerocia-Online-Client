@@ -30,20 +30,20 @@
         bufferSize, out dataSize, out error);
       switch (recData) {
         case NetworkEventType.DataEvent:
-          string msg = Encoding.Unicode.GetString(recBuffer, 0, dataSize);
-          string[] splitData = msg.Split('|');
+          string message = Encoding.Unicode.GetString(recBuffer, 0, dataSize);
+          string[] splitData = message.Split('|');
           switch (splitData[0]) {
             case "ASKNAME":
               OnAskName(splitData);
               break;
             case "ITEMS":
-              _itemFactory.Spawn(splitData);
+              OnItems(splitData);
               break;
             case "INVENTORY":
               OnInventory(splitData);
               break;
             case "CNN":
-              _playerFactory.Spawn(splitData[1], int.Parse(splitData[2]));
+              OnConnect(splitData);
               break;
             case "DC":
               OnDisconnect(int.Parse(splitData[1]));
@@ -52,26 +52,26 @@
               OnAskPosition(splitData);
               break;
             case "CHARGE":
-              //TODO
+              OnCharge(int.Parse(splitData[1]));
               break;
             case "ATK":
-              //TODO
+              OnAttack(int.Parse(splitData[1]));
               break;
             case "HIT":
-              //TODO
+              OnHit(int.Parse(splitData[1]), int.Parse(splitData[2]), int.Parse(splitData[3]));
               break;
             case "USE":
               OnUse(int.Parse(splitData[1]), int.Parse(splitData[2]));
               break;
             case "DROP":
-              OnDrop(int.Parse(splitData[2]), int.Parse(splitData[3]), float.Parse(splitData[4]),
+              OnDrop(int.Parse(splitData[1]), int.Parse(splitData[2]), int.Parse(splitData[3]), float.Parse(splitData[4]),
                 float.Parse(splitData[5]), float.Parse(splitData[6]));
               break;
             case "PICKUP":
               OnPickup(int.Parse(splitData[1]), int.Parse(splitData[2]));
               break;
             default:
-              Debug.Log("Invalid message : " + msg);
+              Debug.Log("Invalid message : " + message);
               break;
           }
 
@@ -93,10 +93,18 @@
       }
     }
 
+    private void OnItems(string[] data) {
+      _itemFactory.Spawn(data);
+    }
+
     private void OnInventory(string[] data) {
       for (int i = 1; i < data.Length; i++) {
         ConnectedClients.MyPlayer.Inventory.Add(int.Parse(data[i]));
       }
+    }
+
+    private void OnConnect(string[] data) {
+      _playerFactory.Spawn(data[1], int.Parse(data[2]));
     }
 
     private void OnDisconnect(int connectionId) {
@@ -160,6 +168,25 @@
       NetworkSend.Unreliable(message);
       ConnectedClients.MyPlayer.TimeBetweenMovementStart = Time.time;
     }
+    
+    private void OnCharge(int connectionId) {
+      if (connectionId != ConnectedClients.MyUser.connection_id) {
+        ConnectedClients.Players[connectionId].Avatar.transform.GetComponent<PlayerAnimator>().Charge();
+      }
+    }
+    
+    private void OnAttack(int connectionId) {
+      if (connectionId != ConnectedClients.MyUser.connection_id) {
+        ConnectedClients.Players[connectionId].Avatar.GetComponent<PlayerAnimator>().Attack();
+      }
+    }
+    
+    private void OnHit(int connectionId, int hitId, int damage) {
+      if (hitId == ConnectedClients.MyUser.connection_id) {
+        CanvasSettings.PlayerHudController.ActivateHealthView();
+      }
+      ConnectedClients.Players[hitId].TakeDamage(damage);
+    }
 
     private void OnUse(int connectionId, int itemId) {
       if (connectionId != ConnectedClients.MyUser.connection_id) {
@@ -167,9 +194,11 @@
       }
     }
 
-    private void OnDrop(int worldId, int itemId, float x, float y, float z) {
+    private void OnDrop(int connectionId, int worldId, int itemId, float x, float y, float z) {
       _itemFactory.Spawn(worldId, itemId, x, y, z);
-      //TODO Refresh menu if open
+      if (connectionId == ConnectedClients.MyUser.connection_id && CanvasSettings.InventoryMenu.activeSelf) {
+        CanvasSettings.InventoryMenuController.RefreshMenu();
+      }
     }
 
     private void OnPickup(int connectionId, int worldId) {

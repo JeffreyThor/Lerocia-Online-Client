@@ -5,18 +5,13 @@ namespace New {
     private RaycastHit _hit;
     private const float Range = 3f;
     private int _lastItemHit = -1;
-    private PlayerHUDController _playerHudController;
-
-    private void Start() {
-      _playerHudController = CanvasSettings.PlayerHud.GetComponent<PlayerHUDController>();
-    }
 
     private void Update() {
       if (Physics.Raycast(gameObject.transform.position, transform.forward, out _hit, Range)) {
         if (_hit.transform.CompareTag("Item")) {
           if (_hit.transform.gameObject.GetComponent<ItemReference>().ItemId != _lastItemHit) {
             _lastItemHit = _hit.transform.gameObject.GetComponent<ItemReference>().ItemId;
-            _playerHudController.ActivateItemView(ItemList.Items[_lastItemHit]);
+            CanvasSettings.PlayerHudController.ActivateItemView(ItemList.Items[_lastItemHit]);
           }
 
           if (Input.GetKeyDown(KeyCode.E)) {
@@ -25,7 +20,7 @@ namespace New {
         }
       } else {
         _lastItemHit = -1;
-        _playerHudController.DeactivateItemView();
+        CanvasSettings.PlayerHudController.DeactivateItemView();
       }
     }
   }
