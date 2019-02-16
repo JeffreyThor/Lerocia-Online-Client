@@ -14,8 +14,9 @@
 		private Text _enemyName;
 		private GameObject _healthBar;
 		private Slider _healthBarSlider;
-		private GameObject _itemView;
-		private Text _itemName;
+		private GameObject _interactableView;
+		private Text _helpText;
+		private Text _name;
 		private GameObject _itemStatsContainer;
 		private Player _enemyPlayer;
 		private float _enemyViewUpdateTime;
@@ -33,9 +34,10 @@
 			_healthBar = transform.Find("HealthBar").gameObject;
 			_healthBarSlider = _healthBar.GetComponent<Slider>();
 			DeactivateHealthView();
-			_itemView = transform.Find("Item View").gameObject;
-			_itemName = _itemView.transform.Find("Item Name").GetComponent<Text>();
-			_itemStatsContainer = _itemView.transform.Find("Item Stats").gameObject;
+			_interactableView = transform.Find("Interactable View").gameObject;
+			_helpText = _interactableView.transform.Find("Help Text").GetComponent<Text>();
+			_name = _interactableView.transform.Find("Name").GetComponent<Text>();
+			_itemStatsContainer = _interactableView.transform.Find("Stats").gameObject;
 			DeactivateItemView();
 		}
 
@@ -53,13 +55,29 @@
 			}
 		}
 
+		public void ActivateNPCView(string npcName) {
+			_interactableView.SetActive(true);
+			CreateNPCView(npcName);
+		}
+
+		public void DeactivateNPCView()
+		{
+			_interactableView.SetActive(false);
+		}
+
+		private void CreateNPCView(string npcName)
+		{
+			_helpText.text = "(E) Talk";
+			_name.text = npcName;
+		}
+
 		public void ActivateItemView(BaseItem item) {
-			_itemView.SetActive(true);
+			_interactableView.SetActive(true);
 			UpdateItemView(item);
 		}
 		
 		public void DeactivateItemView() {
-			_itemView.SetActive(false);
+			_interactableView.SetActive(false);
 		}
 
 		private void UpdateItemView(BaseItem item) {
@@ -67,8 +85,10 @@
 			CreateItemView(item);
 		}
 
-		private void CreateItemView(BaseItem item) {
-			_itemName.text = ItemList.Items[item.GetId()].GetName();
+		private void CreateItemView(BaseItem item)
+		{
+			_helpText.text = "(E) Take";
+			_name.text = ItemList.Items[item.GetId()].GetName();
 			List<GameObject> statList = new List<GameObject>();
 			// Create stat object in item view for each stat on this item
 			foreach (KeyValuePair<string, string> stat in item.GetStats()) {
@@ -90,7 +110,7 @@
 		}
 	
 		private void DestroyItemView() {
-			Transform panel = transform.Find("Item View").transform.Find("Item Stats");
+			Transform panel = _interactableView.transform.Find("Item Stats");
 			foreach (Transform child in panel) {
 				Destroy(child.gameObject);
 			}
