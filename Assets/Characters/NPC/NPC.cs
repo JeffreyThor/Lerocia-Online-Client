@@ -7,7 +7,8 @@ namespace Characters.NPC {
   public class NPC : Character {
     private Dictionary<string, string> dialogues;
 
-    public NPC(string name, GameObject avatar) : base (name, avatar){
+    public NPC(string name, GameObject avatar, int maxHealth, int maxStamina, int baseDamage, int baseArmor) : base(
+      name, avatar, maxHealth, maxStamina, baseDamage, baseArmor) {
       dialogues = new Dictionary<string, string>();
     }
 

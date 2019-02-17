@@ -11,18 +11,19 @@
 		public GameObject MyPlayerPrefab;
 		public GameObject PlayerPrefab;
 
-		public void Spawn(string playerName, int connectionId) {
+		public void Spawn(string playerName, int connectionId, float x, float y, float z) {
 			if (ConnectedClients.MyUser.connection_id == connectionId) {
-				SpawnMyPlayer(playerName, connectionId);
+				SpawnMyPlayer(playerName, connectionId, x, y, z);
 			} else {
-				SpawnPlayer(playerName, connectionId);
+				SpawnPlayer(playerName, connectionId, x, y, z);
 			}
 		}
 
-		private void SpawnMyPlayer(string playerName, int connectionId) {
+		private void SpawnMyPlayer(string playerName, int connectionId, float x, float y, float z) {
 			// Create my player object
 			GameObject playerObject = Instantiate(MyPlayerPrefab);
 			playerObject.name = playerName;
+			playerObject.transform.position = new Vector3(x, y, z);
 			// Add MyPlayer specific components
 			playerObject.AddComponent<PlayerController>();
 			playerObject.transform.Find("FirstPersonCharacter").gameObject.AddComponent<PlayerCameraController>();
@@ -31,7 +32,7 @@
 			playerObject.GetComponent<PlayerReference>().ConnectionId = connectionId;
 			playerObject.AddComponent<CharacterAnimator>();
 			// Create new player
-			ConnectedClients.MyPlayer = new Player(playerName, playerObject);
+			ConnectedClients.MyPlayer = new Player(playerName, playerObject, 100, 100, 5, 0);
 			// Add my player to players dictionary
 			ConnectedClients.Players.Add(connectionId, ConnectedClients.MyPlayer);
 			//Disable login menu
@@ -43,10 +44,11 @@
 			NetworkSettings.IsStarted = true;
 		}
 
-		private void SpawnPlayer(string playerName, int connectionId) {
+		private void SpawnPlayer(string playerName, int connectionId, float x, float y, float z) {
 			// Create player object
 			GameObject playerObject = Instantiate(PlayerPrefab);
 			playerObject.name = playerName;
+			playerObject.transform.position = new Vector3(x, y, z);
 			// Add non-MyPlayer specific components
 			playerObject.AddComponent<CharacterLerpController>();
 			// Add universal player components
@@ -54,7 +56,7 @@
 			playerObject.GetComponent<PlayerReference>().ConnectionId = connectionId;
 			playerObject.AddComponent<CharacterAnimator>();
 			// Create new player
-			Player player = new Player(playerName, playerObject);
+			Player player = new Player(playerName, playerObject, 100, 100, 5, 0);
 			// Add player to players dictionary
 			ConnectedClients.Players.Add(connectionId, player);
 			// Set player references

@@ -21,7 +21,6 @@ namespace Characters.Players.Controllers {
           }
 
           if (Input.GetKeyDown(KeyCode.E)) {
-            Debug.Log("Picking up " + _hit.transform.gameObject.GetComponent<ItemReference>().WorldId);
             NetworkSend.Reliable("PICKUP|" + _hit.transform.gameObject.GetComponent<ItemReference>().WorldId);
           }
         }

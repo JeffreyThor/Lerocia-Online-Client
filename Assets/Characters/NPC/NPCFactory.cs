@@ -5,22 +5,25 @@ namespace Characters.NPC {
 
 	public class NPCFactory : MonoBehaviour {
 		public GameObject NPCPrefab;
+		
+		public void Spawn(string[] data) {
+			// Spawn all NPCs
+			for (int i = 1; i < data.Length; i++) {
+				string[] d = data[i].Split('%');
+				Spawn(d[0], int.Parse(d[1]), float.Parse(d[2]), float.Parse(d[3]), float.Parse(d[4]));
+			}
+		}
 
-		public void Spawn(string npcName, int npcId) {
-			// Create player object
+		public void Spawn(string npcName, int npcId, float x, float y, float z) {
 			GameObject npcObject = Instantiate(NPCPrefab);
 			npcObject.name = npcName;
-			// Add non-MyPlayer specific components
+			npcObject.transform.position = new Vector3(x, y, z);
 			npcObject.AddComponent<CharacterLerpController>();
-			// Add universal player components
 			npcObject.AddComponent<NPCReference>();
 			npcObject.GetComponent<NPCReference>().NPCId = npcId;
 			npcObject.AddComponent<CharacterAnimator>();
-			// Create new player
-			NPC npc = new NPC(npcName, npcObject);
-			// Add player to players dictionary
+			NPC npc = new NPC(npcName, npcObject, 100, 100, 5, 0);
 			ConnectedNPCs.NPCs.Add(npcId, npc);
-			// Set player references
 			ConnectedNPCs.NPCs[npcId].Avatar.GetComponent<CharacterLerpController>().Character = npc;
 		}
 	}

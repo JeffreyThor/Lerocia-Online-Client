@@ -29,7 +29,9 @@ namespace Characters {
     public int CurrentStamina;
     public int Gold;
     public int Weight;
+    public int BaseArmor;
     public int Armor;
+    public int BaseDamage;
     public int Damage;
 
     // Equipped armor & weapons
@@ -38,7 +40,7 @@ namespace Characters {
 
     public List<int> Inventory;
 
-    public Character(string name, GameObject avatar) {
+    public Character(string name, GameObject avatar, int maxHealth, int maxStamina, int baseDamage, int baseArmor) {
       Name = name;
       Avatar = avatar;
       IsLerpingPosition = false;
@@ -46,14 +48,16 @@ namespace Characters {
       RealPosition = avatar.transform.position;
       RealRotation = avatar.transform.rotation;
       TimeBetweenMovementStart = Time.time;
-      MaxHealth = 100;
+      MaxHealth = maxHealth;
       CurrentHealth = MaxHealth;
-      MaxStamina = 100;
+      MaxStamina = maxStamina;
       CurrentStamina = MaxStamina;
       Weight = 0;
       Gold = 0;
-      Armor = 0;
-      Damage = 0;
+      BaseDamage = baseDamage;
+      Damage = BaseDamage;
+      BaseArmor = baseArmor;
+      Armor = BaseArmor;
       Weapon = -1;
       Apparel = -1;
       Inventory = new List<int>();
@@ -64,14 +68,14 @@ namespace Characters {
         BaseWeapon weapon = ItemList.Items[Weapon] as BaseWeapon;
         Damage = weapon.GetDamage();
       } else {
-        Damage = 0;
+        Damage = BaseDamage;
       }
 
       if (Apparel >= 0) {
         BaseApparel apparel = ItemList.Items[Apparel] as BaseApparel;
         Armor = apparel.GetArmor();
       } else {
-        Armor = 0;
+        Armor = BaseArmor;
       }
     }
     

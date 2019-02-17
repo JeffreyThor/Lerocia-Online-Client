@@ -3,12 +3,10 @@ namespace Characters.Animation {
 
   public class CharacterAnimator : MonoBehaviour {
     public bool Attacking;
-    public bool Charging;
     private Animator _animator;
 
     private void Start() {
       Attacking = false;
-      Charging = false;
       _animator = GetComponent<Animator>();
     }
 
@@ -19,14 +17,7 @@ namespace Characters.Animation {
     }
 
     public void Attack() {
-      Charging = false;
-      Attacking = true;
-      _animator.SetTrigger("Attack");
-    }
-
-    public void Charge() {
-      Charging = true;
-      _animator.Play("Charge");
+      _animator.Play("Attack");
     }
   }
 }

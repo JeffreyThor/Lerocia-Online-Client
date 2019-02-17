@@ -1,8 +1,10 @@
-﻿namespace Networking {
+﻿
+namespace Networking {
   using System.Text;
   using UnityEngine;
   using UnityEngine.Networking;
   using Characters.Players;
+  using Characters.NPC;
   using Characters.Animation;
   using Items;
   using Menus;
@@ -11,10 +13,12 @@
     private GameObject _factory;
     private PlayerFactory _playerFactory;
     private ItemFactory _itemFactory;
+    private NPCFactory _npcFactory;
 
     private void Awake() {
       _factory = GameObject.Find("Factory");
       _playerFactory = _factory.GetComponent<PlayerFactory>();
+      _npcFactory = _factory.GetComponent<NPCFactory>();
       _itemFactory = _factory.GetComponent<ItemFactory>();
     }
 
@@ -40,6 +44,9 @@
             case "ASKNAME":
               OnAskName(splitData);
               break;
+            case "NPCS":
+              OnNPCs(splitData);
+              break;
             case "ITEMS":
               OnItems(splitData);
               break;
@@ -54,9 +61,6 @@
               break;
             case "ASKPOSITION":
               OnAskPosition(splitData);
-              break;
-            case "CHARGE":
-              OnCharge(int.Parse(splitData[1]));
               break;
             case "ATK":
               OnAttack(int.Parse(splitData[1]));
@@ -93,12 +97,17 @@
       // Create all the other players
       for (int i = 2; i < data.Length - 1; i++) {
         string[] d = data[i].Split('%');
-        _playerFactory.Spawn(d[0], int.Parse(d[1]));
+        //TODO Store and retrieve position to set
+        _playerFactory.Spawn(d[0], int.Parse(d[1]), 0, 0, 0);
       }
     }
 
     private void OnItems(string[] data) {
       _itemFactory.Spawn(data);
+    }
+    
+    private void OnNPCs(string[] data) {
+      _npcFactory.Spawn(data);
     }
 
     private void OnInventory(string[] data) {
@@ -108,7 +117,8 @@
     }
 
     private void OnConnect(string[] data) {
-      _playerFactory.Spawn(data[1], int.Parse(data[2]));
+      //TODO Store and retrieve position to set
+      _playerFactory.Spawn(data[1], int.Parse(data[2]), 0, 0, 0);
     }
 
     private void OnDisconnect(int connectionId) {
@@ -171,12 +181,6 @@
                         ConnectedClients.MyPlayer.TimeBetweenMovementStart);
       NetworkSend.Unreliable(message);
       ConnectedClients.MyPlayer.TimeBetweenMovementStart = Time.time;
-    }
-    
-    private void OnCharge(int connectionId) {
-      if (connectionId != ConnectedClients.MyUser.connection_id) {
-        ConnectedClients.Players[connectionId].Avatar.transform.GetComponent<CharacterAnimator>().Charge();
-      }
     }
     
     private void OnAttack(int connectionId) {

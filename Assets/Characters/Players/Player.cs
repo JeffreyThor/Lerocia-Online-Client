@@ -2,7 +2,8 @@ namespace Characters.Players {
   using UnityEngine;
 
   public class Player : Character {
-    public Player(string name, GameObject avatar) : base(name, avatar) { }
+    public Player(string name, GameObject avatar, int maxHealth, int maxStamina, int baseDamage, int baseArmor) : base(
+      name, avatar, maxHealth, maxStamina, baseDamage, baseArmor) { }
 
     protected override void Kill() {
       // Reset players health
