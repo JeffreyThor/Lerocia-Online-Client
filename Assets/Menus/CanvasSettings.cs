@@ -1,7 +1,7 @@
 ﻿namespace Menus {
   using UnityEngine;
   using UnityStandardAssets.Characters.FirstPerson;
-  using Players;
+  using Characters.Players;
   using Controllers;
 
   public static class CanvasSettings {

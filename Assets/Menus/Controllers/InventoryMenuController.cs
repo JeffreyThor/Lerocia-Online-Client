@@ -1,9 +1,11 @@
+using Characters;
+
 namespace Menus.Controllers {
   using System.Collections.Generic;
   using System.Linq;
   using UnityEngine;
   using UnityEngine.UI;
-  using Players;
+  using Characters.Players;
   using Items;
   using Networking;
 

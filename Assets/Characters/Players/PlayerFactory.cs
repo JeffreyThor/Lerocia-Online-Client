@@ -1,10 +1,11 @@
-﻿namespace Players {
+﻿namespace Characters.Players {
 	using UnityEngine;
 	using Menus;
 	using Controllers;
-	using Animation;
 	using Menus.Controllers;
 	using Networking;
+	using Animation;
+	using Characters.Controllers;
 
 	public class PlayerFactory : MonoBehaviour {
 		public GameObject MyPlayerPrefab;
@@ -28,7 +29,7 @@
 			// Add universal player components
 			playerObject.AddComponent<PlayerReference>();
 			playerObject.GetComponent<PlayerReference>().ConnectionId = connectionId;
-			playerObject.AddComponent<PlayerAnimator>();
+			playerObject.AddComponent<CharacterAnimator>();
 			// Create new player
 			ConnectedClients.MyPlayer = new Player(playerName, playerObject);
 			// Add my player to players dictionary
@@ -47,17 +48,17 @@
 			GameObject playerObject = Instantiate(PlayerPrefab);
 			playerObject.name = playerName;
 			// Add non-MyPlayer specific components
-			playerObject.AddComponent<PlayerLerpController>();
+			playerObject.AddComponent<CharacterLerpController>();
 			// Add universal player components
 			playerObject.AddComponent<PlayerReference>();
 			playerObject.GetComponent<PlayerReference>().ConnectionId = connectionId;
-			playerObject.AddComponent<PlayerAnimator>();
+			playerObject.AddComponent<CharacterAnimator>();
 			// Create new player
 			Player player = new Player(playerName, playerObject);
 			// Add player to players dictionary
 			ConnectedClients.Players.Add(connectionId, player);
 			// Set player references
-			ConnectedClients.Players[connectionId].Avatar.GetComponent<PlayerLerpController>().Player = player;
+			ConnectedClients.Players[connectionId].Avatar.GetComponent<CharacterLerpController>().Character = player;
 		}
 	}
 }

@@ -4,7 +4,7 @@
 	using UnityEngine.UI;
 	using Networking;
 	using Networking.Constants;
-	using Players;
+	using Characters.Players;
 
 	public class LoginMenuController : MonoBehaviour {
 

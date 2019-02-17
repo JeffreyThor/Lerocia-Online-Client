@@ -1,17 +1,17 @@
-﻿namespace Players.Controllers {
+﻿namespace Characters.Players.Controllers {
   using UnityEngine;
-  using Animation;
   using Menus;
   using Networking;
+  using Animation;
 
   public class PlayerController : MonoBehaviour {
-    private PlayerAnimator _playerAnimator;
+    private CharacterAnimator _playerAnimator;
     private float _chargeStartTime;
     private float _chargeEndTime;
     private const float Range = 10f;
 
     private void Start() {
-      _playerAnimator = gameObject.GetComponent<PlayerAnimator>();
+      _playerAnimator = gameObject.GetComponent<CharacterAnimator>();
     }
 
     private void Update() {

@@ -1,7 +1,7 @@
-namespace Players.Animation {
+namespace Characters.Animation {
   using UnityEngine;
 
-  public class PlayerAnimator : MonoBehaviour {
+  public class CharacterAnimator : MonoBehaviour {
     public bool Attacking;
     public bool Charging;
     private Animator _animator;

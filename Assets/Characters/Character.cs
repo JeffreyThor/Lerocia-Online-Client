@@ -1,11 +1,11 @@
-namespace Players {
+namespace Characters {
   using System.Collections.Generic;
   using UnityEngine;
   using Items;
   using Items.Weapons;
   using Items.Apparel;
 
-  public class Player {
+  public abstract class Character {
     // Identifiers
     public string Name;
     public GameObject Avatar;
@@ -38,7 +38,7 @@ namespace Players {
 
     public List<int> Inventory;
 
-    public Player(string name, GameObject avatar) {
+    public Character(string name, GameObject avatar) {
       Name = name;
       Avatar = avatar;
       IsLerpingPosition = false;
@@ -50,8 +50,8 @@ namespace Players {
       CurrentHealth = MaxHealth;
       MaxStamina = 100;
       CurrentStamina = MaxStamina;
-      Gold = 0;
       Weight = 0;
+      Gold = 0;
       Armor = 0;
       Damage = 0;
       Weapon = -1;
@@ -83,15 +83,10 @@ namespace Players {
 
       CurrentHealth -= damage;
       if (CurrentHealth <= 0) {
-        KillPlayer();
+        Kill();
       }
     }
 
-    private void KillPlayer() {
-      // Reset players health
-      CurrentHealth = MaxHealth;
-      // Move them back to "spawn" point
-      Avatar.transform.position = new Vector3(0, 1, 0);
-    }
+    protected abstract void Kill();
   }
 }

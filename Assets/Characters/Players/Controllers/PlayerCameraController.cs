@@ -1,4 +1,4 @@
-namespace Players.Controllers {
+namespace Characters.Players.Controllers {
   using UnityEngine;
   using Items;
   using Menus;
@@ -16,10 +16,12 @@ namespace Players.Controllers {
         if (_hit.transform.CompareTag("Item")) {
           if (_hit.transform.gameObject.GetComponent<ItemReference>().ItemId != _lastItemHit) {
             _lastItemHit = _hit.transform.gameObject.GetComponent<ItemReference>().ItemId;
-            CanvasSettings.PlayerHudController.ActivateItemView(ItemList.Items[_lastItemHit]);
+            CanvasSettings.PlayerHudController.ActivateInteractableView();
+            CanvasSettings.PlayerHudController.SetItemView(ItemList.Items[_lastItemHit]);
           }
 
           if (Input.GetKeyDown(KeyCode.E)) {
+            Debug.Log("Picking up " + _hit.transform.gameObject.GetComponent<ItemReference>().WorldId);
             NetworkSend.Reliable("PICKUP|" + _hit.transform.gameObject.GetComponent<ItemReference>().WorldId);
           }
         }
@@ -27,18 +29,19 @@ namespace Players.Controllers {
         if (_hit.transform.CompareTag("NPC")) {
           if (_hit.transform.gameObject.GetComponent<NPCReference>().NPCId != _lastNPCHit) {
             _lastNPCHit = _hit.transform.gameObject.GetComponent<NPCReference>().NPCId;
-            CanvasSettings.PlayerHudController.ActivateNPCView("Boring NPC");
+            CanvasSettings.PlayerHudController.ActivateInteractableView();
+            CanvasSettings.PlayerHudController.SetNPCView("Boring NPC");
           }
 
           if (Input.GetKeyDown(KeyCode.E)) {
+            Debug.Log("Talking to " + _hit.transform.gameObject.GetComponent<NPCReference>().NPCId);
             //TODO Handle NPC interaction
           }
         }
       } else {
         _lastItemHit = -1;
         _lastNPCHit = -1;
-        CanvasSettings.PlayerHudController.DeactivateItemView();
-        CanvasSettings.PlayerHudController.DeactivateNPCView();
+        CanvasSettings.PlayerHudController.DeactivateInteractableView();
       }
     }
   }

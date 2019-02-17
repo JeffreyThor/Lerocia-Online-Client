@@ -2,8 +2,8 @@
   using System.Text;
   using UnityEngine;
   using UnityEngine.Networking;
-  using Players;
-  using Players.Animation;
+  using Characters.Players;
+  using Characters.Animation;
   using Items;
   using Menus;
 
@@ -175,13 +175,13 @@
     
     private void OnCharge(int connectionId) {
       if (connectionId != ConnectedClients.MyUser.connection_id) {
-        ConnectedClients.Players[connectionId].Avatar.transform.GetComponent<PlayerAnimator>().Charge();
+        ConnectedClients.Players[connectionId].Avatar.transform.GetComponent<CharacterAnimator>().Charge();
       }
     }
     
     private void OnAttack(int connectionId) {
       if (connectionId != ConnectedClients.MyUser.connection_id) {
-        ConnectedClients.Players[connectionId].Avatar.GetComponent<PlayerAnimator>().Attack();
+        ConnectedClients.Players[connectionId].Avatar.GetComponent<CharacterAnimator>().Attack();
       }
     }
     
@@ -206,6 +206,7 @@
     }
 
     private void OnPickup(int connectionId, int worldId) {
+      Debug.Log("received pickup from " + connectionId + " of item " + worldId);
       ConnectedClients.Players[connectionId].Inventory
         .Add(ItemList.WorldItems[worldId].GetComponent<ItemReference>().ItemId);
       Destroy(ItemList.WorldItems[worldId]);
