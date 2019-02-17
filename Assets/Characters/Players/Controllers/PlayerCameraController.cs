@@ -3,7 +3,7 @@ namespace Characters.Players.Controllers {
   using Items;
   using Menus;
   using Networking;
-  using NPC;
+  using NPCs;
 
   public class PlayerCameraController : MonoBehaviour {
     private RaycastHit _hit;
@@ -29,11 +29,12 @@ namespace Characters.Players.Controllers {
           if (_hit.transform.gameObject.GetComponent<NPCReference>().NPCId != _lastNPCHit) {
             _lastNPCHit = _hit.transform.gameObject.GetComponent<NPCReference>().NPCId;
             CanvasSettings.PlayerHudController.ActivateInteractableView();
-            CanvasSettings.PlayerHudController.SetNPCView("Boring NPC");
+            CanvasSettings.PlayerHudController.SetNPCView(ConnectedCharacters.NPCs[_lastNPCHit].Name);
           }
 
           if (Input.GetKeyDown(KeyCode.E)) {
-            Debug.Log("Talking to " + _hit.transform.gameObject.GetComponent<NPCReference>().NPCId);
+            Debug.Log("Getting inventory for " + ConnectedCharacters.NPCs[_lastNPCHit].Name);
+            NetworkSend.Reliable("NPCITEMS|" + _lastNPCHit);
             //TODO Handle NPC interaction
           }
         }

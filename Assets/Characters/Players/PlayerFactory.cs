@@ -12,7 +12,7 @@
 		public GameObject PlayerPrefab;
 
 		public void Spawn(string playerName, int connectionId, float x, float y, float z) {
-			if (ConnectedClients.MyUser.connection_id == connectionId) {
+			if (ConnectedCharacters.MyUser.connection_id == connectionId) {
 				SpawnMyPlayer(playerName, connectionId, x, y, z);
 			} else {
 				SpawnPlayer(playerName, connectionId, x, y, z);
@@ -32,13 +32,13 @@
 			playerObject.GetComponent<PlayerReference>().ConnectionId = connectionId;
 			playerObject.AddComponent<CharacterAnimator>();
 			// Create new player
-			ConnectedClients.MyPlayer = new Player(playerName, playerObject, 100, 100, 5, 0);
+			ConnectedCharacters.MyPlayer = new Player(playerName, playerObject, 100, 100, 5, 0);
 			// Add my player to players dictionary
-			ConnectedClients.Players.Add(connectionId, ConnectedClients.MyPlayer);
+			ConnectedCharacters.Players.Add(connectionId, ConnectedCharacters.MyPlayer);
 			//Disable login menu
 			CanvasSettings.LoginMenu.SetActive(false);
 			// Activate player HUD
-			CanvasSettings.PlayerHud.GetComponent<PlayerHUDController>().Player = ConnectedClients.MyPlayer;
+			CanvasSettings.PlayerHud.GetComponent<PlayerHUDController>().Player = ConnectedCharacters.MyPlayer;
 			CanvasSettings.PlayerHud.SetActive(true);
 			// We are now safe to start
 			NetworkSettings.IsStarted = true;
@@ -58,9 +58,9 @@
 			// Create new player
 			Player player = new Player(playerName, playerObject, 100, 100, 5, 0);
 			// Add player to players dictionary
-			ConnectedClients.Players.Add(connectionId, player);
+			ConnectedCharacters.Players.Add(connectionId, player);
 			// Set player references
-			ConnectedClients.Players[connectionId].Avatar.GetComponent<CharacterLerpController>().Character = player;
+			ConnectedCharacters.Players[connectionId].Avatar.GetComponent<CharacterLerpController>().Character = player;
 		}
 	}
 }

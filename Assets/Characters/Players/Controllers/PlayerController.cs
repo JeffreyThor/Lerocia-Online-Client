@@ -3,6 +3,7 @@
   using Menus;
   using Networking;
   using Animation;
+  using NPCs;
 
   public class PlayerController : MonoBehaviour {
     private CharacterAnimator _characterAnimator;
@@ -36,8 +37,14 @@
       if (Physics.Raycast(gameObject.transform.position, transform.forward, out hit, Range)) {
         if (hit.transform.CompareTag("Player")) {
           int connectionId = hit.transform.gameObject.GetComponent<PlayerReference>().ConnectionId;
-          CanvasSettings.PlayerHudController.ActivateEnemyView(ConnectedClients.Players[connectionId]);
-          NetworkSend.Reliable("HIT|" + connectionId + "|" + ConnectedClients.MyPlayer.Damage);
+          CanvasSettings.PlayerHudController.ActivateEnemyView(ConnectedCharacters.Players[connectionId]);
+          NetworkSend.Reliable("HIT|" + connectionId + "|" + ConnectedCharacters.MyPlayer.Damage);
+        }
+
+        if (hit.transform.CompareTag("NPC")) {
+          int npcId = hit.transform.gameObject.GetComponent<NPCReference>().NPCId;
+          CanvasSettings.PlayerHudController.ActivateEnemyView(ConnectedCharacters.NPCs[npcId]);
+          NetworkSend.Reliable("HITNPC|" + npcId + "|" + ConnectedCharacters.MyPlayer.Damage);
         }
       }
     }

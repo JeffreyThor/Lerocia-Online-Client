@@ -1,4 +1,4 @@
-﻿namespace Characters.NPC {
+﻿namespace Characters.NPCs {
 	using UnityEngine;
 
 	public class NPCReference : MonoBehaviour {

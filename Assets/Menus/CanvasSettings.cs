@@ -1,7 +1,7 @@
 ﻿namespace Menus {
   using UnityEngine;
   using UnityStandardAssets.Characters.FirstPerson;
-  using Characters.Players;
+  using Characters;
   using Controllers;
 
   public static class CanvasSettings {
@@ -30,7 +30,7 @@
         if (InventoryMenu.activeSelf) {
           DeactivateMenu();
         } else {
-          ConnectedClients.MyPlayer.Avatar.GetComponent<FirstPersonController>().enabled = false;
+          ConnectedCharacters.MyPlayer.Avatar.GetComponent<FirstPersonController>().enabled = false;
           PlayerHud.SetActive(false);
           PauseMenu.SetActive(false);
           InventoryMenu.SetActive(true);
@@ -45,7 +45,7 @@
       } else {
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-        ConnectedClients.MyPlayer.Avatar.GetComponent<FirstPersonController>().enabled = false;
+        ConnectedCharacters.MyPlayer.Avatar.GetComponent<FirstPersonController>().enabled = false;
         PlayerHud.SetActive(false);
         if (InventoryMenu.activeSelf) {
           InventoryMenuController.CloseMenu();
@@ -56,7 +56,7 @@
     }
 
     private static void DeactivateMenu() {
-      ConnectedClients.MyPlayer.Avatar.GetComponent<FirstPersonController>().enabled = true;
+      ConnectedCharacters.MyPlayer.Avatar.GetComponent<FirstPersonController>().enabled = true;
       PauseMenu.SetActive(false);
       if (InventoryMenu.activeSelf) {
         InventoryMenuController.CloseMenu();

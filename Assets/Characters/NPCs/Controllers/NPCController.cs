@@ -1,4 +1,4 @@
-namespace Characters.NPC.Controllers {
+namespace Characters.NPCs.Controllers {
   using UnityEngine;
 
   public class NPCController : MonoBehaviour{

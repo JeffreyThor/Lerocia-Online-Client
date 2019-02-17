@@ -1,10 +1,10 @@
-﻿
-namespace Networking {
+﻿namespace Networking {
   using System.Text;
   using UnityEngine;
   using UnityEngine.Networking;
+  using Characters;
   using Characters.Players;
-  using Characters.NPC;
+  using Characters.NPCs;
   using Characters.Animation;
   using Items;
   using Menus;
@@ -68,15 +68,22 @@ namespace Networking {
             case "HIT":
               OnHit(int.Parse(splitData[1]), int.Parse(splitData[2]), int.Parse(splitData[3]));
               break;
+            case "HITNPC":
+              OnHitNPC(int.Parse(splitData[1]), int.Parse(splitData[2]), int.Parse(splitData[3]));
+              break;
             case "USE":
               OnUse(int.Parse(splitData[1]), int.Parse(splitData[2]));
               break;
             case "DROP":
-              OnDrop(int.Parse(splitData[1]), int.Parse(splitData[2]), int.Parse(splitData[3]), float.Parse(splitData[4]),
+              OnDrop(int.Parse(splitData[1]), int.Parse(splitData[2]), int.Parse(splitData[3]),
+                float.Parse(splitData[4]),
                 float.Parse(splitData[5]), float.Parse(splitData[6]));
               break;
             case "PICKUP":
               OnPickup(int.Parse(splitData[1]), int.Parse(splitData[2]));
+              break;
+            case "NPCITEMS":
+              OnNPCItems(splitData);
               break;
             default:
               Debug.Log("Invalid message : " + message);
@@ -89,10 +96,10 @@ namespace Networking {
 
     private void OnAskName(string[] data) {
       // Set this client's ID
-      ConnectedClients.MyUser.connection_id = int.Parse(data[1]);
+      ConnectedCharacters.MyUser.connection_id = int.Parse(data[1]);
 
       // Send our name to the server
-      NetworkSend.Reliable("NAMEIS|" + ConnectedClients.MyUser.username + "|" + ConnectedClients.MyUser.user_id);
+      NetworkSend.Reliable("NAMEIS|" + ConnectedCharacters.MyUser.username + "|" + ConnectedCharacters.MyUser.user_id);
 
       // Create all the other players
       for (int i = 2; i < data.Length - 1; i++) {
@@ -105,14 +112,14 @@ namespace Networking {
     private void OnItems(string[] data) {
       _itemFactory.Spawn(data);
     }
-    
+
     private void OnNPCs(string[] data) {
       _npcFactory.Spawn(data);
     }
 
     private void OnInventory(string[] data) {
       for (int i = 1; i < data.Length; i++) {
-        ConnectedClients.MyPlayer.Inventory.Add(int.Parse(data[i]));
+        ConnectedCharacters.MyPlayer.Inventory.Add(int.Parse(data[i]));
       }
     }
 
@@ -122,8 +129,8 @@ namespace Networking {
     }
 
     private void OnDisconnect(int connectionId) {
-      Destroy(ConnectedClients.Players[connectionId].Avatar);
-      ConnectedClients.Players.Remove(connectionId);
+      Destroy(ConnectedCharacters.Players[connectionId].Avatar);
+      ConnectedCharacters.Players.Remove(connectionId);
     }
 
     private void OnAskPosition(string[] data) {
@@ -136,7 +143,7 @@ namespace Networking {
         string[] d = data[i].Split('%');
 
         // Prevent the server from updating us
-        if (ConnectedClients.MyUser.connection_id != int.Parse(d[0])) {
+        if (ConnectedCharacters.MyUser.connection_id != int.Parse(d[0])) {
           Vector3 position = Vector3.zero;
           position.x = float.Parse(d[1]);
           position.y = float.Parse(d[2]);
@@ -148,73 +155,85 @@ namespace Networking {
           rotation.y = float.Parse(d[6]);
           rotation.z = float.Parse(d[7]);
 
-          ConnectedClients.Players[int.Parse(d[0])].LastRealPosition =
-            ConnectedClients.Players[int.Parse(d[0])].RealPosition;
-          ConnectedClients.Players[int.Parse(d[0])].LastRealRotation =
-            ConnectedClients.Players[int.Parse(d[0])].RealRotation;
+          ConnectedCharacters.Players[int.Parse(d[0])].LastRealPosition =
+            ConnectedCharacters.Players[int.Parse(d[0])].RealPosition;
+          ConnectedCharacters.Players[int.Parse(d[0])].LastRealRotation =
+            ConnectedCharacters.Players[int.Parse(d[0])].RealRotation;
 
-          ConnectedClients.Players[int.Parse(d[0])].RealPosition = position;
-          ConnectedClients.Players[int.Parse(d[0])].RealRotation = rotation;
+          ConnectedCharacters.Players[int.Parse(d[0])].RealPosition = position;
+          ConnectedCharacters.Players[int.Parse(d[0])].RealRotation = rotation;
 
-          ConnectedClients.Players[int.Parse(d[0])].TimeToLerp = float.Parse(d[8]);
-          if (ConnectedClients.Players[int.Parse(d[0])].RealPosition !=
-              ConnectedClients.Players[int.Parse(d[0])].Avatar.transform.position) {
-            ConnectedClients.Players[int.Parse(d[0])].IsLerpingPosition = true;
+          ConnectedCharacters.Players[int.Parse(d[0])].TimeToLerp = float.Parse(d[8]);
+          if (ConnectedCharacters.Players[int.Parse(d[0])].RealPosition !=
+              ConnectedCharacters.Players[int.Parse(d[0])].Avatar.transform.position) {
+            ConnectedCharacters.Players[int.Parse(d[0])].IsLerpingPosition = true;
           }
 
-          if (ConnectedClients.Players[int.Parse(d[0])].RealRotation !=
-              ConnectedClients.Players[int.Parse(d[0])].Avatar.transform.rotation) {
-            ConnectedClients.Players[int.Parse(d[0])].IsLerpingRotation = true;
+          if (ConnectedCharacters.Players[int.Parse(d[0])].RealRotation !=
+              ConnectedCharacters.Players[int.Parse(d[0])].Avatar.transform.rotation) {
+            ConnectedCharacters.Players[int.Parse(d[0])].IsLerpingRotation = true;
           }
 
-          ConnectedClients.Players[int.Parse(d[0])].TimeStartedLerping = Time.time;
+          ConnectedCharacters.Players[int.Parse(d[0])].TimeStartedLerping = Time.time;
         }
       }
 
       // Send our own position
-      Vector3 myPosition = ConnectedClients.MyPlayer.Avatar.transform.position;
-      Quaternion myRotation = ConnectedClients.MyPlayer.Avatar.transform.rotation;
-      ConnectedClients.MyPlayer.TimeBetweenMovementEnd = Time.time;
+      Vector3 myPosition = ConnectedCharacters.MyPlayer.Avatar.transform.position;
+      Quaternion myRotation = ConnectedCharacters.MyPlayer.Avatar.transform.rotation;
+      ConnectedCharacters.MyPlayer.TimeBetweenMovementEnd = Time.time;
       string message = "MYPOSITION|" + myPosition.x + '|' + myPosition.y + '|' + myPosition.z + '|' + myRotation.w +
                        '|' + +myRotation.x + '|' + +myRotation.y + '|' + +myRotation.z + '|' +
-                       (ConnectedClients.MyPlayer.TimeBetweenMovementEnd -
-                        ConnectedClients.MyPlayer.TimeBetweenMovementStart);
+                       (ConnectedCharacters.MyPlayer.TimeBetweenMovementEnd -
+                        ConnectedCharacters.MyPlayer.TimeBetweenMovementStart);
       NetworkSend.Unreliable(message);
-      ConnectedClients.MyPlayer.TimeBetweenMovementStart = Time.time;
+      ConnectedCharacters.MyPlayer.TimeBetweenMovementStart = Time.time;
     }
-    
+
     private void OnAttack(int connectionId) {
-      if (connectionId != ConnectedClients.MyUser.connection_id) {
-        ConnectedClients.Players[connectionId].Avatar.GetComponent<CharacterAnimator>().Attack();
+      if (connectionId != ConnectedCharacters.MyUser.connection_id) {
+        ConnectedCharacters.Players[connectionId].Avatar.GetComponent<CharacterAnimator>().Attack();
       }
     }
-    
+
     private void OnHit(int connectionId, int hitId, int damage) {
-      if (hitId == ConnectedClients.MyUser.connection_id) {
+      if (hitId == ConnectedCharacters.MyUser.connection_id) {
         CanvasSettings.PlayerHudController.ActivateHealthView();
       }
-      ConnectedClients.Players[hitId].TakeDamage(damage);
+
+      ConnectedCharacters.Players[hitId].TakeDamage(damage);
+    }
+
+    private void OnHitNPC(int connectionId, int hitId, int damage) {
+      ConnectedCharacters.NPCs[hitId].TakeDamage(damage);
     }
 
     private void OnUse(int connectionId, int itemId) {
-      if (connectionId != ConnectedClients.MyUser.connection_id) {
-        ItemList.Items[itemId].Use(ConnectedClients.Players[connectionId]);
+      if (connectionId != ConnectedCharacters.MyUser.connection_id) {
+        ItemList.Items[itemId].Use(ConnectedCharacters.Players[connectionId]);
       }
     }
 
     private void OnDrop(int connectionId, int worldId, int itemId, float x, float y, float z) {
       _itemFactory.Spawn(worldId, itemId, x, y, z);
-      if (connectionId == ConnectedClients.MyUser.connection_id && CanvasSettings.InventoryMenu.activeSelf) {
+      if (connectionId == ConnectedCharacters.MyUser.connection_id && CanvasSettings.InventoryMenu.activeSelf) {
         CanvasSettings.InventoryMenuController.RefreshMenu();
       }
     }
 
     private void OnPickup(int connectionId, int worldId) {
       Debug.Log("received pickup from " + connectionId + " of item " + worldId);
-      ConnectedClients.Players[connectionId].Inventory
+      ConnectedCharacters.Players[connectionId].Inventory
         .Add(ItemList.WorldItems[worldId].GetComponent<ItemReference>().ItemId);
       Destroy(ItemList.WorldItems[worldId]);
       ItemList.WorldItems.Remove(worldId);
+    }
+
+    private void OnNPCItems(string[] data) {
+      Debug.Log("Inventory for " + ConnectedCharacters.NPCs[int.Parse(data[1])].Name);
+      for (int i = 2; i < data.Length; i++) {
+        Debug.Log(ItemList.Items[int.Parse(data[i])].GetName());
+      }
     }
   }
 }

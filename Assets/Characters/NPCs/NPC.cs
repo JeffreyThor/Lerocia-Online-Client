@@ -1,8 +1,8 @@
-using System.Collections.Generic;
-using Characters.NPC.Controllers;
-
-namespace Characters.NPC {
+namespace Characters.NPCs {
   using UnityEngine;
+  using System.Collections.Generic;
+  using Controllers;
+  using Menus;
 
   public class NPC : Character {
     private Dictionary<string, string> dialogues;
@@ -14,6 +14,7 @@ namespace Characters.NPC {
 
     protected override void Kill() {
       Avatar.GetComponent<NPCController>().Destroy();
+      CanvasSettings.PlayerHudController.DeactivateEnemyView();
     }
   }
 }
