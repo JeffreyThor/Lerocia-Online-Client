@@ -35,7 +35,7 @@ namespace Characters.Players.Controllers {
           if (Input.GetKeyDown(KeyCode.E)) {
             Debug.Log("Getting inventory for " + ConnectedCharacters.NPCs[_lastNPCHit].Name);
             NetworkSend.Reliable("NPCITEMS|" + _lastNPCHit);
-            //TODO Handle NPC interaction
+            ConnectedCharacters.NPCs[_lastNPCHit].Interact("Talk");
           }
         }
       } else {

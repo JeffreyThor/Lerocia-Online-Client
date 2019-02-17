@@ -15,15 +15,23 @@ namespace Menus.Controllers {
     private Text _enemyName;
     private GameObject _healthBar;
     private Slider _healthBarSlider;
+    private GameObject _staminaBar;
+    private Slider _staminaBarSlider;
     private GameObject _interactableView;
     private Text _helpText;
     private Text _name;
     private GameObject _statsContainer;
+    private GameObject _caption;
+    private Text _captionText;
     private Character _enemyCharacter;
     private float _enemyViewUpdateTime;
     private const float EnemyViewTimer = 30.0f;
     private float _healthViewUpdateTime;
     private const float HealthViewTimer = 30.0f;
+    private float _staminaViewUpdateTime;
+    private const float StaminaViewTimer = 30.0f;
+    private float _captionViewUpdateTime;
+    private const float CaptionViewTimer = 10.0f;
     public Player Player;
 
     // Use this for initialization
@@ -35,15 +43,22 @@ namespace Menus.Controllers {
       _healthBar = transform.Find("HealthBar").gameObject;
       _healthBarSlider = _healthBar.GetComponent<Slider>();
       DeactivateHealthView();
+      _staminaBar = transform.Find("StaminaBar").gameObject;
+      _staminaBarSlider = _staminaBar.GetComponent<Slider>();
+      DeactivateStaminaView();
       _interactableView = transform.Find("Interactable View").gameObject;
       _helpText = _interactableView.transform.Find("Help Text").GetComponent<Text>();
       _name = _interactableView.transform.Find("Name").GetComponent<Text>();
       _statsContainer = _interactableView.transform.Find("Stats").gameObject;
       DeactivateInteractableView();
+      _caption = transform.Find("Caption").gameObject;
+      _captionText = _caption.GetComponent<Text>();
+      DeactivateCaptionView();
     }
 
     private void Update() {
       _healthBarSlider.value = Player.CurrentHealth;
+      _staminaBarSlider.value = Player.CurrentStamina;
       if (_enemyCharacter != null) {
         _enemyHealthBar.value = _enemyCharacter.CurrentHealth;
         if (Time.time - _enemyViewUpdateTime > EnemyViewTimer) {
@@ -53,6 +68,14 @@ namespace Menus.Controllers {
 
       if (Time.time - _healthViewUpdateTime > HealthViewTimer) {
         DeactivateHealthView();
+      }
+
+      if (Time.time - _staminaViewUpdateTime > StaminaViewTimer) {
+        DeactivateHealthView();
+      }
+
+      if (Time.time - _captionViewUpdateTime > CaptionViewTimer) {
+        DeactivateCaptionView();
       }
     }
 
@@ -117,6 +140,25 @@ namespace Menus.Controllers {
 
     public void DeactivateHealthView() {
       _healthBar.SetActive(false);
+    }
+
+    public void ActivateStaminaView() {
+      _staminaViewUpdateTime = Time.time;
+      _staminaBar.SetActive(true);
+    }
+
+    public void DeactivateStaminaView() {
+      _staminaBar.SetActive(false);
+    }
+
+    public void ActivateCaptionView(string caption) {
+      _captionViewUpdateTime = Time.time;
+      _captionText.text = caption;
+      _caption.SetActive(true);
+    }
+
+    public void DeactivateCaptionView() {
+      _caption.SetActive(false);
     }
   }
 }

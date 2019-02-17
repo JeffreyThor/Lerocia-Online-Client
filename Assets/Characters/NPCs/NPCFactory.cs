@@ -1,4 +1,5 @@
 namespace Characters.NPCs {
+	using System.Collections.Generic;
 	using UnityEngine;
 	using Animation;
 	using Characters.Controllers;
@@ -24,7 +25,13 @@ namespace Characters.NPCs {
 			npcObject.AddComponent<NPCReference>();
 			npcObject.GetComponent<NPCReference>().NPCId = npcId;
 			npcObject.AddComponent<CharacterAnimator>();
-			NPC npc = new NPC(npcName, npcObject, 100, 100, 5, 0);
+			Dictionary<string, Dialogue> dialogues = new Dictionary<string, Dialogue> {
+				{
+					"Talk",
+					new Dialogue("Hi stranger.", null)
+				}
+			};
+			NPC npc = new NPC(npcName, npcObject, 100, 100, 5, 0, dialogues);
 			ConnectedCharacters.NPCs.Add(npcId, npc);
 			ConnectedCharacters.NPCs[npcId].Avatar.GetComponent<CharacterLerpController>().Character = npc;
 		}
