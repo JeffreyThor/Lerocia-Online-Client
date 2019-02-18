@@ -222,7 +222,6 @@
     }
 
     private void OnPickup(int connectionId, int worldId) {
-      Debug.Log("received pickup from " + connectionId + " of item " + worldId);
       ConnectedCharacters.Players[connectionId].Inventory
         .Add(ItemList.WorldItems[worldId].GetComponent<ItemReference>().ItemId);
       Destroy(ItemList.WorldItems[worldId]);
@@ -230,9 +229,9 @@
     }
 
     private void OnNPCItems(string[] data) {
-      Debug.Log("Inventory for " + ConnectedCharacters.NPCs[int.Parse(data[1])].Name);
       for (int i = 2; i < data.Length; i++) {
         Debug.Log(ItemList.Items[int.Parse(data[i])].GetName());
+        //TODO Handle receiving NPC inventory
       }
     }
   }

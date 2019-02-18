@@ -869,7 +869,7 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RenderingLayerMask: 4294967295
   m_Materials:
-  - {fileID: 2100000, guid: d4e9df04ee8c64226a1372bc6dec6ca7, type: 2}
+  - {fileID: 2100000, guid: a761aa011139442d682bdc2e838f227e, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -6160,6 +6160,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _itemStatPrefab: {fileID: 1282654357371114, guid: 6ab2fa04480ef4adaa01d424f86fa745,
     type: 2}
+  _dialoguePrefab: {fileID: 1496099335356400, guid: 5f7d8cdcc1ea142e99f626d2f834fcf3,
+    type: 2}
 --- !u!1 &1103295373
 GameObject:
   m_ObjectHideFlags: 0
@@ -10541,7 +10543,7 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RenderingLayerMask: 4294967295
   m_Materials:
-  - {fileID: 2100000, guid: 5b3e4a5f8dd8b4213a3278c0af3915be, type: 2}
+  - {fileID: 2100000, guid: a761aa011139442d682bdc2e838f227e, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -11142,7 +11144,7 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RenderingLayerMask: 4294967295
   m_Materials:
-  - {fileID: 2100000, guid: 11cfb1af7fa3144efaaea8489e2966d8, type: 2}
+  - {fileID: 2100000, guid: 04be73918aef14c629bae4a78003befb, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -11268,7 +11270,7 @@ GameObject:
   - component: {fileID: 2049095022}
   - component: {fileID: 2049095021}
   m_Layer: 5
-  m_Name: Dialogue Selector Panel
+  m_Name: Dialogue View
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -11290,8 +11292,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 199.99997, y: -75}
-  m_SizeDelta: {x: 200, y: 70}
+  m_AnchoredPosition: {x: 212.50003, y: -47.500004}
+  m_SizeDelta: {x: 200, y: 125}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2049095021
 MonoBehaviour:

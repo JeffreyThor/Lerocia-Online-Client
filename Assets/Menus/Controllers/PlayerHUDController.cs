@@ -1,14 +1,17 @@
-﻿using Characters;
-
-namespace Menus.Controllers {
+﻿namespace Menus.Controllers {
   using System.Collections.Generic;
+  using UnityStandardAssets.Characters.FirstPerson;
   using UnityEngine;
   using UnityEngine.UI;
+  using Characters;
   using Characters.Players;
+  using Characters.Players.Controllers;
+  using Characters.NPCs;
   using Items;
 
   public class PlayerHUDController : MonoBehaviour {
     [SerializeField] private GameObject _itemStatPrefab;
+    [SerializeField] private GameObject _dialoguePrefab;
 
     private GameObject _enemyView;
     private Slider _enemyHealthBar;
@@ -21,6 +24,14 @@ namespace Menus.Controllers {
     private Text _helpText;
     private Text _name;
     private GameObject _statsContainer;
+    private GameObject _dialogueView;
+    private List<GameObject> _dialogueList;
+    private int _currentDialogueIndex;
+    private GameObject _currentDialogue;
+    private bool _isDialogueView;
+    private Character _currentInteractingCharacter;
+    private const float ScrollDelay = 0.25f;
+    private float _lastScrollTime;
     private GameObject _caption;
     private Text _captionText;
     private Character _enemyCharacter;
@@ -51,6 +62,12 @@ namespace Menus.Controllers {
       _name = _interactableView.transform.Find("Name").GetComponent<Text>();
       _statsContainer = _interactableView.transform.Find("Stats").gameObject;
       DeactivateInteractableView();
+      _dialogueView = transform.Find("Dialogue View").gameObject;
+      _dialogueList = new List<GameObject>();
+      _currentDialogueIndex = 0;
+      _lastScrollTime = 0;
+      _isDialogueView = false;
+      DeactivateDialogueView();
       _caption = transform.Find("Caption").gameObject;
       _captionText = _caption.GetComponent<Text>();
       DeactivateCaptionView();
@@ -76,6 +93,28 @@ namespace Menus.Controllers {
 
       if (Time.time - _captionViewUpdateTime > CaptionViewTimer) {
         DeactivateCaptionView();
+      }
+
+      if (_isDialogueView && Time.time - _lastScrollTime > ScrollDelay) {
+        if (Input.GetAxis("Vertical") > 0) {
+          MoveUp();
+        } else if (Input.GetAxis("Vertical") < 0) {
+          MoveDown();
+        }
+      }
+
+      if (_isDialogueView && Time.time - _lastScrollTime > ScrollDelay) {
+        if (Input.GetKeyDown(KeyCode.E)) {
+          string[] options = ConnectedCharacters
+            .NPCs[_currentInteractingCharacter.Avatar.GetComponent<NPCReference>().NPCId]
+            .Interact(_currentDialogue.GetComponent<Text>().text);
+          if (options != null) {
+            UpdateDialogueView(options);
+          } else {
+            DeactivateDialogueView();
+            CanvasSettings.ToggleControl(true);
+          }
+        }
       }
     }
 
@@ -159,6 +198,81 @@ namespace Menus.Controllers {
 
     public void DeactivateCaptionView() {
       _caption.SetActive(false);
+    }
+
+    public void ActivateDialogueView(Character character, string[] options) {
+      _dialogueView.SetActive(true);
+      _isDialogueView = true;
+      _currentInteractingCharacter = character;
+      _helpText.text = character.Name;
+      _name.text = "";
+      _lastScrollTime = Time.time;
+      _currentDialogueIndex = 0;
+      //TODO Set up dialogue options in dialogue view
+      _dialogueList.Clear();
+      Vector3 nextPosition = Vector3.zero;
+      foreach (string dialogue in options) {
+        GameObject dialogueObject = Instantiate(_dialoguePrefab);
+        dialogueObject.transform.SetParent(_dialogueView.transform, false);
+        dialogueObject.GetComponent<Text>().text = dialogue;
+        dialogueObject.transform.localPosition = nextPosition;
+        nextPosition = new Vector3(0, nextPosition.y - dialogueObject.GetComponent<RectTransform>().rect.height, 0);
+        _dialogueList.Add(dialogueObject);
+      }
+
+      SetCurrentDialogue();
+    }
+
+    public void DeactivateDialogueView() {
+      _dialogueView.SetActive(false);
+      //TODO Delete dialogue options from dialogue view
+      foreach (GameObject dialogue in _dialogueList) {
+        Destroy(dialogue);
+      }
+
+      _dialogueList.Clear();
+      _currentDialogueIndex = 0;
+      _isDialogueView = false;
+    }
+
+    private void UpdateDialogueView(string[] options) {
+      DeactivateDialogueView();
+      ActivateDialogueView(_currentInteractingCharacter, options);
+    }
+
+    private void MoveUp() {
+      if (_currentDialogueIndex > 0) {
+        MoveVertical(-1);
+      }
+    }
+
+    private void MoveDown() {
+      if (_currentDialogueIndex < _dialogueList.Count - 1) {
+        MoveVertical(1);
+      }
+    }
+
+    private void MoveVertical(int directionMultiplier) {
+      _lastScrollTime = Time.time;
+      _currentDialogueIndex += directionMultiplier;
+      // Move all text upwards
+      foreach (GameObject dialogue in _dialogueList) {
+        dialogue.transform.localPosition = new Vector3(0,
+          dialogue.transform.localPosition.y + dialogue.GetComponent<RectTransform>().rect.height * directionMultiplier,
+          0);
+      }
+
+      // Update which item list based on new category
+      SetCurrentDialogue();
+    }
+
+    private void SetCurrentDialogue() {
+      // Set category based on height in list (in line with selector)
+      foreach (GameObject dialogue in _dialogueList) {
+        if (dialogue.transform.localPosition.y == 0) {
+          _currentDialogue = dialogue;
+        }
+      }
     }
   }
 }

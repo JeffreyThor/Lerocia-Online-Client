@@ -11,6 +11,11 @@ namespace Characters.Players.Controllers {
     private int _lastItemHit = -1;
     private int _lastNPCHit = -1;
 
+    private void OnEnable() {
+      _lastItemHit = -1;
+      _lastNPCHit = -1;
+    }
+
     private void Update() {
       if (Physics.Raycast(gameObject.transform.position, transform.forward, out _hit, Range)) {
         if (_hit.transform.CompareTag("Item")) {
@@ -24,7 +29,7 @@ namespace Characters.Players.Controllers {
             NetworkSend.Reliable("PICKUP|" + _hit.transform.gameObject.GetComponent<ItemReference>().WorldId);
           }
         }
-        
+
         if (_hit.transform.CompareTag("NPC")) {
           if (_hit.transform.gameObject.GetComponent<NPCReference>().NPCId != _lastNPCHit) {
             _lastNPCHit = _hit.transform.gameObject.GetComponent<NPCReference>().NPCId;
@@ -33,9 +38,11 @@ namespace Characters.Players.Controllers {
           }
 
           if (Input.GetKeyDown(KeyCode.E)) {
-            Debug.Log("Getting inventory for " + ConnectedCharacters.NPCs[_lastNPCHit].Name);
-            NetworkSend.Reliable("NPCITEMS|" + _lastNPCHit);
-            ConnectedCharacters.NPCs[_lastNPCHit].Interact("Talk");
+            string[] options = ConnectedCharacters.NPCs[_lastNPCHit].Interact("Talk");
+            if (options != null) {
+              CanvasSettings.PlayerHudController.ActivateDialogueView(ConnectedCharacters.NPCs[_lastNPCHit], options);
+              CanvasSettings.ToggleControl(false);
+            }
           }
         }
       } else {
