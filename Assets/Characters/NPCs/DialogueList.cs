@@ -5,10 +5,21 @@ namespace Characters.NPCs {
     public static readonly Dictionary<string, Dictionary<string, Dialogue>> Dialogues =
       new Dictionary<string, Dictionary<string, Dialogue>> {
         {
+          "Dead",
+          new Dictionary<string, Dialogue> {
+            {
+              "INTERACT",
+              new Dialogue("",
+                new[] {
+                  "LootBody"
+                })
+            }
+          }
+        }, {
           "Harold",
           new Dictionary<string, Dialogue> {
             {
-              "Talk",
+              "INTERACT",
               new Dialogue("Hi! I'm a friendly NPC, want to talk?",
                 new[] {
                   "Yea, sure.",
@@ -36,7 +47,7 @@ namespace Characters.NPCs {
           "Albert",
           new Dictionary<string, Dialogue> {
             {
-              "Talk",
+              "INTERACT",
               new Dialogue("Some NPC's are merchants, like me. Want to buy something?",
                 new[] {
                   "Show me what you've got!",
@@ -57,7 +68,7 @@ namespace Characters.NPCs {
           "Clarence",
           new Dictionary<string, Dialogue> {
             {
-              "Talk",
+              "INTERACT",
               new Dialogue("Not all NPC's are up for a conversation, don't take it personally.", null)
             }
           }

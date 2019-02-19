@@ -148,6 +148,11 @@
       _name.text = npcName;
     }
 
+    public void SetLootView(string name) {
+      _helpText.text = "(E) Loot";
+      _name.text = name;
+    }
+
     public void SetItemView(BaseItem item) {
       _helpText.text = "(E) Take";
       _name.text = ItemList.Items[item.GetId()].GetName();

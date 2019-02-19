@@ -26,11 +26,17 @@ namespace Characters.NPCs {
 
     protected override void Kill() {
       //TODO Handle NPC death
+      IsDead = true;
+      _dialogues = DialogueList.Dialogues["Dead"];
       NetworkSend.Reliable("NPCITEMS|" + Avatar.GetComponent<NPCReference>().NPCId);
     }
 
     public void StartMerchant() {
       Debug.Log("Starting Merchant");
+    }
+
+    public void LootBody() {
+      Debug.Log("Looting Body");
     }
   }
 }

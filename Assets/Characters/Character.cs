@@ -33,6 +33,7 @@ namespace Characters {
     public int Armor;
     public int BaseDamage;
     public int Damage;
+    public bool IsDead;
 
     // Equipped armor & weapons
     public int Weapon;
@@ -58,6 +59,7 @@ namespace Characters {
       Damage = BaseDamage;
       BaseArmor = baseArmor;
       Armor = BaseArmor;
+      IsDead = false;
       Weapon = -1;
       Apparel = -1;
       Inventory = new List<int>();
@@ -80,14 +82,16 @@ namespace Characters {
     }
     
     public void TakeDamage(int damage) {
-      damage = damage - Armor;
-      if (damage <= 0) {
-        damage = 0;
-      }
+      if (!IsDead) {
+        damage = damage - Armor;
+        if (damage <= 0) {
+          damage = 0;
+        }
 
-      CurrentHealth -= damage;
-      if (CurrentHealth <= 0) {
-        Kill();
+        CurrentHealth -= damage;
+        if (CurrentHealth <= 0) {
+          Kill();
+        }
       }
     }
 

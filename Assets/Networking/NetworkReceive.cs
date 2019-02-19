@@ -76,8 +76,7 @@
               break;
             case "DROP":
               OnDrop(int.Parse(splitData[1]), int.Parse(splitData[2]), int.Parse(splitData[3]),
-                float.Parse(splitData[4]),
-                float.Parse(splitData[5]), float.Parse(splitData[6]));
+                float.Parse(splitData[4]), float.Parse(splitData[5]), float.Parse(splitData[6]));
               break;
             case "PICKUP":
               OnPickup(int.Parse(splitData[1]), int.Parse(splitData[2]));
@@ -229,9 +228,10 @@
     }
 
     private void OnNPCItems(string[] data) {
+      // Populate NPC inventory
+      ConnectedCharacters.NPCs[int.Parse(data[1])].Inventory.Clear();
       for (int i = 2; i < data.Length; i++) {
-        Debug.Log(ItemList.Items[int.Parse(data[i])].GetName());
-        //TODO Handle receiving NPC inventory
+        ConnectedCharacters.NPCs[int.Parse(data[1])].Inventory.Add(int.Parse(data[i]));
       }
     }
   }
