@@ -28,5 +28,9 @@ namespace Characters.NPCs {
       //TODO Handle NPC death
       NetworkSend.Reliable("NPCITEMS|" + Avatar.GetComponent<NPCReference>().NPCId);
     }
+
+    public void StartMerchant() {
+      Debug.Log("Starting Merchant");
+    }
   }
 }

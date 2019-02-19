@@ -38,11 +38,8 @@ namespace Characters.Players.Controllers {
           }
 
           if (Input.GetKeyDown(KeyCode.E)) {
-            string[] options = ConnectedCharacters.NPCs[_lastNPCHit].Interact("Talk");
-            if (options != null) {
-              CanvasSettings.PlayerHudController.ActivateDialogueView(ConnectedCharacters.NPCs[_lastNPCHit], options);
-              CanvasSettings.ToggleControl(false);
-            }
+            CanvasSettings.PlayerHudController.SetCurrentInteractingCharacter(ConnectedCharacters.NPCs[_lastNPCHit]);
+            CanvasSettings.PlayerHudController.Interact("Talk");
           }
         }
       } else {

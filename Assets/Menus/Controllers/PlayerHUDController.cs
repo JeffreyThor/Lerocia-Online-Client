@@ -1,11 +1,11 @@
 ﻿namespace Menus.Controllers {
   using System.Collections.Generic;
-  using UnityStandardAssets.Characters.FirstPerson;
+  using System;
+  using System.Reflection;
   using UnityEngine;
   using UnityEngine.UI;
   using Characters;
   using Characters.Players;
-  using Characters.Players.Controllers;
   using Characters.NPCs;
   using Items;
 
@@ -105,15 +105,7 @@
 
       if (_isDialogueView && Time.time - _lastScrollTime > ScrollDelay) {
         if (Input.GetKeyDown(KeyCode.E)) {
-          string[] options = ConnectedCharacters
-            .NPCs[_currentInteractingCharacter.Avatar.GetComponent<NPCReference>().NPCId]
-            .Interact(_currentDialogue.GetComponent<Text>().text);
-          if (options != null) {
-            UpdateDialogueView(options);
-          } else {
-            DeactivateDialogueView();
-            CanvasSettings.ToggleControl(true);
-          }
+          Interact(_currentDialogue.GetComponent<Text>().text);
         }
       }
     }
@@ -126,6 +118,28 @@
       _interactableView.SetActive(false);
       foreach (Transform child in _statsContainer.transform) {
         Destroy(child.gameObject);
+      }
+    }
+
+    public void SetCurrentInteractingCharacter(Character character) {
+      _currentInteractingCharacter = character;
+    }
+
+    public void Interact(string text) {
+      string[] options = ConnectedCharacters
+        .NPCs[_currentInteractingCharacter.Avatar.GetComponent<NPCReference>().NPCId]
+        .Interact(text);
+      if (options != null) {
+        if (options.Length > 1) {
+          UpdateDialogueView(options);
+        } else {
+          DeactivateDialogueView();
+          Type thisType = _currentInteractingCharacter.GetType();
+          MethodInfo theMethod = thisType.GetMethod(options[0]);
+          theMethod.Invoke(_currentInteractingCharacter, null);
+        }
+      } else {
+        DeactivateDialogueView();
       }
     }
 
@@ -203,12 +217,12 @@
     public void ActivateDialogueView(Character character, string[] options) {
       _dialogueView.SetActive(true);
       _isDialogueView = true;
+      CanvasSettings.ToggleControl(false);
       _currentInteractingCharacter = character;
       _helpText.text = character.Name;
       _name.text = "";
       _lastScrollTime = Time.time;
       _currentDialogueIndex = 0;
-      //TODO Set up dialogue options in dialogue view
       _dialogueList.Clear();
       Vector3 nextPosition = Vector3.zero;
       foreach (string dialogue in options) {
@@ -225,7 +239,7 @@
 
     public void DeactivateDialogueView() {
       _dialogueView.SetActive(false);
-      //TODO Delete dialogue options from dialogue view
+      CanvasSettings.ToggleControl(true);
       foreach (GameObject dialogue in _dialogueList) {
         Destroy(dialogue);
       }
