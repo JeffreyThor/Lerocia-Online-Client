@@ -13,7 +13,7 @@ namespace Items.Weapons {
       return damage;
     }
 
-    public void Equip(Character character) {
+    private void Equip(Character character) {
       if (character.Weapon != GetId()) {
         character.Weapon = GetId();
       } else {

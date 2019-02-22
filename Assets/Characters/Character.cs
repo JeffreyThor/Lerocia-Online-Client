@@ -30,10 +30,10 @@ namespace Characters {
     public int CurrentStamina;
     public int Gold;
     public int Weight;
-    public int BaseArmor;
-    public int Armor;
     public int BaseDamage;
     public int Damage;
+    public int BaseArmor;
+    public int Armor;
     public bool IsDead;
 
     // Equipped armor & weapons
@@ -42,7 +42,7 @@ namespace Characters {
 
     public List<int> Inventory;
 
-    public Character(string name, GameObject avatar, string type, int maxHealth, int maxStamina, int baseDamage, int baseArmor) {
+    public Character(string name, GameObject avatar, string type, int maxHealth, int currentHealth, int maxStamina, int currentStamina, int gold, int baseDamage, int baseArmor, int weapon, int apparel) {
       Name = name;
       Avatar = avatar;
       Type = type;
@@ -52,18 +52,18 @@ namespace Characters {
       RealRotation = avatar.transform.rotation;
       TimeBetweenMovementStart = Time.time;
       MaxHealth = maxHealth;
-      CurrentHealth = MaxHealth;
+      CurrentHealth = currentHealth;
       MaxStamina = maxStamina;
-      CurrentStamina = MaxStamina;
+      CurrentStamina = currentStamina;
       Weight = 0;
-      Gold = 0;
+      Gold = gold;
       BaseDamage = baseDamage;
       Damage = BaseDamage;
       BaseArmor = baseArmor;
       Armor = BaseArmor;
       IsDead = false;
-      Weapon = -1;
-      Apparel = -1;
+      Weapon = weapon;
+      Apparel = apparel;
       Inventory = new List<int>();
     }
 

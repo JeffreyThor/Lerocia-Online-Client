@@ -54,8 +54,12 @@ namespace Menus.Controllers {
           }
 
           GameObject playerPanel = transform.Find("Player Panel").gameObject;
+          playerPanel.transform.Find("Health Bar").GetComponent<Slider>().maxValue =
+            ConnectedCharacters.MyPlayer.MaxHealth;
           playerPanel.transform.Find("Health Bar").GetComponent<Slider>().value =
             ConnectedCharacters.MyPlayer.CurrentHealth;
+          playerPanel.transform.Find("Stamina Bar").GetComponent<Slider>().maxValue =
+            ConnectedCharacters.MyPlayer.MaxStamina;
           playerPanel.transform.Find("Stamina Bar").GetComponent<Slider>().value =
             ConnectedCharacters.MyPlayer.CurrentStamina;
           playerPanel.transform.Find("Gold").transform.Find("Value").GetComponent<Text>().text =
@@ -212,7 +216,7 @@ namespace Menus.Controllers {
     }
 
     private void UseItem() {
-      NetworkSend.Reliable("USE|" + GetCurrentSelectedItem().GetId());
+      NetworkSend.Reliable("USE|" + GetCurrentSelectedItem().GetId() + "|" + GetCurrentSelectedItem().GetCategory());
       GetCurrentSelectedItem().Use(ConnectedCharacters.MyPlayer);
       RefreshMenu();
     }

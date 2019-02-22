@@ -12,14 +12,18 @@ namespace Items.Apparel {
     public int GetArmor() {
       return armor;
     }
-  
-    public override void Use(Character character) {
+
+    private void Equip(Character character) {
       if (character.Apparel != GetId()) {
         character.Apparel = GetId();
       } else {
         character.Apparel = -1;
       }
       character.UpdateStats();
+    }
+  
+    public override void Use(Character character) {
+      Equip(character);
     }
   }
 }
