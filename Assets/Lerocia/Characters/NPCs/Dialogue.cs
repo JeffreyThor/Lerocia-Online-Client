@@ -1,4 +1,4 @@
-namespace Characters.NPCs {
+namespace Lerocia.Characters.NPCs {
   public class Dialogue {
     public string response;
     public string[] options;

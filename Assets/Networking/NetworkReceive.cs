@@ -2,11 +2,12 @@
   using System.Text;
   using UnityEngine;
   using UnityEngine.Networking;
-  using Characters;
+  using Lerocia.Characters;
   using Characters.Players;
   using Characters.NPCs;
   using Characters.Animation;
   using Items;
+  using Lerocia.Items;
   using Menus;
 
   public class NetworkReceive : MonoBehaviour {

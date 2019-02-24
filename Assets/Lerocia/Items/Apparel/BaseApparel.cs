@@ -1,4 +1,4 @@
-namespace Items.Apparel {
+namespace Lerocia.Items.Apparel {
   using Characters;
 
   public class BaseApparel : BaseItem {

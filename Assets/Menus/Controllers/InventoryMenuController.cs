@@ -3,7 +3,8 @@ namespace Menus.Controllers {
   using System.Linq;
   using UnityEngine;
   using UnityEngine.UI;
-  using Characters;
+  using Lerocia.Characters;
+  using Lerocia.Items;
   using Items;
   using Networking;
 

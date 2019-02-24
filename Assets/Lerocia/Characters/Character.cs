@@ -1,4 +1,4 @@
-namespace Characters {
+namespace Lerocia.Characters {
   using System.Collections.Generic;
   using UnityEngine;
   using Items;

@@ -1,4 +1,4 @@
-namespace Items {
+namespace Lerocia.Items {
   using System.Collections.Generic;
   using Characters;
 

@@ -1,4 +1,4 @@
-namespace Items {
+namespace Lerocia.Items {
   using UnityEngine;
   using System.Collections.Generic;
   using Potions;

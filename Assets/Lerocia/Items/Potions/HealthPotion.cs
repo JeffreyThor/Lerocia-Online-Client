@@ -1,4 +1,4 @@
-namespace Items.Potions {
+namespace Lerocia.Items.Potions {
   using Characters;
 
   public class HealthPotion : BasePotion {

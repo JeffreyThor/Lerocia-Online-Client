@@ -1,4 +1,4 @@
-namespace Items.Weapons {
+namespace Lerocia.Items.Weapons {
   using Characters;
 
   public class BaseWeapon : BaseItem {

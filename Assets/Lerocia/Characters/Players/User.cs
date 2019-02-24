@@ -1,4 +1,4 @@
-namespace Characters.Players {
+namespace Lerocia.Characters.Players {
   using System;
 
   [Serializable]

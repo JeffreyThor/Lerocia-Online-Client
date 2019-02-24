@@ -6,6 +6,7 @@
 	using Networking;
 	using Animation;
 	using Characters.Controllers;
+	using Lerocia.Characters;
 
 	public class PlayerFactory : MonoBehaviour {
 		public GameObject MyPlayerPrefab;
@@ -33,7 +34,7 @@
 			playerObject.GetComponent<PlayerReference>().ConnectionId = connectionId;
 			playerObject.AddComponent<CharacterAnimator>();
 			// Create new player
-			ConnectedCharacters.MyPlayer = new Player(playerName, playerObject, type, maxHealth, currentHealth, maxStamina, currentStamina, gold, 5, 0, equippedWeapon, equippedApparel);
+			ConnectedCharacters.MyPlayer = new ClientPlayer(playerName, playerObject, type, maxHealth, currentHealth, maxStamina, currentStamina, gold, 5, 0, equippedWeapon, equippedApparel);
 			// Add my player to players dictionary
 			ConnectedCharacters.Characters.Add(ConnectedCharacters.MyPlayer);
 			ConnectedCharacters.Players.Add(connectionId, ConnectedCharacters.MyPlayer);
@@ -59,7 +60,7 @@
 			playerObject.GetComponent<PlayerReference>().ConnectionId = connectionId;
 			playerObject.AddComponent<CharacterAnimator>();
 			// Create new player
-			Player player = new Player(playerName, playerObject, type, maxHealth, currentHealth, maxStamina, currentStamina, gold, 5, 0, equippedWeapon, equippedApparel);
+			ClientPlayer player = new ClientPlayer(playerName, playerObject, type, maxHealth, currentHealth, maxStamina, currentStamina, gold, 5, 0, equippedWeapon, equippedApparel);
 			// Add player to players dictionary
 			ConnectedCharacters.Characters.Add(player);
 			ConnectedCharacters.Players.Add(connectionId, player);
