@@ -1,4 +1,4 @@
-namespace Items {
+namespace Lerocia.Items {
   using UnityEngine;
 
   public class ItemReference : MonoBehaviour {

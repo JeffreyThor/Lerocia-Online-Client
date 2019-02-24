@@ -40,7 +40,7 @@ namespace Characters.NPCs {
       npcObject.AddComponent<NPCReference>();
       npcObject.GetComponent<NPCReference>().NPCId = npcId;
       npcObject.AddComponent<CharacterAnimator>();
-      ClientNPC npc = new ClientNPC(npcName, npcObject, type, 100, 100, 100, 100, 0, 5, 0, -1, -1, DialogueList.Dialogues[dialogueId]);
+      ClientNPC npc = new ClientNPC(npcName, npcObject, type, 100, 100, 100, 100, 0, 5, 0, -1, -1, dialogueId);
       ConnectedCharacters.Characters.Add(npc);
       ConnectedCharacters.NPCs.Add(npcId, npc);
       ConnectedCharacters.NPCs[npcId].Avatar.GetComponent<CharacterLerpController>().Character = npc;

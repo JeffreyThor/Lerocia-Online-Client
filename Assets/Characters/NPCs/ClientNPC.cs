@@ -1,6 +1,5 @@
 namespace Characters.NPCs {
   using UnityEngine;
-  using System.Collections.Generic;
   using Lerocia.Characters.NPCs;
   using Menus;
   using Networking;
@@ -8,8 +7,8 @@ namespace Characters.NPCs {
   public class ClientNPC : NPC {
     public ClientNPC(string name, GameObject avatar, string type, int maxHealth, int currentHealth, int maxStamina,
       int currentStamina, int gold, int baseDamage, int baseArmor, int weapon, int apparel,
-      Dictionary<string, Dialogue> dialogues) : base(name, avatar, type, maxHealth, currentHealth, maxStamina,
-      currentStamina, gold, baseDamage, baseArmor, weapon, apparel, dialogues) { }
+      int dialogueId) : base(name, avatar, type, maxHealth, currentHealth, maxStamina,
+      currentStamina, gold, baseDamage, baseArmor, weapon, apparel, dialogueId) { }
 
     public override string[] Interact(string prompt) {
       Dialogue dialogue;

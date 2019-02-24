@@ -7,6 +7,7 @@ namespace Lerocia.Characters {
 
   public abstract class Character {
     // Identifiers
+    public int UserId;
     public string Name;
     public GameObject Avatar;
     public string Type;
@@ -22,6 +23,7 @@ namespace Lerocia.Characters {
     public float TimeToLerp;
     public float TimeBetweenMovementStart;
     public float TimeBetweenMovementEnd;
+    public float MoveTime;
 
     // Stats
     public int MaxHealth;
@@ -42,7 +44,13 @@ namespace Lerocia.Characters {
 
     public List<int> Inventory;
 
-    public Character(string name, GameObject avatar, string type, int maxHealth, int currentHealth, int maxStamina, int currentStamina, int gold, int baseDamage, int baseArmor, int weapon, int apparel) {
+    public Character() {
+      Avatar = new GameObject();
+      Inventory = new List<int>();
+    }
+
+    public Character(string name, GameObject avatar, string type, int maxHealth, int currentHealth, int maxStamina,
+      int currentStamina, int gold, int baseDamage, int baseArmor, int weapon, int apparel) {
       Name = name;
       Avatar = avatar;
       Type = type;
@@ -82,7 +90,7 @@ namespace Lerocia.Characters {
         Armor = BaseArmor;
       }
     }
-    
+
     public void TakeDamage(int damage) {
       if (!IsDead) {
         damage = damage - Armor;
