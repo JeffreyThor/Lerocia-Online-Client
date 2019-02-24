@@ -216,7 +216,7 @@ namespace Menus.Controllers {
     }
 
     private void UseItem() {
-      NetworkSend.Reliable("USE|" + GetCurrentSelectedItem().GetId() + "|" + GetCurrentSelectedItem().GetCategory());
+      NetworkSend.Reliable("USE|" + GetCurrentSelectedItem().GetId());
       GetCurrentSelectedItem().Use(ConnectedCharacters.MyPlayer);
       RefreshMenu();
     }
