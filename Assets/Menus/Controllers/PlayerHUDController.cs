@@ -42,7 +42,7 @@
     private float _staminaViewUpdateTime;
     private const float StaminaViewTimer = 30.0f;
     private float _captionViewUpdateTime;
-    private const float CaptionViewTimer = 10.0f;
+    private const float CaptionViewTimer = 5.0f;
     public Player Player;
 
     // Use this for initialization
