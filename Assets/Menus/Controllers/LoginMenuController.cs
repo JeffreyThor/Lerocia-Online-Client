@@ -41,11 +41,13 @@
 
 			if (string.IsNullOrEmpty(w.error)) {
 				User user = JsonUtility.FromJson<User>(w.text);
+				Debug.Log(w.text);
 				if (user.success) {
 					if (user.error != "") {
 						_errorText.text = user.error;
 					} else {
 						_errorText.text = "Login successful";
+						Debug.Log(user.character_name);
 						ConnectedCharacters.MyUser = user;
 						NetworkSettings.InitializeNetworkTransport();
 					}

@@ -127,7 +127,7 @@
 
     public void Interact(string text) {
       string[] options = ConnectedCharacters
-        .NPCs[_currentInteractingCharacter.Avatar.GetComponent<NPCReference>().NPCId]
+        .NPCs[_currentInteractingCharacter.Avatar.GetComponent<CharacterReference>().CharacterId]
         .Interact(text);
       if (options != null) {
         if (options.Length > 1) {

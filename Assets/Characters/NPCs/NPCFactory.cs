@@ -37,11 +37,11 @@ namespace Characters.NPCs {
       }
 
       npcObject.AddComponent<CharacterLerpController>();
-      npcObject.AddComponent<NPCReference>();
-      npcObject.GetComponent<NPCReference>().NPCId = npcId;
+      npcObject.AddComponent<CharacterReference>();
+      npcObject.GetComponent<CharacterReference>().CharacterId = npcId;
       npcObject.AddComponent<CharacterAnimator>();
-      ClientNPC npc = new ClientNPC(npcName, npcObject, type, 100, 100, 100, 100, 0, 5, 0, -1, -1, dialogueId);
-      ConnectedCharacters.Characters.Add(npc);
+      ClientNPC npc = new ClientNPC(npcId, npcName, npcObject, type, 100, 100, 100, 100, 0, 5, 0, -1, -1, dialogueId);
+      ConnectedCharacters.Characters.Add(npcId, npc);
       ConnectedCharacters.NPCs.Add(npcId, npc);
       ConnectedCharacters.NPCs[npcId].Avatar.GetComponent<CharacterLerpController>().Character = npc;
     }

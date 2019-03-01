@@ -4,9 +4,9 @@ namespace Characters.Players {
   using Menus;
 
   public class ClientPlayer : Player {
-    public ClientPlayer(string name, GameObject avatar, string type, int maxHealth, int currentHealth, int maxStamina,
+    public ClientPlayer(int characterId, string name, GameObject avatar, string type, int maxHealth, int currentHealth, int maxStamina,
       int currentStamina, int gold, int baseDamage, int baseArmor, int weapon, int apparel) : base(
-      name, avatar, type, maxHealth, currentHealth, maxStamina, currentStamina, gold, baseDamage, baseArmor, weapon,
+      characterId, name, avatar, type, maxHealth, currentHealth, maxStamina, currentStamina, gold, baseDamage, baseArmor, weapon,
       apparel) { }
 
     protected override void Kill() {

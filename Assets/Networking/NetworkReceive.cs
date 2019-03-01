@@ -40,6 +40,7 @@
       switch (recData) {
         case NetworkEventType.DataEvent:
           string message = Encoding.Unicode.GetString(recBuffer, 0, dataSize);
+          Debug.Log("Receiving: " + message);
           string[] splitData = message.Split('|');
           switch (splitData[0]) {
             case "ASKNAME":
@@ -96,10 +97,9 @@
 
     private void OnAskName(string[] data) {
       // Set this client's ID
-      ConnectedCharacters.MyUser.connection_id = int.Parse(data[1]);
 
       // Send our name to the server
-      NetworkSend.Reliable("NAMEIS|" + ConnectedCharacters.MyUser.username + "|" + ConnectedCharacters.MyUser.user_id);
+      NetworkSend.Reliable("NAMEIS|" + ConnectedCharacters.MyUser.character_name + "|" + ConnectedCharacters.MyUser.character_id);
 
       // Create all the other players
       for (int i = 2; i < data.Length - 1; i++) {
@@ -126,9 +126,9 @@
       _playerFactory.Spawn(data[1], int.Parse(data[2]), float.Parse(data[3]), float.Parse(data[4]), float.Parse(data[5]), float.Parse(data[6]), float.Parse(data[7]), float.Parse(data[8]), data[9], int.Parse(data[10]), int.Parse(data[11]), int.Parse(data[12]), int.Parse(data[13]), int.Parse(data[14]), int.Parse(data[15]), int.Parse(data[16]));
     }
 
-    private void OnDisconnect(int connectionId) {
-      Destroy(ConnectedCharacters.Players[connectionId].Avatar);
-      ConnectedCharacters.Players.Remove(connectionId);
+    private void OnDisconnect(int characterId) {
+      Destroy(ConnectedCharacters.Players[characterId].Avatar);
+      ConnectedCharacters.Players.Remove(characterId);
     }
 
     private void OnAskPosition(string[] data) {
@@ -141,7 +141,7 @@
         string[] d = data[i].Split('%');
 
         // Prevent the server from updating us
-        if (ConnectedCharacters.MyUser.connection_id != int.Parse(d[0])) {
+        if (ConnectedCharacters.MyPlayer.CharacterId != int.Parse(d[0])) {
           Vector3 position = Vector3.zero;
           position.x = float.Parse(d[1]);
           position.y = float.Parse(d[2]);
@@ -188,43 +188,45 @@
       ConnectedCharacters.MyPlayer.TimeBetweenMovementStart = Time.time;
     }
 
-    private void OnAttack(int connectionId) {
-      if (connectionId != ConnectedCharacters.MyUser.connection_id) {
-        ConnectedCharacters.Players[connectionId].Avatar.GetComponent<CharacterAnimator>().Attack();
+    private void OnAttack(int characterId) {
+      if (characterId != ConnectedCharacters.MyPlayer.CharacterId) {
+        ConnectedCharacters.Players[characterId].Avatar.GetComponent<CharacterAnimator>().Attack();
       }
     }
 
-    private void OnHit(int connectionId, int hitId, int damage) {
-      if (hitId == ConnectedCharacters.MyUser.connection_id) {
+    private void OnHit(int characterId, int hitId, int damage) {
+      if (hitId == ConnectedCharacters.MyPlayer.CharacterId) {
         CanvasSettings.PlayerHudController.ActivateHealthView();
       }
 
-      if (connectionId != ConnectedCharacters.MyUser.connection_id) {
+      if (characterId != ConnectedCharacters.MyPlayer.CharacterId) {
         ConnectedCharacters.Players[hitId].TakeDamage(damage);
       }
     }
 
-    private void OnHitNPC(int connectionId, int hitId, int damage) {
-      if (connectionId != ConnectedCharacters.MyUser.connection_id) {
+    private void OnHitNPC(int characterId, int hitId, int damage) {
+      if (characterId != ConnectedCharacters.MyPlayer.CharacterId) {
         ConnectedCharacters.NPCs[hitId].TakeDamage(damage);
       }
     }
 
-    private void OnUse(int connectionId, int itemId) {
-      if (connectionId != ConnectedCharacters.MyUser.connection_id) {
-        ItemList.Items[itemId].Use(ConnectedCharacters.Players[connectionId]);
+    private void OnUse(int characterId, int itemId) {
+      Debug.Log(characterId);
+      Debug.Log(ConnectedCharacters.MyPlayer.CharacterId);
+      if (characterId != ConnectedCharacters.MyPlayer.CharacterId) {
+        ItemList.Items[itemId].Use(ConnectedCharacters.Players[characterId]);
       }
     }
 
-    private void OnDrop(int connectionId, int worldId, int itemId, float x, float y, float z) {
+    private void OnDrop(int characterId, int worldId, int itemId, float x, float y, float z) {
       _itemFactory.Spawn(worldId, itemId, x, y, z);
-      if (connectionId == ConnectedCharacters.MyUser.connection_id && CanvasSettings.InventoryMenu.activeSelf) {
+      if (characterId == ConnectedCharacters.MyPlayer.CharacterId && CanvasSettings.InventoryMenu.activeSelf) {
         CanvasSettings.InventoryMenuController.RefreshMenu();
       }
     }
 
-    private void OnPickup(int connectionId, int worldId) {
-      ConnectedCharacters.Players[connectionId].Inventory
+    private void OnPickup(int characterId, int worldId) {
+      ConnectedCharacters.Players[characterId].Inventory
         .Add(ItemList.WorldItems[worldId].GetComponent<ItemReference>().ItemId);
       Destroy(ItemList.WorldItems[worldId]);
       ItemList.WorldItems.Remove(worldId);
