@@ -3,42 +3,88 @@ namespace Characters.NPCs.Controllers {
   using UnityEngine;
   using UnityEngine.AI;
   using Lerocia.Characters;
+  using Lerocia.Characters.NPCs;
+  using System.Linq;
 
   public class NPCController : MonoBehaviour {
+    public NPC Npc;
     private float _lookRadius = 10f;
     private Transform _target;
     private NavMeshAgent _agent;
     public List<string> TargetTypes;
+    private int _destinationIndex;
+    private bool _destinationReached;
+    private float _destinationReachedTime;
 
     private void Start() {
       _agent = GetComponent<NavMeshAgent>();
+      _destinationIndex = 0;
     }
 
     private void Update() {
       if (TargetTypes != null) {
-        float closestDistance = float.MaxValue;
-        bool foundTarget = false;
-        foreach (Character character in ConnectedCharacters.Characters.Values) {
-          if (TargetTypes.Contains(character.CharacterPersonality)) {
-            float distance = Vector3.Distance(character.Avatar.transform.position, transform.position);
+        TryToFindTarget();
+      }
 
-            if (distance < _lookRadius && distance < closestDistance) {
-              closestDistance = distance;
-              foundTarget = true;
-              _target = character.Avatar.transform;
-            }
+      if (_target == null) {
+        SetWanderDestination();
+      }
+    }
+
+    private void TryToFindTarget() {
+      float closestDistance = float.MaxValue;
+      bool foundTarget = false;
+      foreach (Character character in ConnectedCharacters.Characters.Values) {
+        if (TargetTypes.Contains(character.CharacterPersonality)) {
+          float distance = Vector3.Distance(character.Avatar.transform.position, transform.position);
+
+          if (distance < _lookRadius && distance < closestDistance) {
+            closestDistance = distance;
+            foundTarget = true;
+            _target = character.Avatar.transform;
           }
         }
+      }
 
-        if (foundTarget) {
-          _agent.SetDestination(_target.position);
-          if (closestDistance <= _agent.stoppingDistance) {
-            //TODO Attack target
-            FaceTarget();
+      if (foundTarget) {
+        if (Npc.CharacterId == 5) {
+          Debug.Log("I see someone");
+        }
+        _agent.SetDestination(_target.position);
+        if (closestDistance <= _agent.stoppingDistance) {
+          //TODO Attack target
+          FaceTarget();
+        }
+      } else {
+        if (Npc.CharacterId == 5) {
+          Debug.Log("I don't see anyone");
+        }
+        _target = null;
+      }
+    }
+
+    private void SetWanderDestination() {
+      if (Npc.Destinations.Any()) {
+        if (!_destinationReached) {
+          _agent.SetDestination(Npc.Destinations[_destinationIndex].Position);
+          float distance = Vector3.Distance(Npc.Destinations[_destinationIndex].Position, transform.position);
+          if (distance <= _agent.stoppingDistance) {
+            _destinationReached = true;
+            _destinationReachedTime = Time.time;
           }
         } else {
-          _target = null;
+          if (Time.time - _destinationReachedTime >= Npc.Destinations[_destinationIndex].Duration) {
+            if (_destinationIndex >= Npc.Destinations.Count - 1) {
+              _destinationIndex = 0;
+            } else {
+              _destinationIndex++;
+            }
+            _destinationReached = false;
+            _agent.SetDestination(Npc.Destinations[_destinationIndex].Position);
+          }
         }
+      } else {
+        _agent.SetDestination(Npc.Origin);
       }
     }
 

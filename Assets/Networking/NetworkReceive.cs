@@ -40,7 +40,7 @@
       switch (recData) {
         case NetworkEventType.DataEvent:
           string message = Encoding.Unicode.GetString(recBuffer, 0, dataSize);
-          Debug.Log("Receiving: " + message);
+//          Debug.Log("Receiving: " + message);
           string[] splitData = message.Split('|');
           switch (splitData[0]) {
             case "ASKNAME":

@@ -5,6 +5,7 @@ namespace Characters.NPCs {
   using Characters.Controllers;
   using Controllers;
   using Lerocia.Characters;
+  using Lerocia.Characters.NPCs;
   using UnityEngine.AI;
 
   public class NPCFactory : MonoBehaviour {
@@ -89,6 +90,13 @@ namespace Characters.NPCs {
         apparelId,
         dialogueId
       );
+      if (npc.CharacterId == 4) {
+        npc.Destinations.Add(new Destination(new Vector3(-5, 0, 10), 3));
+        npc.Destinations.Add(new Destination(new Vector3(-5, 0, 20), 3));
+        npc.Destinations.Add(new Destination(new Vector3(5, 0, 20), 3));
+        npc.Destinations.Add(new Destination(new Vector3(5, 0, 10), 3));
+      }
+      npcObject.GetComponent<NPCController>().Npc = npc;
       ConnectedCharacters.Characters.Add(characterId, npc);
       ConnectedCharacters.NPCs.Add(characterId, npc);
       ConnectedCharacters.NPCs[characterId].Avatar.GetComponent<CharacterLerpController>().Character = npc;
