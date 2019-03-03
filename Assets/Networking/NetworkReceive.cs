@@ -1,4 +1,6 @@
-﻿namespace Networking {
+﻿using System.Diagnostics;
+
+namespace Networking {
   using System.Text;
   using UnityEngine;
   using UnityEngine.Networking;
@@ -99,12 +101,29 @@
       // Set this client's ID
 
       // Send our name to the server
-      NetworkSend.Reliable("NAMEIS|" + ConnectedCharacters.MyUser.character_name + "|" + ConnectedCharacters.MyUser.character_id);
-
+      NetworkSend.Reliable("NAMEIS|" + ConnectedCharacters.MyDatabasePlayer.character_name + "|" + ConnectedCharacters.MyDatabasePlayer.character_id);
+      
       // Create all the other players
-      for (int i = 2; i < data.Length - 1; i++) {
+      for (int i = 2; i < data.Length; i++) {
         string[] d = data[i].Split('%');
-        _playerFactory.Spawn(d[0], int.Parse(d[1]), float.Parse(d[2]), float.Parse(d[3]), float.Parse(d[4]), float.Parse(d[5]), float.Parse(d[6]), float.Parse(d[7]), d[8], int.Parse(d[9]), int.Parse(d[10]), int.Parse(d[11]), int.Parse(d[12]), int.Parse(d[13]), int.Parse(d[14]), int.Parse(d[15]));
+        _playerFactory.Spawn(
+          int.Parse(d[0]), 
+          d[1], 
+          d[2],
+          float.Parse(d[3]), float.Parse(d[4]), float.Parse(d[5]), 
+          float.Parse(d[6]), float.Parse(d[7]), float.Parse(d[8]), 
+          int.Parse(d[9]),  
+          int.Parse(d[10]), 
+          int.Parse(d[11]), 
+          int.Parse(d[12]), 
+          int.Parse(d[13]), 
+          int.Parse(d[14]), 
+          int.Parse(d[15]), 
+          int.Parse(d[16]), 
+          int.Parse(d[17]),
+          int.Parse(d[18]),
+          int.Parse(d[19])
+        );
       }
     }
 
@@ -123,7 +142,24 @@
     }
 
     private void OnConnect(string[] data) {
-      _playerFactory.Spawn(data[1], int.Parse(data[2]), float.Parse(data[3]), float.Parse(data[4]), float.Parse(data[5]), float.Parse(data[6]), float.Parse(data[7]), float.Parse(data[8]), data[9], int.Parse(data[10]), int.Parse(data[11]), int.Parse(data[12]), int.Parse(data[13]), int.Parse(data[14]), int.Parse(data[15]), int.Parse(data[16]));
+      _playerFactory.Spawn(
+        int.Parse(data[1]), 
+        data[2], 
+        data[3],
+        float.Parse(data[4]), float.Parse(data[5]), float.Parse(data[6]), 
+        float.Parse(data[7]), float.Parse(data[8]), float.Parse(data[9]), 
+        int.Parse(data[10]), 
+        int.Parse(data[11]), 
+        int.Parse(data[12]), 
+        int.Parse(data[13]), 
+        int.Parse(data[14]), 
+        int.Parse(data[15]), 
+        int.Parse(data[16]), 
+        int.Parse(data[17]),
+        int.Parse(data[18]),
+        int.Parse(data[19]),
+        int.Parse(data[20])
+      );
     }
 
     private void OnDisconnect(int characterId) {
@@ -211,8 +247,6 @@
     }
 
     private void OnUse(int characterId, int itemId) {
-      Debug.Log(characterId);
-      Debug.Log(ConnectedCharacters.MyPlayer.CharacterId);
       if (characterId != ConnectedCharacters.MyPlayer.CharacterId) {
         ItemList.Items[itemId].Use(ConnectedCharacters.Players[characterId]);
       }
