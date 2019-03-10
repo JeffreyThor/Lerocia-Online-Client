@@ -9,7 +9,7 @@
 	using Lerocia.Characters;
 
 	public class PlayerFactory : MonoBehaviour {
-		public GameObject MyPlayerPrefab;
+		public GameObject MyPlayerObject;
 		public GameObject PlayerPrefab;
 
 		public void Spawn(
@@ -90,7 +90,7 @@
 			int dialogueId
 		) {
 			// Create my player object
-			GameObject playerObject = Instantiate(MyPlayerPrefab);
+			GameObject playerObject = MyPlayerObject;
 			playerObject.name = characterName;
 			playerObject.transform.position = new Vector3(px, py, pz);
 			playerObject.transform.rotation = Quaternion.Euler(new Vector3(rx, ry, rz));
@@ -122,8 +122,6 @@
 			// Add my player to players dictionary
 			ConnectedCharacters.Characters.Add(characterId, ConnectedCharacters.MyPlayer);
 			ConnectedCharacters.Players.Add(characterId, ConnectedCharacters.MyPlayer);
-			//Disable login menu
-			CanvasSettings.LoginMenu.SetActive(false);
 			// Activate player HUD
 			CanvasSettings.PlayerHud.GetComponent<PlayerHUDController>().Player = ConnectedCharacters.MyPlayer;
 			CanvasSettings.PlayerHud.SetActive(true);

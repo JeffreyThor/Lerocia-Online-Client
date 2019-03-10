@@ -1,4 +1,6 @@
-﻿namespace Menus.Controllers {
+﻿using UnityEngine.SceneManagement;
+
+namespace Menus.Controllers {
 	using System.Collections;
 	using UnityEngine;
 	using UnityEngine.UI;
@@ -47,7 +49,7 @@
 					} else {
 						_errorText.text = "Login successful";
 						ConnectedCharacters.MyDatabasePlayer = databasePlayer;
-						NetworkSettings.InitializeNetworkTransport();
+						SceneManager.LoadScene("Client");
 					}
 				} else {
 					_errorText.text = databasePlayer.error;
