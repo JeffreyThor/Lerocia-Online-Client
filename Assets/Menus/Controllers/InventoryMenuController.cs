@@ -1,3 +1,5 @@
+using Characters.Controllers;
+
 namespace Menus.Controllers {
   using System.Collections.Generic;
   using System.Linq;
@@ -26,12 +28,14 @@ namespace Menus.Controllers {
     private bool _isItemView;
     private Character _currentCharacter;
     private string _currentInteraction;
+    private ItemFactory _itemFactory;
 
     // Use this for initialization
     void Start() {
       _lastScrollTime = 0;
       _currentCategoryIndex = 0;
       _isItemView = false;
+      _itemFactory = GameObject.Find("Factory").GetComponent<ItemFactory>();
     }
 
     // Update is called once per frame
@@ -234,6 +238,11 @@ namespace Menus.Controllers {
     private void UseItem() {
       NetworkSend.Reliable("USE|" + GetCurrentSelectedItem().GetId());
       GetCurrentSelectedItem().Use(ConnectedCharacters.MyPlayer);
+      if (GetCurrentSelectedItem().GetCategory() == "Weapons") {
+        ConnectedCharacters.MyPlayer.Avatar.GetComponent<CharacterAvatarController>().UpdateWeapon(ConnectedCharacters.MyPlayer);
+      } else if (GetCurrentSelectedItem().GetCategory() == "Apparel") {
+        ConnectedCharacters.MyPlayer.Avatar.GetComponent<CharacterAvatarController>().UpdateApparel(ConnectedCharacters.MyPlayer);
+      }
       RefreshMenu();
     }
 
@@ -241,6 +250,7 @@ namespace Menus.Controllers {
       GameObject item = new GameObject();
       item.transform.position = ConnectedCharacters.MyPlayer.Avatar.transform.position;
       item.transform.rotation = ConnectedCharacters.MyPlayer.Avatar.transform.rotation;
+      item.transform.localScale = new Vector3(1, 1, 1);
       item.transform.position += item.transform.TransformDirection(Vector3.forward) * 2;
       NetworkSend.Reliable("DROP|" + GetCurrentSelectedItem().GetId() + "|" + item.transform.position.x + "|" +
                            item.transform.position.y + "|" + item.transform.position.z);

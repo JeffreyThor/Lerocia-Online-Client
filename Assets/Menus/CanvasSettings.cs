@@ -65,7 +65,7 @@
 
     public static void ToggleControl(bool state) {
       ConnectedCharacters.MyPlayer.Avatar.GetComponent<FirstPersonController>().enabled = state;
-      ConnectedCharacters.MyPlayer.Avatar.transform.Find("FirstPersonCharacter").GetComponent<PlayerCameraController>().enabled = state;
+      Camera.main.GetComponent<PlayerCameraController>().enabled = state;
     }
   }
 }

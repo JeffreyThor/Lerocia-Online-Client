@@ -49,7 +49,8 @@ namespace Menus.Controllers {
 					} else {
 						_errorText.text = "Login successful";
 						ConnectedCharacters.MyDatabasePlayer = databasePlayer;
-						SceneManager.LoadScene("Client");
+						NetworkSettings.InitializeNetworkTransport();
+						SceneManager.LoadScene("Lerocia");
 					}
 				} else {
 					_errorText.text = databasePlayer.error;
