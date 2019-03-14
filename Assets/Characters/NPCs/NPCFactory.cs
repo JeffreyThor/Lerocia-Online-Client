@@ -53,10 +53,7 @@ namespace Characters.NPCs {
       npcObject.name = characterName;
       npcObject.transform.position = new Vector3(px, py, pz);
       npcObject.transform.rotation = Quaternion.Euler(new Vector3(rx, ry, rz));
-//      npcObject.AddComponent<CharacterLerpController>();
-//      npcObject.AddComponent<CharacterReference>();
       npcObject.GetComponent<CharacterReference>().CharacterId = characterId;
-//      npcObject.AddComponent<CharacterAnimator>();
       ClientNPC npc = new ClientNPC(
         characterId, 
         characterName, 

@@ -1,9 +1,8 @@
-﻿using UnityEngine.SceneManagement;
-
-namespace Menus.Controllers {
+﻿namespace Menus.Controllers {
 	using System.Collections;
 	using UnityEngine;
 	using UnityEngine.UI;
+	using UnityEngine.SceneManagement;
 	using Networking;
 	using Networking.Constants;
 	using Lerocia.Characters;

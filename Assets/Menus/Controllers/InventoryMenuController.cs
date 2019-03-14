@@ -1,5 +1,3 @@
-using Characters.Controllers;
-
 namespace Menus.Controllers {
   using System.Collections.Generic;
   using System.Linq;
@@ -9,6 +7,7 @@ namespace Menus.Controllers {
   using Lerocia.Items;
   using Items;
   using Networking;
+  using Characters.Controllers;
 
   public class InventoryMenuController : MonoBehaviour {
     public GameObject CategoryTextPrefab;

@@ -137,7 +137,6 @@
       for (int i = 1; i < data.Length; i++) {
         ConnectedCharacters.MyPlayer.Inventory.Add(int.Parse(data[i]));
       }
-//      _itemFactory.Equip(ConnectedCharacters.MyPlayer.CharacterId, 1);
     }
 
     private void OnConnect(string[] data) {

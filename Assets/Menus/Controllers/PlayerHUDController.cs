@@ -1,6 +1,4 @@
-﻿using Lerocia.Characters.NPCs;
-
-namespace Menus.Controllers {
+﻿namespace Menus.Controllers {
   using System.Collections.Generic;
   using System;
   using System.Reflection;
@@ -8,6 +6,7 @@ namespace Menus.Controllers {
   using UnityEngine.UI;
   using Lerocia.Characters;
   using Lerocia.Characters.Players;
+  using Lerocia.Characters.NPCs;
   using Lerocia.Items;
 
   public class PlayerHUDController : MonoBehaviour {
@@ -199,13 +198,11 @@ namespace Menus.Controllers {
     }
 
     public void ActivateHealthView() {
-      Debug.Log("Activating");
       _healthViewUpdateTime = Time.time;
       _healthBar.SetActive(true);
     }
 
     public void DeactivateHealthView() {
-      Debug.Log("Deactivating");
       _healthBar.SetActive(false);
     }
 

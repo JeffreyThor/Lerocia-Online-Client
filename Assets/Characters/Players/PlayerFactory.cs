@@ -1,10 +1,8 @@
 ﻿namespace Characters.Players {
 	using UnityEngine;
 	using Menus;
-	using Controllers;
 	using Menus.Controllers;
 	using Networking;
-	using Animation;
 	using Characters.Controllers;
 	using Lerocia.Characters;
 
