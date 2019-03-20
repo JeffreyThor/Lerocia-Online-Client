@@ -1,7 +1,6 @@
 namespace Characters.Players {
   using UnityEngine;
   using Lerocia.Characters.Players;
-  using Menus;
 
   public class ClientPlayer : Player {
     public ClientPlayer(
@@ -37,14 +36,5 @@ namespace Characters.Players {
       apparelId,
       dialogueId
     ) { }
-
-    protected override void Kill() {
-      //TODO Handle ClientPlayer death
-      // Reset players health
-      CurrentHealth = MaxHealth;
-      // Move them back to "spawn" point
-      Avatar.transform.position = new Vector3(0, 1, 0);
-      CanvasSettings.PlayerHudController.DeactivateEnemyView();
-    }
   }
 }

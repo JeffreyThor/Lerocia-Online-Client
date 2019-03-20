@@ -2,6 +2,7 @@ namespace Characters.NPCs {
   using UnityEngine;
   using Controllers;
   using Lerocia.Characters;
+  using Networking;
 
   public class NPCFactory : MonoBehaviour {
     public GameObject NPCPrefab;
@@ -73,6 +74,7 @@ namespace Characters.NPCs {
       );
       ConnectedCharacters.Characters.Add(characterId, npc);
       ConnectedCharacters.NPCs.Add(characterId, npc);
+      NetworkSend.Reliable("NPCITEMS|" + characterId);
       ConnectedCharacters.NPCs[characterId].Avatar.GetComponent<CharacterLerpController>().Character = npc;
     }
   }

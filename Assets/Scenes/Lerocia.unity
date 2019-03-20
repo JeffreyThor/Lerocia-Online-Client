@@ -72567,6 +72567,7 @@ GameObject:
   - component: {fileID: 2093173735}
   - component: {fileID: 2093173737}
   - component: {fileID: 2093173738}
+  - component: {fileID: 2093173739}
   m_Layer: 5
   m_Name: Factory
   m_TagString: Untagged
@@ -72623,7 +72624,7 @@ MonoBehaviour:
   Items:
   - {fileID: 1757289586127028, guid: 8f583dbfd80ef450a86d723c65b7941a, type: 3}
   - {fileID: 5726355605363025239, guid: 1e18a41064cb64597a8cb2b371772ae7, type: 3}
-  - {fileID: 150660, guid: f64c3857bddb1474ca13bfaf8cb07cbc, type: 3}
+  - {fileID: 7480036476772003881, guid: 812ff7d21b171408894a299c31383798, type: 3}
 --- !u!114 &2093173738
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -72637,6 +72638,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   NPCPrefab: {fileID: 8713039408640581196, guid: 001779840070341c8a99d5b522705bb4,
+    type: 3}
+--- !u!114 &2093173739
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2093173734}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abf7e5caa9f442fbb7fc70dde58293da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  BodyPrefab: {fileID: 7198925750020448984, guid: 635e80ea274a84bf8afad425fcbb1fce,
     type: 3}
 --- !u!1 &2093264547 stripped
 GameObject:
@@ -78525,7 +78540,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   WeaponParent: {fileID: 1533420496435343809}
-  ApparelParent: {fileID: 0}
+  ApparelParent: {fileID: 1533420496435343815}
 --- !u!1 &2497978876404152396
 GameObject:
   m_ObjectHideFlags: 0

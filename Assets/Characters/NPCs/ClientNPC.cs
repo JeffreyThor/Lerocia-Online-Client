@@ -1,9 +1,11 @@
+using Items;
+
 namespace Characters.NPCs {
   using UnityEngine;
   using Lerocia.Characters.NPCs;
   using Menus;
-  using Networking;
   using Lerocia.Characters;
+  using Bodies;
 
   public class ClientNPC : NPC {
     public ClientNPC(
@@ -52,20 +54,9 @@ namespace Characters.NPCs {
       return null;
     }
 
-    protected override void Kill() {
-      //TODO Handle ClientNPC death
-      IsDead = true;
-      Dialogues = DialogueList.Dialogues[0];
-      NetworkSend.Reliable("NPCITEMS|" + Avatar.GetComponent<CharacterReference>().CharacterId);
-    }
-
     public override void StartMerchant() {
       //TODO Handle ClientNPC Start Merchant
       CanvasSettings.ToggleInventoryMenu(this, "MERCHANT");
-    }
-
-    public override void LootBody() {
-      //TODO Handle ClientNPC Loot Body
     }
   }
 }

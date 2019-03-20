@@ -1,4 +1,6 @@
-﻿namespace Networking {
+﻿using Characters.Bodies;
+
+namespace Networking {
   using System.Text;
   using UnityEngine;
   using UnityEngine.Networking;
@@ -15,12 +17,14 @@
     private PlayerFactory _playerFactory;
     private ItemFactory _itemFactory;
     private NPCFactory _npcFactory;
+    private BodyFactory _bodyFactory;
 
     private void Awake() {
       _factory = GameObject.Find("Factory");
       _playerFactory = _factory.GetComponent<PlayerFactory>();
       _npcFactory = _factory.GetComponent<NPCFactory>();
       _itemFactory = _factory.GetComponent<ItemFactory>();
+      _bodyFactory = _factory.GetComponent<BodyFactory>();
     }
 
     private void Update() {
@@ -40,7 +44,7 @@
       switch (recData) {
         case NetworkEventType.DataEvent:
           string message = Encoding.Unicode.GetString(recBuffer, 0, dataSize);
-//          Debug.Log("Receiving: " + message);
+          Debug.Log("Receiving: " + message);
           string[] splitData = message.Split('|');
           switch (splitData[0]) {
             case "ASKNAME":
@@ -48,6 +52,9 @@
               break;
             case "NPCS":
               OnNPCs(splitData);
+              break;
+            case "BODIES":
+              OnBodies(splitData);
               break;
             case "ITEMS":
               OnItems(splitData);
@@ -70,9 +77,6 @@
             case "HIT":
               OnHit(int.Parse(splitData[1]), int.Parse(splitData[2]), int.Parse(splitData[3]));
               break;
-            case "HITNPC":
-              OnHitNPC(int.Parse(splitData[1]), int.Parse(splitData[2]), int.Parse(splitData[3]));
-              break;
             case "USE":
               OnUse(int.Parse(splitData[1]), int.Parse(splitData[2]));
               break;
@@ -85,6 +89,12 @@
               break;
             case "NPCITEMS":
               OnNPCItems(splitData);
+              break;
+            case "DEATH":
+              OnDeath(splitData);
+              break;
+            case "DESTROYBODY":
+              OnDestroyBody(int.Parse(splitData[1]));
               break;
             default:
               Debug.Log("Invalid message : " + message);
@@ -131,6 +141,10 @@
 
     private void OnNPCs(string[] data) {
       _npcFactory.Spawn(data);
+    }
+    
+    private void OnBodies(string[] data) {
+      _bodyFactory.SpawnAll(data);
     }
 
     private void OnInventory(string[] data) {
@@ -234,13 +248,7 @@
       }
 
       if (characterId != ConnectedCharacters.MyPlayer.CharacterId) {
-        ConnectedCharacters.Players[hitId].TakeDamage(damage);
-      }
-    }
-
-    private void OnHitNPC(int characterId, int hitId, int damage) {
-      if (characterId != ConnectedCharacters.MyPlayer.CharacterId) {
-        ConnectedCharacters.NPCs[hitId].TakeDamage(damage);
+        ConnectedCharacters.Characters[hitId].TakeDamage(damage);
       }
     }
 
@@ -270,6 +278,18 @@
       for (int i = 2; i < data.Length; i++) {
         ConnectedCharacters.NPCs[int.Parse(data[1])].Inventory.Add(int.Parse(data[i]));
       }
+    }
+
+    private void OnDeath(string[] data) {
+      //TODO Handle character death
+      _bodyFactory.Spawn(data);
+    }
+    
+    private void OnDestroyBody(int characterId) {
+      //TODO Handle character death
+      Destroy(ConnectedCharacters.Characters[characterId].Avatar);
+      ConnectedCharacters.Characters.Remove(characterId);
+      ConnectedCharacters.Bodies.Remove(characterId);
     }
   }
 }
