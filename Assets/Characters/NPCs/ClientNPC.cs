@@ -1,11 +1,8 @@
-using Items;
-
 namespace Characters.NPCs {
   using UnityEngine;
   using Lerocia.Characters.NPCs;
   using Menus;
   using Lerocia.Characters;
-  using Bodies;
 
   public class ClientNPC : NPC {
     public ClientNPC(
@@ -23,7 +20,10 @@ namespace Characters.NPCs {
       int baseArmor,
       int weapon,
       int apparel,
-      int dialogueId
+      int dialogueId,
+      Vector3 origin,
+      float respawnTime,
+      float lookRadius
     ) : base(
       characterId, 
       characterName, 
@@ -39,7 +39,10 @@ namespace Characters.NPCs {
       baseArmor,
       weapon,
       apparel,
-      dialogueId
+      dialogueId,
+      origin,
+      respawnTime,
+      lookRadius
     ) { }
 
     public override string[] Interact(string prompt) {
@@ -55,7 +58,6 @@ namespace Characters.NPCs {
     }
 
     public override void StartMerchant() {
-      //TODO Handle ClientNPC Start Merchant
       CanvasSettings.ToggleInventoryMenu(this, "MERCHANT");
     }
   }

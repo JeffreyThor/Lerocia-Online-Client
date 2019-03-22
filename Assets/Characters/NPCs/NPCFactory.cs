@@ -27,7 +27,11 @@ namespace Characters.NPCs {
           int.Parse(d[16]), 
           int.Parse(d[17]),
           int.Parse(d[18]),
-          int.Parse(d[19])
+          int.Parse(d[19]),
+          float.Parse(d[20]), float.Parse(d[21]), float.Parse(d[22]),
+          bool.Parse(d[23]),
+          float.Parse(d[24]),
+          float.Parse(d[25])
         );
       }
     }
@@ -48,7 +52,11 @@ namespace Characters.NPCs {
       int baseArmor,
       int weaponId, 
       int apparelId,
-      int dialogueId
+      int dialogueId,
+      float ox, float oy, float oz,
+      bool isDead,
+      float respawnTime,
+      float lookRadius
     ) {
       GameObject npcObject = Instantiate(NPCPrefab);
       npcObject.name = characterName;
@@ -70,8 +78,14 @@ namespace Characters.NPCs {
         baseArmor,
         weaponId, 
         apparelId,
-        dialogueId
+        dialogueId,
+        new Vector3(ox, oy, oz), 
+        respawnTime,
+        lookRadius
       );
+      if (isDead) {
+        npc.Death();
+      }
       ConnectedCharacters.Characters.Add(characterId, npc);
       ConnectedCharacters.NPCs.Add(characterId, npc);
       NetworkSend.Reliable("NPCITEMS|" + characterId);

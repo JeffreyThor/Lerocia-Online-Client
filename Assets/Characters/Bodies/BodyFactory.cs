@@ -1,11 +1,13 @@
+using Menus;
+
 namespace Characters.Bodies {
   using UnityEngine;
   using Animation;
   using Lerocia.Characters;
-  using Lerocia.Characters.Bodies;
 
   public class BodyFactory : MonoBehaviour {
     public GameObject BodyPrefab;
+    public GameObject DeathCameraPrefab;
 
     public void Spawn(string[] data) {
       Character character = ConnectedCharacters.Characters[int.Parse(data[1])];
@@ -29,11 +31,21 @@ namespace Characters.Bodies {
         character.BaseArmor,
         character.WeaponId,
         character.ApparelId,
-        character.DialogueId
+        0
       );
       for (int j = 3; j < data.Length; j++) {
-        ConnectedCharacters.Characters[int.Parse(data[0])].Inventory.Add(int.Parse(data[j]));
+        ConnectedCharacters.Characters[int.Parse(data[2])].Inventory.Add(int.Parse(data[j]));
       }
+      if (character.CharacterId == ConnectedCharacters.MyPlayer.CharacterId) {
+        GameObject deathCamera = Instantiate(DeathCameraPrefab);
+        deathCamera.name = "DeathCamera";
+        deathCamera.transform.position = character.Avatar.transform.position;
+        deathCamera.transform.rotation = character.Avatar.transform.rotation;
+        deathCamera.transform.position += new Vector3(0, 2.5f, 2.5f);
+        deathCamera.transform.Rotate(20, 0, 0);
+        CanvasSettings.ActivateDeathMenu();
+      }
+      character.Death();
     }
     
     public void SpawnAll(string[] data) {
@@ -83,10 +95,11 @@ namespace Characters.Bodies {
       int dialogueId
     ) {
       GameObject avatar = Instantiate(BodyPrefab);
+      avatar.name = characterName;
       avatar.tag = "Body";
       avatar.transform.position = new Vector3(px, py, pz);
       avatar.transform.rotation = Quaternion.Euler(new Vector3(rx, ry, rz));
-      Body body = new Body(
+      ClientBody body = new ClientBody(
         characterId, 
         characterName, 
         characterPersonality,

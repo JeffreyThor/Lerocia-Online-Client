@@ -54,6 +54,11 @@ namespace Characters.Players.Controllers {
             CanvasSettings.PlayerHudController.ActivateInteractableView();
             CanvasSettings.PlayerHudController.SetPlayerView(ConnectedCharacters.Players[_lastPlayerHit]);
           }
+          
+          if (ConnectedCharacters.Players[_lastPlayerHit].DialogueId >= 0 && Input.GetKeyDown(KeyCode.E)) {
+            CanvasSettings.PlayerHudController.SetCurrentInteractingCharacter(ConnectedCharacters.Players[_lastPlayerHit]);
+            CanvasSettings.PlayerHudController.Interact("INTERACT");
+          }
         }
 
         if (_hit.transform.CompareTag("Body")) {
@@ -61,6 +66,11 @@ namespace Characters.Players.Controllers {
             _lastBodyHit = _hit.transform.gameObject.GetComponent<CharacterReference>().CharacterId;
             CanvasSettings.PlayerHudController.ActivateInteractableView();
             CanvasSettings.PlayerHudController.SetBodyView(ConnectedCharacters.Bodies[_lastBodyHit]);
+          }
+          
+          if (ConnectedCharacters.Bodies[_lastBodyHit].DialogueId >= 0 && Input.GetKeyDown(KeyCode.E)) {
+            CanvasSettings.PlayerHudController.SetCurrentInteractingCharacter(ConnectedCharacters.Bodies[_lastBodyHit]);
+            CanvasSettings.PlayerHudController.Interact("INTERACT");
           }
         }
       } else {

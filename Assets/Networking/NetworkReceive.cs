@@ -35,8 +35,8 @@ namespace Networking {
       int recHostId;
       int connectionId;
       int channelId;
-      byte[] recBuffer = new byte[1024];
-      int bufferSize = 1024;
+      byte[] recBuffer = new byte[2048];
+      int bufferSize = 2048;
       int dataSize;
       byte error;
       NetworkEventType recData = NetworkTransport.Receive(out recHostId, out connectionId, out channelId, recBuffer,
@@ -93,6 +93,9 @@ namespace Networking {
             case "DEATH":
               OnDeath(splitData);
               break;
+            case "RESPAWN":
+              OnRespawn(int.Parse(splitData[1]));
+              break;
             case "DESTROYBODY":
               OnDestroyBody(int.Parse(splitData[1]));
               break;
@@ -130,7 +133,9 @@ namespace Networking {
           int.Parse(d[16]), 
           int.Parse(d[17]),
           int.Parse(d[18]),
-          int.Parse(d[19])
+          int.Parse(d[19]),
+          float.Parse(d[20]), float.Parse(d[21]), float.Parse(d[22]),
+          bool.Parse(d[23])
         );
       }
     }
@@ -170,7 +175,9 @@ namespace Networking {
         int.Parse(data[17]),
         int.Parse(data[18]),
         int.Parse(data[19]),
-        int.Parse(data[20])
+        int.Parse(data[20]),
+        float.Parse(data[21]), float.Parse(data[22]), float.Parse(data[23]),
+        bool.Parse(data[24])
       );
     }
 
@@ -281,12 +288,19 @@ namespace Networking {
     }
 
     private void OnDeath(string[] data) {
-      //TODO Handle character death
       _bodyFactory.Spawn(data);
     }
     
+    private void OnRespawn(int characterId) {
+      if (characterId != ConnectedCharacters.MyPlayer.CharacterId) {
+        Character character = ConnectedCharacters.Characters[characterId];
+        character.IsDead = false;
+        character.Avatar.transform.position = character.Origin;
+        character.Avatar.SetActive(true);
+      }
+    }
+    
     private void OnDestroyBody(int characterId) {
-      //TODO Handle character death
       Destroy(ConnectedCharacters.Characters[characterId].Avatar);
       ConnectedCharacters.Characters.Remove(characterId);
       ConnectedCharacters.Bodies.Remove(characterId);
