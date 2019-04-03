@@ -3,5 +3,6 @@ namespace Networking.Constants {
     public const string Login = "login.php";
     public const string Register = "register.php";
     public const string CreateNPC = "create_npc.php";
+    public const string CreateItem = "add_world_item.php";
   }
 }

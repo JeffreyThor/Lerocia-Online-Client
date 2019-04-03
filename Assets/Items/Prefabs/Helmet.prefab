@@ -13,8 +13,9 @@ GameObject:
   - component: {fileID: 5799436798253808021}
   - component: {fileID: 8133323909970415138}
   - component: {fileID: 1000978733894419298}
+  - component: {fileID: 4263518740082978261}
   m_Layer: 0
-  m_Name: Item 1
+  m_Name: Helmet
   m_TagString: Item
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -104,5 +105,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 540bc3cbad1e54235b028f686f71e26a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ItemId: 0
+  ItemId: 2
   WorldId: 0
+--- !u!114 &4263518740082978261
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7480036476772003881}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b66fb3c4e2184fee891b09475cd5e80, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ErrorText: 
